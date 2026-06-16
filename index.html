@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>داشبورد مقاولي الباطن - متابعة الدفعات والمستخلصات</title>
+    <meta name="description" content="لوحة تحكم تفاعلية لمتابعة دفعات ومستخلصات مقاولي الباطن">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-icon"><span>📊</span></div>
+            <h2>مقاولي الباطن</h2>
+            <p class="subtitle">لوحة متابعة الدفعات</p>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-link active" data-section="overview" id="nav-overview">
+                <span class="nav-icon">🏠</span><span class="nav-text">نظرة عامة</span>
+            </a>
+            <a href="#" class="nav-link" data-section="contractors" id="nav-contractors">
+                <span class="nav-icon">👷</span><span class="nav-text">المقاولين</span>
+            </a>
+            <a href="#" class="nav-link" data-section="new-payment" id="nav-new-payment">
+                <span class="nav-icon">💰</span><span class="nav-text">تسجيل دفعة</span>
+            </a>
+            <a href="#" class="nav-link" data-section="payments" id="nav-payments">
+                <span class="nav-icon">📜</span><span class="nav-text">سجل الدفعات</span>
+            </a>
+            <a href="#" class="nav-link" data-section="extract" id="nav-extract">
+                <span class="nav-icon">📋</span><span class="nav-text">المستخلصات</span>
+            </a>
+            <a href="#" class="nav-link" data-section="statement" id="nav-statement">
+                <span class="nav-icon">🧾</span><span class="nav-text">كشف حساب</span>
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <button class="btn btn-save-main" id="saveAllBtn" onclick="saveAllData()">
+                <span>💾</span> حفظ البيانات
+            </button>
+            <div class="sync-status offline" id="syncStatus">🟡 وضع محلي</div>
+            <div class="footer-info">
+                <span class="version">الإصدار 3.0</span>
+                <span class="copyright">القسم المالي &copy; 2025</span>
+            </div>
+        </div>
+    </aside>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Mobile Header -->
+    <header class="mobile-header" id="mobileHeader">
+        <button class="menu-btn" id="menuToggle" aria-label="فتح القائمة">
+            <span></span><span></span><span></span>
+        </button>
+        <h1>📊 مقاولي الباطن</h1>
+        <button class="btn btn-sm btn-primary" onclick="saveAllData()">💾</button>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+
+        <!-- ===== Overview Section ===== -->
+        <section class="section active" id="section-overview">
+            <div class="section-header">
+                <h1 class="section-title">نظرة عامة</h1>
+                <span class="section-date" id="currentDate"></span>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card" style="--accent:#00d2ff;--accent-rgb:0,210,255;">
+                    <div class="stat-icon-wrap"><span>👷</span></div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="statContractors">0</span>
+                        <span class="stat-label">إجمالي المقاولين</span>
+                    </div><div class="stat-decoration"></div>
+                </div>
+                <div class="stat-card" style="--accent:#00e676;--accent-rgb:0,230,118;">
+                    <div class="stat-icon-wrap"><span>💵</span></div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="statTotalPaid">٠ ج.م</span>
+                        <span class="stat-label">إجمالي المدفوعات</span>
+                    </div><div class="stat-decoration"></div>
+                </div>
+                <div class="stat-card" style="--accent:#ff9100;--accent-rgb:255,145,0;">
+                    <div class="stat-icon-wrap"><span>📦</span></div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="statActiveItems">0</span>
+                        <span class="stat-label">بنود نشطة</span>
+                    </div><div class="stat-decoration"></div>
+                </div>
+                <div class="stat-card" style="--accent:#e040fb;--accent-rgb:224,64,251;">
+                    <div class="stat-icon-wrap"><span>📝</span></div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="statPaymentCount">0</span>
+                        <span class="stat-label">عدد الدفعات</span>
+                    </div><div class="stat-decoration"></div>
+                </div>
+            </div>
+            <div class="charts-grid">
+                <div class="card chart-card">
+                    <h3 class="card-title">📊 توزيع المدفوعات حسب البند</h3>
+                    <div class="chart-container"><canvas id="pieChart"></canvas></div>
+                    <div class="chart-empty" id="pieEmpty"><p>لا توجد دفعات بعد</p></div>
+                </div>
+                <div class="card chart-card">
+                    <h3 class="card-title">📈 أكثر 10 مقاولين دفعات</h3>
+                    <div class="chart-container"><canvas id="barChart"></canvas></div>
+                    <div class="chart-empty" id="barEmpty"><p>لا توجد دفعات بعد</p></div>
+                </div>
+            </div>
+            <!-- Spending Breakdown -->
+            <div class="card">
+                <h3 class="card-title">💰 ملخص المصروفات حسب البند</h3>
+                <div class="table-wrapper">
+                    <table class="data-table" id="spendingTable">
+                        <thead>
+                            <tr>
+                                <th>البند</th>
+                                <th>عدد المقاولين</th>
+                                <th>عدد الدفعات</th>
+                                <th>إجمالي المدفوع</th>
+                                <th>النسبة</th>
+                            </tr>
+                        </thead>
+                        <tbody id="spendingBody"></tbody>
+                        <tfoot>
+                            <tr class="total-row">
+                                <td><strong>الإجمالي</strong></td>
+                                <td id="spendingTotalContractors">—</td>
+                                <td id="spendingTotalPayments">—</td>
+                                <td class="amount-cell" id="spendingGrandTotal">٠ ج.م</td>
+                                <td>100%</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div class="empty-state" id="spendingEmpty"><span class="empty-icon">📭</span><p>لا توجد دفعات بعد</p></div>
+            </div>
+            <!-- Recent Payments -->
+            <div class="card">
+                <h3 class="card-title">🕐 آخر الدفعات</h3>
+                <div class="table-wrapper">
+                    <table class="data-table" id="recentTable">
+                        <thead><tr><th>المقاول</th><th>البند</th><th>المبلغ</th><th>التاريخ</th></tr></thead>
+                        <tbody id="recentBody"></tbody>
+                    </table>
+                </div>
+                <div class="empty-state" id="recentEmpty">
+                    <span class="empty-icon">📭</span><p>لا توجد دفعات مسجلة بعد</p>
+                    <button class="btn btn-primary btn-sm" onclick="navigateTo('new-payment')">سجل أول دفعة</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Contractors Section ===== -->
+        <section class="section" id="section-contractors">
+            <div class="section-header">
+                <h1 class="section-title">المقاولين</h1>
+                <div class="header-actions">
+                    <span class="badge badge-info" id="contractorCount"></span>
+                    <button class="btn btn-primary btn-sm" onclick="openModal('addContractorModal')">➕ إضافة مقاول</button>
+                    <button class="btn btn-ghost btn-sm" onclick="openModal('addItemModal')">📦 إضافة بند</button>
+                </div>
+            </div>
+            <div class="filters-bar">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="contractorSearch" placeholder="بحث بالاسم..." autocomplete="off">
+                </div>
+                <select class="select-input" id="itemFilter"><option value="">كل البنود</option></select>
+            </div>
+            <!-- Grouped Contractors Table -->
+            <div id="contractorsGrouped"></div>
+        </section>
+
+        <!-- ===== New Payment Section ===== -->
+        <section class="section" id="section-new-payment">
+            <div class="section-header"><h1 class="section-title">تسجيل دفعة جديدة</h1></div>
+            <div class="card form-card">
+                <form id="paymentForm" novalidate>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="paymentItem">البند <span class="required">*</span></label>
+                            <select class="select-input" id="paymentItem" required><option value="">اختر البند...</option></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="paymentContractor">المقاول <span class="required">*</span></label>
+                            <select class="select-input" id="paymentContractor" required disabled><option value="">اختر البند أولاً...</option></select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="paymentAmount">المبلغ (جنيه) <span class="required">*</span></label>
+                            <input type="number" class="text-input" id="paymentAmount" placeholder="0.00" min="0.01" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="paymentDate">التاريخ <span class="required">*</span></label>
+                            <input type="date" class="text-input" id="paymentDate" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="paymentCheckNo">رقم الشيك / المرجع</label>
+                        <input type="text" class="text-input" id="paymentCheckNo" placeholder="اختياري...">
+                    </div>
+                    <div class="form-group">
+                        <label for="paymentNotes">ملاحظات</label>
+                        <textarea class="text-input" id="paymentNotes" rows="3" placeholder="أي ملاحظات..."></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary btn-lg"><span>💰</span> تسجيل الدفعة</button>
+                        <button type="reset" class="btn btn-ghost">مسح النموذج</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- ===== Payments History Section ===== -->
+        <section class="section" id="section-payments">
+            <div class="section-header">
+                <h1 class="section-title">سجل الدفعات</h1>
+                <span class="badge badge-info" id="paymentsCount"></span>
+            </div>
+            <div class="filters-bar">
+                <div class="search-box"><span class="search-icon">🔍</span>
+                    <input type="text" id="paymentSearch" placeholder="بحث..." autocomplete="off">
+                </div>
+                <select class="select-input" id="paymentItemFilter"><option value="">كل البنود</option></select>
+                <input type="date" class="text-input date-input" id="dateFrom" title="من تاريخ">
+                <input type="date" class="text-input date-input" id="dateTo" title="إلى تاريخ">
+            </div>
+            <div class="card">
+                <div class="table-wrapper">
+                    <table class="data-table" id="paymentsTable">
+                        <thead><tr><th>#</th><th>المقاول</th><th>البند</th><th>المبلغ</th><th>التاريخ</th><th>المرجع</th><th>ملاحظات</th><th>إجراء</th></tr></thead>
+                        <tbody id="paymentsBody"></tbody>
+                    </table>
+                </div>
+                <div class="empty-state" id="paymentsEmpty"><span class="empty-icon">📭</span><p>لا توجد دفعات مسجلة</p></div>
+            </div>
+        </section>
+
+        <!-- ===== Extract/Invoice Section ===== -->
+        <section class="section" id="section-extract">
+            <div class="section-header">
+                <h1 class="section-title">المستخلصات</h1>
+                <div class="header-actions">
+                    <button class="btn btn-primary btn-sm" id="btnNewExtract" onclick="openNewExtractModal()" style="display:none;">➕ مستخلص جديد</button>
+                </div>
+            </div>
+            <div class="filters-bar">
+                <select class="select-input" id="extractItemSelect"><option value="">اختر البند...</option></select>
+                <select class="select-input" id="extractContractorSelect" disabled><option value="">اختر البند أولاً...</option></select>
+                <select class="select-input" id="extractNumberSelect" disabled style="display:none;"><option value="">اختر المستخلص...</option></select>
+            </div>
+
+            <!-- Contractor Balance Card -->
+            <div class="balance-card" id="balanceCard" style="display:none;">
+                <div class="balance-item">
+                    <span class="balance-label">قيمة الأعمال المنفذة</span>
+                    <span class="balance-value accent-green" id="balExecuted">٠ ج.م</span>
+                </div>
+                <div class="balance-divider">−</div>
+                <div class="balance-item">
+                    <span class="balance-label">إجمالي المنصرف</span>
+                    <span class="balance-value accent-orange" id="balPaid">٠ ج.م</span>
+                </div>
+                <div class="balance-divider">=</div>
+                <div class="balance-item">
+                    <span class="balance-label">الباقي للمقاول</span>
+                    <span class="balance-value accent-cyan" id="balRemaining">٠ ج.م</span>
+                </div>
+            </div>
+
+            <!-- Extract Content -->
+            <div id="extractContent" style="display:none;">
+                <div class="card extract-header-card">
+                    <div class="extract-meta">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>رقم المستخلص</label>
+                                <div class="readonly-field" id="extractNum">—</div>
+                            </div>
+                            <div class="form-group">
+                                <label>المقاول</label>
+                                <div class="readonly-field" id="extractContractorName">—</div>
+                            </div>
+                            <div class="form-group">
+                                <label>البند الرئيسي</label>
+                                <div class="readonly-field" id="extractItemName">—</div>
+                            </div>
+                            <div class="form-group">
+                                <label>التاريخ</label>
+                                <input type="date" class="text-input" id="extractDate">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="table-wrapper">
+                        <table class="data-table extract-table" id="extractTable">
+                            <thead>
+                                <tr>
+                                    <th style="width:40px;">م</th>
+                                    <th>بند المستخلص</th>
+                                    <th>النوع</th>
+                                    <th>الوحدة</th>
+                                    <th>الكمية</th>
+                                    <th>السعر</th>
+                                    <th>القيمة</th>
+                                    <th>نسبة التنفيذ %</th>
+                                    <th>القيمة المنفذة</th>
+                                    <th style="width:50px;">إجراء</th>
+                                </tr>
+                            </thead>
+                            <tbody id="extractBody"></tbody>
+                            <tfoot>
+                                <tr class="total-row">
+                                    <td colspan="6"><strong>الإجمالي</strong></td>
+                                    <td class="amount-cell" id="extractTotalValue">٠</td>
+                                    <td></td>
+                                    <td class="amount-cell" id="extractTotalExecuted">٠</td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <div class="extract-actions">
+                        <button class="btn btn-primary btn-sm" onclick="addExtractRow()">➕ إضافة بند</button>
+                        <button class="btn btn-ghost btn-sm" onclick="saveCurrentExtract()">💾 حفظ المستخلص</button>
+                        <button class="btn btn-ghost btn-sm" onclick="printExtract()">🖨️ طباعة</button>
+                        <button class="btn btn-delete btn-sm" onclick="deleteCurrentExtract()">🗑️ حذف المستخلص</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="extractNotes">ملاحظات المستخلص</label>
+                    <textarea class="text-input" id="extractNotes" rows="2" placeholder="ملاحظات..."></textarea>
+                </div>
+            </div>
+
+            <div class="empty-state" id="extractEmpty">
+                <span class="empty-icon">📋</span>
+                <p>اختر مقاول لعرض مستخلصاته أو إنشاء مستخلص جديد</p>
+            </div>
+        </section>
+
+        <!-- ===== Statement Section ===== -->
+        <section class="section" id="section-statement">
+            <div class="section-header"><h1 class="section-title">كشف حساب مقاول</h1></div>
+            <div class="filters-bar">
+                <select class="select-input" id="statementItem"><option value="">اختر البند...</option></select>
+                <select class="select-input" id="statementContractor" disabled><option value="">اختر البند أولاً...</option></select>
+                <button class="btn btn-primary btn-sm" id="printStatement" style="display:none;" onclick="window.print()">🖨️ طباعة</button>
+            </div>
+            <div id="statementContent" style="display:none;">
+                <div class="statement-header-card">
+                    <div class="statement-identity">
+                        <div class="statement-avatar">👷</div>
+                        <div><h2 id="statementName">—</h2><span class="badge" id="statementItemBadge">—</span></div>
+                    </div>
+                    <div class="statement-summary">
+                        <div class="summary-item"><span class="summary-label">إجمالي المدفوع</span><span class="summary-value highlight" id="statementTotal">٠ ج.م</span></div>
+                        <div class="summary-item"><span class="summary-label">عدد الدفعات</span><span class="summary-value" id="statementPayCount">٠</span></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="table-wrapper">
+                        <table class="data-table" id="statementTable">
+                            <thead><tr><th>#</th><th>المبلغ</th><th>التاريخ</th><th>المرجع</th><th>ملاحظات</th></tr></thead>
+                            <tbody id="statementBody"></tbody>
+                        </table>
+                    </div>
+                    <div class="empty-state" id="statementEmpty" style="display:none;"><span class="empty-icon">📭</span><p>لا توجد دفعات لهذا المقاول</p></div>
+                </div>
+            </div>
+            <div class="empty-state" id="noStatementSelected"><span class="empty-icon">🧾</span><p>اختر مقاول لعرض كشف حسابه</p></div>
+        </section>
+    </main>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Delete Modal -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal"><div class="modal-icon">⚠️</div><h3>تأكيد الحذف</h3>
+            <p id="deleteModalText">هل أنت متأكد؟</p>
+            <div class="modal-actions"><button class="btn btn-danger" id="confirmDelete">حذف</button><button class="btn btn-ghost" id="cancelDelete">إلغاء</button></div>
+        </div>
+    </div>
+
+    <!-- Add Contractor Modal -->
+    <div class="modal-overlay" id="addContractorModal">
+        <div class="modal modal-form"><div class="modal-icon">👷</div><h3>إضافة مقاول جديد</h3>
+            <form id="addContractorForm">
+                <div class="form-group"><label>اسم المقاول <span class="required">*</span></label><input type="text" class="text-input" id="addContractorName" required placeholder="الاسم الحقيقي للمقاول"></div>
+                <div class="form-group"><label>البند <span class="required">*</span></label><select class="select-input" id="addContractorItem" required><option value="">اختر البند...</option></select></div>
+                <div class="modal-actions"><button type="submit" class="btn btn-primary">➕ إضافة</button><button type="button" class="btn btn-ghost" data-close-modal="addContractorModal">إلغاء</button></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Contractor Modal -->
+    <div class="modal-overlay" id="editContractorModal">
+        <div class="modal modal-form"><div class="modal-icon">✏️</div><h3>تعديل المقاول</h3>
+            <form id="editContractorForm">
+                <div class="form-group"><label>البند</label><div class="readonly-field" id="editContractorCurrentItem">—</div></div>
+                <div class="form-group"><label>اسم المقاول <span class="required">*</span></label><input type="text" class="text-input" id="editContractorName" required></div>
+                <div class="modal-actions"><button type="submit" class="btn btn-primary">💾 حفظ</button><button type="button" class="btn btn-ghost" data-close-modal="editContractorModal">إلغاء</button></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Item Modal -->
+    <div class="modal-overlay" id="addItemModal">
+        <div class="modal modal-form"><div class="modal-icon">📦</div><h3>إضافة بند جديد</h3>
+            <form id="addItemForm">
+                <div class="form-group"><label>اسم البند <span class="required">*</span></label><input type="text" class="text-input" id="addItemName" required placeholder="مثال: ألوميتال"></div>
+                <div class="modal-actions"><button type="submit" class="btn btn-primary">➕ إضافة</button><button type="button" class="btn btn-ghost" data-close-modal="addItemModal">إلغاء</button></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Item Modal -->
+    <div class="modal-overlay" id="editItemModal">
+        <div class="modal modal-form"><div class="modal-icon">✏️</div><h3>تعديل اسم البند</h3>
+            <form id="editItemForm">
+                <div class="form-group"><label>الاسم الحالي</label><div class="readonly-field" id="editItemOldName">—</div></div>
+                <div class="form-group"><label>الاسم الجديد <span class="required">*</span></label><input type="text" class="text-input" id="editItemNewName" required></div>
+                <div class="modal-actions"><button type="submit" class="btn btn-primary">💾 حفظ</button><button type="button" class="btn btn-ghost" data-close-modal="editItemModal">إلغاء</button></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- New Extract Modal -->
+    <div class="modal-overlay" id="newExtractModal">
+        <div class="modal modal-form"><div class="modal-icon">📋</div><h3>مستخلص جديد</h3>
+            <form id="newExtractForm">
+                <div class="form-group"><label>تاريخ المستخلص <span class="required">*</span></label><input type="date" class="text-input" id="newExtractDate" required></div>
+                <div class="form-group"><label>ملاحظات</label><textarea class="text-input" id="newExtractNotes" rows="2" placeholder="اختياري..."></textarea></div>
+                <div class="modal-actions"><button type="submit" class="btn btn-primary">➕ إنشاء</button><button type="button" class="btn btn-ghost" data-close-modal="newExtractModal">إلغاء</button></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Print Container (hidden, used for extract printing) -->
+    <div id="printContainer" class="print-only"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>

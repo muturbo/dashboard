@@ -1,0 +1,5 @@
+dashboard_data.json
+server.ps1
+*.xlsx
+*.bat
+.git/
