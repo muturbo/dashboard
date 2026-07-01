@@ -199,6 +199,64 @@ button {
   margin-top: 2px;
 }
 
+.project-name {
+  margin-top: 8px;
+  padding: 6px 12px;
+  background: linear-gradient(135deg, rgba(0, 210, 255, 0.1), rgba(124, 77, 255, 0.1));
+  border: 1px solid rgba(0, 210, 255, 0.2);
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent-cyan);
+  text-align: center;
+}
+
+.company-name {
+  margin-top: 6px;
+  padding: 5px 10px;
+  background: linear-gradient(135deg, rgba(224, 64, 251, 0.08), rgba(124, 77, 255, 0.08));
+  border: 1px solid rgba(224, 64, 251, 0.15);
+  border-radius: var(--radius-sm);
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--accent-pink);
+  text-align: center;
+  line-height: 1.4;
+}
+
+.project-badge {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 3px 10px;
+  background: linear-gradient(135deg, rgba(0, 210, 255, 0.08), rgba(124, 77, 255, 0.08));
+  border: 1px solid rgba(0, 210, 255, 0.15);
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--accent-cyan);
+}
+
+.company-badge {
+  display: inline-block;
+  margin-top: 4px;
+  margin-right: 6px;
+  padding: 3px 10px;
+  background: linear-gradient(135deg, rgba(224, 64, 251, 0.06), rgba(124, 77, 255, 0.06));
+  border: 1px solid rgba(224, 64, 251, 0.12);
+  border-radius: 20px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--accent-pink);
+}
+
+.extract-input.num.price-cell {
+  min-width: 90px;
+}
+
+.extract-input.num.qty-cell {
+  min-width: 85px;
+}
+
 .sidebar-nav {
   flex: 1;
   padding: 12px 10px;
@@ -449,7 +507,7 @@ button {
    =========================================== */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 16px;
   margin-bottom: 28px;
 }
@@ -1251,6 +1309,25 @@ button {
    =========================================== */
 .extract-table {
   width: 100%;
+  min-width: 1100px;
+}
+.extract-table .th-group {
+  text-align: center;
+  border-bottom: 2px solid var(--accent-cyan);
+}
+.extract-table .th-sub {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  padding: 4px 6px;
+}
+.extract-input.wide {
+  min-width: 120px;
+  text-align: right;
+}
+.calculated {
+  background: rgba(0, 210, 255, 0.05);
+  font-weight: 600;
 }
 
 .extract-input {
@@ -1299,6 +1376,11 @@ button {
 .extract-select option {
   background: var(--bg-secondary);
   color: var(--text-primary);
+}
+
+.extract-select.type-cell {
+  min-width: 100px;
+  font-size: 0.85rem;
 }
 
 .extract-actions {
