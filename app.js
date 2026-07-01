@@ -23,7 +23,14 @@ const COLORS = [
 ];
 
 const UNITS = ['م²','م³','م.ط','عدد','طن','مقطوعية','متر','كجم'];
-const WORK_TYPES = ['تركيب','توريد','توريد وتركيب'];
+const WORK_TYPES = ['تنفيذ','توريد','توريد وتنفيذ'];
+const DEFAULT_SUPPLY_ITEMS = [
+    'توريد رمل','توريد مياه','توريد خرسانه جاهزه','توريد حديد تسليح',
+    'توريد اسمنت','توريد طوب اسمنتى','توريد طوب طفلى','توريد بلاط مازيكو',
+    'توريد بلدوره','توريد انترلوك','توريدات سباكه','توريدات كهربائيه',
+    'توريد دهانات خارجيه','توريدات سيراميك','توريدات عزل','توريد فوم','توريدات اوكر'
+];
+const SUPPLY_UNITS = ['م²','م³','م.ط','عدد','طن','متر','كجم','لتر','كيس','شكارة','الف طوبة','م.م','رحلة'];
 
 // ========================================
 // STORAGE (Server + LocalStorage fallback)
@@ -32,13 +39,18 @@ const SK = {
     items: 'sc_items_v3',
     contractors: 'sc_contractors_v3',
     payments: 'sc_payments_v3',
-    extracts: 'sc_extracts_v3'
+    extracts: 'sc_extracts_v3',
+    supplierExtracts: 'sc_supplierExtracts_v3',
+    supplyItemsList: 'sc_supplyItemsList_v1'
 };
 
 let items=[], contractors=[], payments=[], extracts=[];
+let supplierExtracts=[];
+let supplyItemsList=[...DEFAULT_SUPPLY_ITEMS];
 let pieChart=null, barChart=null;
 let deleteTarget=null, deleteType='', editTarget=null, editItemTarget=null;
 let currentExtractId=null;
+let currentSupExtractId=null;
 let sortState={field:'id',dir:'asc'};
 let isServerMode=false;
 let syncTimer=null;
@@ -53,6 +65,8 @@ function saveToCache(){
     saveLocal(SK.contractors,contractors);
     saveLocal(SK.payments,payments);
     saveLocal(SK.extracts,extracts);
+    saveLocal(SK.supplierExtracts,supplierExtracts);
+    saveLocal(SK.supplyItemsList,supplyItemsList);
 }
 
 // Firebase URL
@@ -62,7 +76,7 @@ const FIREBASE_URL='https://dashboard-77bb2-default-rtdb.firebaseio.com';
 async function saveToServer(){
     if(!isServerMode) return;
     try{
-        const data={items,contractors,payments,extracts};
+        const data={items,contractors,payments,extracts,supplierExtracts,supplyItemsList};
         await fetch(FIREBASE_URL+'/data.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
         lastSyncHash=JSON.stringify(data);
         showSyncStatus('synced');
@@ -81,6 +95,8 @@ async function loadFromServer(){
         if(data.contractors&&data.contractors.length)contractors=data.contractors;
         if(data.payments)payments=data.payments;
         if(data.extracts)extracts=data.extracts;
+        if(data.supplierExtracts)supplierExtracts=data.supplierExtracts;
+        if(data.supplyItemsList)supplyItemsList=data.supplyItemsList;
         lastSyncHash=JSON.stringify(data);
         saveToCache();
         showSyncStatus('synced');
@@ -107,6 +123,7 @@ async function autoSync(){
             contractors=data.contractors||contractors;
             payments=data.payments||payments;
             extracts=data.extracts||extracts;
+            supplierExtracts=data.supplierExtracts||supplierExtracts;
             saveToCache();
             populateDropdowns();
             renderAll();
@@ -135,9 +152,24 @@ function initDefaults(){
         DEFAULT_ITEMS.forEach(item=>{
             for(let i=1;i<=6;i++) contractors.push({id:id++,name:`مقاول ${item} ${i}`,item});
         });
+        DEFAULT_SUPPLY_ITEMS.forEach(item=>{
+            for(let i=1;i<=6;i++) contractors.push({id:id++,name:`مورد ${item} ${i}`,item});
+        });
+    } else {
+        // Ensure suppliers exist for each supply item
+        let maxId=Math.max(...contractors.map(c=>c.id),0);
+        DEFAULT_SUPPLY_ITEMS.forEach(item=>{
+            const existing=contractors.filter(c=>c.item===item);
+            if(existing.length===0){
+                for(let i=1;i<=6;i++) contractors.push({id:++maxId,name:`مورد ${item} ${i}`,item});
+            }
+        });
     }
     if(items.length===0){
-        items=[...DEFAULT_ITEMS];
+        items=[...DEFAULT_ITEMS,...DEFAULT_SUPPLY_ITEMS];
+    } else {
+        // Ensure supply items exist
+        DEFAULT_SUPPLY_ITEMS.forEach(si=>{ if(!items.includes(si)) items.push(si); });
     }
     save();
 }
@@ -156,9 +188,11 @@ document.addEventListener('DOMContentLoaded',async()=>{
         contractors=loadLocal(SK.contractors,[]);
         payments=loadLocal(SK.payments,[]);
         extracts=loadLocal(SK.extracts,[]);
+        supplierExtracts=loadLocal(SK.supplierExtracts,[]);
+        supplyItemsList=loadLocal(SK.supplyItemsList,[...DEFAULT_SUPPLY_ITEMS]);
     }
-    if(!items.length&&!contractors.length)initDefaults();
-    initNav(); initSidebar(); populateDropdowns(); initForms(); initModals(); initSorting();
+    initDefaults();
+    initNav(); initSidebar(); populateDropdowns(); initForms(); initModals(); initSorting(); initSupplierListeners();
     setDate(); renderAll();
     // Start auto-sync every 10 seconds
     if(isServerMode) syncTimer=setInterval(autoSync,10000);
@@ -203,13 +237,22 @@ function closeSidebar(){document.getElementById('sidebar').classList.remove('ope
 // DROPDOWNS
 // ========================================
 function populateDropdowns(){
-    const sels=['itemFilter','paymentItem','paymentItemFilter','statementItem','addContractorItem','extractItemSelect'];
-    sels.forEach(id=>{
+    // All items (contractors + suppliers) for payment & statement
+    const allSels=['paymentItem','paymentItemFilter','statementItem'];
+    allSels.forEach(id=>{
         const s=document.getElementById(id); if(!s)return;
         const f=s.options[0]; s.innerHTML=''; s.appendChild(f);
         items.forEach(it=>{const o=document.createElement('option');o.value=it;o.textContent=it;s.appendChild(o);});
     });
+    // Contractor-only items
+    const ctrSels=['itemFilter','addContractorItem','extractItemSelect'];
+    ctrSels.forEach(id=>{
+        const s=document.getElementById(id); if(!s)return;
+        const f=s.options[0]; s.innerHTML=''; s.appendChild(f);
+        items.filter(i=>!isSupplyItem(i)).forEach(it=>{const o=document.createElement('option');o.value=it;o.textContent=it;s.appendChild(o);});
+    });
     initDropdownListeners();
+    populateSupplyDropdowns();
 }
 function initDropdownListeners(){
     const bind=(selId,evt,handler)=>{const el=document.getElementById(selId);if(el)el.addEventListener(evt,handler);};
@@ -227,7 +270,8 @@ function initDropdownListeners(){
     bind('extractNumberSelect','change',onExtractNumberChange);
 }
 function fillContractorDD(selId,item){
-    const s=document.getElementById(selId);s.innerHTML='<option value="">اختر المقاول...</option>';
+    const label=isSupplyItem(item)?'المورد':'المقاول';
+    const s=document.getElementById(selId);s.innerHTML=`<option value="">اختر ${label}...</option>`;
     if(!item){s.disabled=true;return;}
     contractors.filter(c=>c.item===item).forEach(c=>{const o=document.createElement('option');o.value=c.name;o.textContent=c.name;s.appendChild(o);});
     s.disabled=false;
@@ -244,6 +288,8 @@ function initForms(){
     document.getElementById('editContractorForm').addEventListener('submit',submitEditContractor);
     document.getElementById('editItemForm').addEventListener('submit',submitEditItem);
     document.getElementById('newExtractForm').addEventListener('submit',submitNewExtract);
+    const addSupForm=document.getElementById('addSupplierForm');if(addSupForm)addSupForm.addEventListener('submit',submitAddSupplier);
+    const addSIForm=document.getElementById('addSupplyItemForm');if(addSIForm)addSIForm.addEventListener('submit',submitAddSupplyItem);
 }
 
 function submitPayment(e){
@@ -381,6 +427,14 @@ function initModals(){
             contractors=contractors.filter(c=>c.item!==deleteTarget);payments=payments.filter(p=>p.item!==deleteTarget);extracts=extracts.filter(ex=>ex.item!==deleteTarget);items=items.filter(i=>i!==deleteTarget);
             save();populateDropdowns();showToast('🗑️ تم حذف البند','info');
         }
+        else if(deleteType==='supExtract'){
+            supplierExtracts=supplierExtracts.filter(ex=>ex.id!==deleteTarget);
+            save();currentSupExtractId=null;
+            hide('supExtractContent');show('supExtractEmpty');
+            const si=gv('supExtractItemSelect'),ss=gv('supExtractSupplierSelect');
+            if(si&&ss)onSupExtractSupplierChange();
+            showToast('🗑️ تم حذف المستخلص','info');
+        }
         else if(deleteType==='extract'){
             extracts=extracts.filter(ex=>ex.id!==deleteTarget);
             save();currentExtractId=null;
@@ -410,17 +464,23 @@ function initSorting(){
 // ========================================
 // RENDER ALL
 // ========================================
-function renderAll(){renderOverview();renderContractors();renderPayments();renderCharts();renderSpending();}
+function renderAll(){renderOverview();renderContractors();renderSuppliers();renderPayments();renderCharts();renderSpending();}
 
 // ========================================
 // OVERVIEW
 // ========================================
 function renderOverview(){
-    animCount('statContractors',contractors.length);
+    const ctrOnly=contractors.filter(c=>!DEFAULT_SUPPLY_ITEMS.includes(c.item));
+    const supOnly=contractors.filter(c=>DEFAULT_SUPPLY_ITEMS.includes(c.item));
+    animCount('statContractors',ctrOnly.length);
     const tp=payments.reduce((s,p)=>s+p.amount,0);
     gi('statTotalPaid').textContent=fmtCur(tp);
     animCount('statActiveItems',new Set(payments.map(p=>p.item)).size);
     animCount('statPaymentCount',payments.length);
+    // Supplier stats
+    animCount('statSuppliers',supOnly.length);
+    const supPayTotal=payments.filter(p=>DEFAULT_SUPPLY_ITEMS.includes(p.item)).reduce((s,p)=>s+p.amount,0);
+    const el=gi('statSupplierPaid');if(el)el.textContent=fmtCur(supPayTotal);
     // Recent 5
     const recent=[...payments].sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,5);
     const tb=gi('recentBody'),em=gi('recentEmpty');
@@ -463,7 +523,7 @@ function renderContractors(){
     payments.forEach(p=>{const k=p.contractor+'|'+p.item;totals[k]=(totals[k]||0)+p.amount;});
 
     const container=gi('contractorsGrouped');
-    const displayItems=itemF?items.filter(i=>i===itemF):items;
+    const displayItems=itemF?items.filter(i=>i===itemF&&!DEFAULT_SUPPLY_ITEMS.includes(i)):items.filter(i=>!DEFAULT_SUPPLY_ITEMS.includes(i));
     let totalShown=0;
 
     container.innerHTML=displayItems.map((item,ii)=>{
@@ -522,8 +582,8 @@ function renderPayments(){
 // ========================================
 function renderStatement(){
     const item=gv('statementItem'),ctr=gv('statementContractor');
-    if(!item||!ctr){hide('statementContent');show('noStatementSelected');hide('printStatement');return;}
-    show('statementContent');hide('noStatementSelected');show('printStatement');
+    if(!item||!ctr){hide('statementContent');show('noStatementSelected');hide('printStatement');hide('pdfStatement');return;}
+    show('statementContent');hide('noStatementSelected');show('printStatement');show('pdfStatement');
     gi('statementName').textContent=ctr;gi('statementItemBadge').textContent=item;
     const cp=payments.filter(p=>p.contractor===ctr&&p.item===item).sort((a,b)=>new Date(a.date)-new Date(b.date));
     const total=cp.reduce((s,p)=>s+p.amount,0);
@@ -549,6 +609,7 @@ function onExtractContractorChange(){
     const sel=gi('extractNumberSelect');
     sel.innerHTML='<option value="">اختر المستخلص...</option>';
     cExtracts.forEach(ex=>{const o=document.createElement('option');o.value=ex.id;o.textContent=`مستخلص رقم ${ex.number}`;sel.appendChild(o);});
+    if(cExtracts.length>=1){const o=document.createElement('option');o.value='combined';o.textContent='📊 مستخلص مجمع';sel.appendChild(o);}
     sel.disabled=false;sel.style.display='';
     // Show balance
     renderBalance(item,ctr);
@@ -558,6 +619,7 @@ function onExtractContractorChange(){
 function onExtractNumberChange(){
     const exId=gv('extractNumberSelect');
     if(!exId){hide('extractContent');show('extractEmpty');return;}
+    if(exId==='combined'){renderCombinedExtract();return;}
     currentExtractId=parseFloat(exId);
     show('extractContent');hide('extractEmpty');
     renderExtract();
@@ -566,12 +628,16 @@ function onExtractNumberChange(){
 function renderBalance(item,ctr){
     show('balanceCard');
     const cExtracts=extracts.filter(ex=>ex.contractor===ctr&&ex.item===item);
-    const totalExecuted=cExtracts.reduce((s,ex)=>{
-        return s+ex.rows.reduce((rs,r)=>rs+(r.quantity*r.price*(r.executionPct/100)),0);
+    const totalDue=cExtracts.reduce((s,ex)=>{
+        return s+ex.rows.reduce((rs,r)=>{
+            const totalQty=(r.prevQty||0)+(r.currentQty||0);
+            const gross=totalQty*(r.price||0)*((r.itemPct||100)/100)*((r.disbursementPct||100)/100);
+            return rs+gross-(r.deductions||0);
+        },0);
     },0);
     const totalPaid=payments.filter(p=>p.contractor===ctr&&p.item===item).reduce((s,p)=>s+p.amount,0);
-    const remaining=totalExecuted-totalPaid;
-    gi('balExecuted').textContent=fmtCur(totalExecuted);
+    const remaining=totalDue-totalPaid;
+    gi('balExecuted').textContent=fmtCur(totalDue);
     gi('balPaid').textContent=fmtCur(totalPaid);
     gi('balRemaining').textContent=fmtCur(remaining);
     gi('balRemaining').className='balance-value '+(remaining>=0?'accent-cyan':'accent-red');
@@ -585,18 +651,28 @@ function renderExtract(){
     gi('extractDate').value=ex.date||'';
     gi('extractNotes').value=ex.notes||'';
     const tb=gi('extractBody');
-    tb.innerHTML=ex.rows.map((r,i)=>`<tr>
-        <td>${i+1}</td>
-        <td><input type="text" class="extract-input" value="${r.name||''}" onchange="updateExtractRow(${i},'name',this.value)"></td>
-        <td><select class="extract-select" onchange="updateExtractRow(${i},'type',this.value)">${WORK_TYPES.map(t=>`<option${r.type===t?' selected':''}>${t}</option>`).join('')}</select></td>
+    tb.innerHTML=ex.rows.map((r,i)=>{
+        const totalQty=(r.prevQty||0)+(r.currentQty||0);
+        const gross=totalQty*(r.price||0)*((r.itemPct||100)/100)*((r.disbursementPct||100)/100);
+        const rowTotal=gross-(r.deductions||0);
+        return `<tr>
+        <td>${toAr(i+1)}</td>
+        <td><input type="text" class="extract-input" placeholder="يوم/شهر/سنة" value="${r.rowDate||''}" onchange="updateExtractRow(${i},'rowDate',this.value)"></td>
+        <td><input type="text" class="extract-input" value="${r.buildingNo||''}" onchange="updateExtractRow(${i},'buildingNo',this.value)"></td>
+        <td><input type="text" class="extract-input wide" value="${r.description||''}" onchange="updateExtractRow(${i},'description',this.value)"></td>
         <td><select class="extract-select" onchange="updateExtractRow(${i},'unit',this.value)">${UNITS.map(u=>`<option${r.unit===u?' selected':''}>${u}</option>`).join('')}</select></td>
-        <td><input type="number" class="extract-input num" value="${r.quantity||0}" min="0" step="0.01" onchange="updateExtractRow(${i},'quantity',parseFloat(this.value)||0)"></td>
-        <td><input type="number" class="extract-input num" value="${r.price||0}" min="0" step="0.01" onchange="updateExtractRow(${i},'price',parseFloat(this.value)||0)"></td>
-        <td class="amount-cell calculated">${fmtNum(r.quantity*r.price)}</td>
-        <td><input type="number" class="extract-input num" value="${r.executionPct||0}" min="0" max="100" step="1" onchange="updateExtractRow(${i},'executionPct',parseFloat(this.value)||0)">%</td>
-        <td class="amount-cell calculated">${fmtNum(r.quantity*r.price*(r.executionPct/100))}</td>
+        <td><select class="extract-select type-cell" onchange="updateExtractRow(${i},'type',this.value)">${WORK_TYPES.map(t=>`<option${r.type===t?' selected':''}>${t}</option>`).join('')}</select></td>
+        <td><input type="number" class="extract-input num price-cell" value="${r.price||0}" min="0" step="0.01" onchange="updateExtractRow(${i},'price',parseFloat(this.value)||0)"></td>
+        <td><input type="number" class="extract-input num" value="${r.itemPct||100}" min="0" max="100" step="1" onchange="updateExtractRow(${i},'itemPct',parseFloat(this.value)||0)"></td>
+        <td><input type="number" class="extract-input num qty-cell" value="${r.prevQty||0}" min="0" step="0.01" onchange="updateExtractRow(${i},'prevQty',parseFloat(this.value)||0)"></td>
+        <td><input type="number" class="extract-input num qty-cell" value="${r.currentQty||0}" min="0" step="0.01" onchange="updateExtractRow(${i},'currentQty',parseFloat(this.value)||0)"></td>
+        <td class="amount-cell calculated">${fmtNum(totalQty)}</td>
+        <td><input type="number" class="extract-input num" value="${r.disbursementPct||100}" min="0" max="100" step="1" onchange="updateExtractRow(${i},'disbursementPct',parseFloat(this.value)||0)"></td>
+        <td><input type="number" class="extract-input num" value="${r.deductions||0}" min="0" step="0.01" onchange="updateExtractRow(${i},'deductions',parseFloat(this.value)||0)"></td>
+        <td class="amount-cell calculated">${fmtNum(rowTotal)}</td>
         <td><button class="btn btn-icon-only btn-delete" onclick="removeExtractRow(${i})">🗑️</button></td>
-    </tr>`).join('');
+    </tr>`;
+    }).join('');
     calcExtractTotals(ex);
 }
 
@@ -608,7 +684,7 @@ function updateExtractRow(idx,field,val){
 }
 function addExtractRow(){
     const ex=extracts.find(x=>x.id===currentExtractId);if(!ex)return;
-    ex.rows.push({name:'',type:'تركيب',unit:'م²',quantity:0,price:0,executionPct:0});
+    ex.rows.push({rowDate:'',buildingNo:'',description:'',type:'تنفيذ',unit:'م²',price:0,itemPct:100,prevQty:0,currentQty:0,disbursementPct:100,deductions:0});
     save();renderExtract();
 }
 function removeExtractRow(idx){
@@ -616,11 +692,60 @@ function removeExtractRow(idx){
     ex.rows.splice(idx,1);save();renderExtract();
     renderBalance(ex.item,ex.contractor);
 }
+function renderCombinedExtract(){
+    const item=gv('extractItemSelect'),ctr=gv('extractContractorSelect');
+    const cExtracts=extracts.filter(ex=>ex.contractor===ctr&&ex.item===item).sort((a,b)=>a.number-b.number);
+    if(!cExtracts.length)return;
+    currentExtractId=null;
+    show('extractContent');hide('extractEmpty');
+    gi('extractNum').textContent='مستخلص مجمع';
+    gi('extractContractorName').textContent=ctr;
+    gi('extractItemName').textContent=item;
+    gi('extractDate').value=today();
+    gi('extractNotes').value='';
+    const tb=gi('extractBody');
+    let allRows=[],counter=0;
+    cExtracts.forEach(ex=>{
+        ex.rows.forEach(r=>{
+            counter++;
+            const totalQty=(r.prevQty||0)+(r.currentQty||0);
+            const gross=totalQty*(r.price||0)*((r.itemPct||100)/100)*((r.disbursementPct||100)/100);
+            const rowTotal=gross-(r.deductions||0);
+            allRows.push(`<tr>
+                <td>${toAr(counter)}</td>
+                <td>${fmtDate(r.rowDate)}</td>
+                <td>${r.buildingNo||'—'}</td>
+                <td>${r.description||'—'}</td>
+                <td>${r.unit||'—'}</td>
+                <td>${r.type||'—'}</td>
+                <td class="amount-cell">${fmtNum(r.price||0)}</td>
+                <td>${toAr(r.itemPct||100)}%</td>
+                <td>${fmtNum(r.prevQty||0)}</td>
+                <td>${fmtNum(r.currentQty||0)}</td>
+                <td class="amount-cell">${fmtNum(totalQty)}</td>
+                <td>${toAr(r.disbursementPct||100)}%</td>
+                <td>${fmtNum(r.deductions||0)}</td>
+                <td class="amount-cell calculated">${fmtNum(rowTotal)}</td>
+                <td><span class="badge">${toAr(ex.number)}</span></td>
+            </tr>`);
+        });
+    });
+    tb.innerHTML=allRows.join('');
+    let grandTotal=0;
+    cExtracts.forEach(ex=>ex.rows.forEach(r=>{
+        const tq=(r.prevQty||0)+(r.currentQty||0);
+        grandTotal+=tq*(r.price||0)*((r.itemPct||100)/100)*((r.disbursementPct||100)/100)-(r.deductions||0);
+    }));
+    gi('extractGrandTotal').textContent=fmtNum(grandTotal);
+}
 function calcExtractTotals(ex){
-    let tv=0,te=0;
-    ex.rows.forEach(r=>{const v=r.quantity*r.price;tv+=v;te+=v*(r.executionPct/100);});
-    gi('extractTotalValue').textContent=fmtNum(tv);
-    gi('extractTotalExecuted').textContent=fmtNum(te);
+    let grandTotal=0;
+    ex.rows.forEach(r=>{
+        const totalQty=(r.prevQty||0)+(r.currentQty||0);
+        const gross=totalQty*(r.price||0)*((r.itemPct||100)/100)*((r.disbursementPct||100)/100);
+        grandTotal+=gross-(r.deductions||0);
+    });
+    gi('extractGrandTotal').textContent=fmtNum(grandTotal);
 }
 function saveCurrentExtract(){
     const ex=extracts.find(x=>x.id===currentExtractId);if(!ex)return;
@@ -645,7 +770,7 @@ function submitNewExtract(e){
     const item=gv('extractItemSelect'),ctr=gv('extractContractorSelect'),date=gv('newExtractDate'),notes=gv('newExtractNotes').trim();
     const cExtracts=extracts.filter(ex=>ex.contractor===ctr&&ex.item===item);
     const num=cExtracts.length?Math.max(...cExtracts.map(ex=>ex.number))+1:1;
-    const newEx={id:uid(),contractor:ctr,item,number:num,date,notes,rows:[{name:'',type:'تركيب',unit:'م²',quantity:0,price:0,executionPct:0}]};
+    const newEx={id:uid(),contractor:ctr,item,number:num,date,notes,rows:[{rowDate:'',buildingNo:'',description:'',type:'تنفيذ',unit:'م²',price:0,itemPct:100,prevQty:0,currentQty:0,disbursementPct:100,deductions:0}]};
     extracts.push(newEx);save();
     closeModal('newExtractModal');e.target.reset();
     onExtractContractorChange();
@@ -656,31 +781,479 @@ function submitNewExtract(e){
 
 function printExtract(){
     const ex=extracts.find(x=>x.id===currentExtractId);if(!ex)return;
-    let tv=0,te=0;
-    ex.rows.forEach(r=>{const v=r.quantity*r.price;tv+=v;te+=v*(r.executionPct/100);});
+    let grandTotal=0;
+    ex.rows.forEach(r=>{
+        const tq=(r.prevQty||0)+(r.currentQty||0);
+        grandTotal+=tq*(r.price||0)*((r.itemPct||100)/100)*((r.disbursementPct||100)/100)-(r.deductions||0);
+    });
     const totalPaid=payments.filter(p=>p.contractor===ex.contractor&&p.item===ex.item).reduce((s,p)=>s+p.amount,0);
+    const th='padding:8px;border:1px solid #bbb;text-align:center;font-size:12px;';
+    const td='padding:6px;border:1px solid #ddd;text-align:center;font-size:11px;';
+    const headers=['م','التاريخ','رقم العمارة','بيان الأعمال','الوحدة','النوع','السعر','نسبة البند%','كمية سابقة','كمية حالية','مجموع الكميات','نسبة الصرف%','الاستقطاعات','إجمالي المستحق'];
     const html=`<div style="font-family:Cairo,sans-serif;direction:rtl;padding:20px;color:#333;">
+        <h2 style="text-align:center;margin:0 0 2px;color:#555;font-size:15px;">شركة الرحاب للمقاولات العموميه (ورثة سيد تهامى)</h2>
+        <h2 style="text-align:center;margin:0 0 5px;color:#555;">المشروع : التوسعات الجنوبيه</h2>
         <h1 style="text-align:center;border-bottom:3px solid #333;padding-bottom:10px;">مستخلص رقم ${ex.number}</h1>
-        <table style="width:100%;margin:20px 0;border-collapse:collapse;font-size:14px;">
-            <tr><td style="padding:8px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">المقاول</td><td style="padding:8px;border:1px solid #ddd;">${ex.contractor}</td>
-            <td style="padding:8px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">البند</td><td style="padding:8px;border:1px solid #ddd;">${ex.item}</td>
-            <td style="padding:8px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">التاريخ</td><td style="padding:8px;border:1px solid #ddd;">${fmtDate(ex.date)}</td></tr>
+        <table style="width:100%;margin:20px 0;border-collapse:collapse;font-size:16px;">
+            <tr><td style="padding:10px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">المقاول</td><td style="padding:10px;border:1px solid #ddd;font-size:18px;font-weight:700;">${ex.contractor}</td>
+            <td style="padding:10px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">البند</td><td style="padding:10px;border:1px solid #ddd;font-size:18px;font-weight:700;">${ex.item}</td>
+            <td style="padding:10px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">التاريخ</td><td style="padding:10px;border:1px solid #ddd;">${fmtDate(ex.date)}</td></tr>
         </table>
-        <table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:20px;">
-            <thead><tr style="background:#e0e0e0;">${['م','بند المستخلص','النوع','الوحدة','الكمية','السعر','القيمة','نسبة التنفيذ','القيمة المنفذة'].map(h=>`<th style="padding:8px;border:1px solid #bbb;text-align:center;">${h}</th>`).join('')}</tr></thead>
-            <tbody>${ex.rows.map((r,i)=>{const v=r.quantity*r.price;const ev=v*(r.executionPct/100);return `<tr>${[i+1,r.name,r.type,r.unit,r.quantity,fmtNum(r.price),fmtNum(v),r.executionPct+'%',fmtNum(ev)].map(c=>`<td style="padding:6px;border:1px solid #ddd;text-align:center;">${c}</td>`).join('')}</tr>`;}).join('')}</tbody>
-            <tfoot><tr style="background:#f0f0f0;font-weight:bold;"><td colspan="6" style="padding:8px;border:1px solid #bbb;text-align:center;">الإجمالي</td><td style="padding:8px;border:1px solid #bbb;text-align:center;">${fmtNum(tv)}</td><td style="padding:8px;border:1px solid #bbb;"></td><td style="padding:8px;border:1px solid #bbb;text-align:center;">${fmtNum(te)}</td></tr></tfoot>
+        <table style="width:100%;border-collapse:collapse;margin-bottom:20px;">
+            <thead><tr style="background:#e0e0e0;">${headers.map(h=>`<th style="${th}">${h}</th>`).join('')}</tr></thead>
+            <tbody>${ex.rows.map((r,i)=>{
+                const tq=(r.prevQty||0)+(r.currentQty||0);
+                const rowTotal=tq*(r.price||0)*((r.itemPct||100)/100)*((r.disbursementPct||100)/100)-(r.deductions||0);
+                return `<tr>${[toAr(i+1),fmtDate(r.rowDate),r.buildingNo||'—',r.description||'—',r.unit,r.type,fmtNum(r.price),toAr(r.itemPct)+'%',fmtNum(r.prevQty||0),fmtNum(r.currentQty||0),fmtNum(tq),toAr(r.disbursementPct)+'%',fmtNum(r.deductions||0),fmtNum(rowTotal)].map(c=>`<td style="${td}">${c}</td>`).join('')}</tr>`;
+            }).join('')}</tbody>
+            <tfoot><tr style="background:#f0f0f0;font-weight:bold;"><td colspan="13" style="${th}">إجمالي المستحق للمقاول</td><td style="${th}">${fmtNum(grandTotal)}</td></tr></tfoot>
         </table>
         <table style="width:50%;margin:0 auto;border-collapse:collapse;font-size:14px;">
-            <tr><td style="padding:10px;border:1px solid #ddd;background:#e8f5e9;font-weight:bold;">قيمة الأعمال المنفذة</td><td style="padding:10px;border:1px solid #ddd;text-align:center;">${fmtCur(te)}</td></tr>
+            <tr><td style="padding:10px;border:1px solid #ddd;background:#e8f5e9;font-weight:bold;">إجمالي المستحق</td><td style="padding:10px;border:1px solid #ddd;text-align:center;">${fmtCur(grandTotal)}</td></tr>
             <tr><td style="padding:10px;border:1px solid #ddd;background:#fff3e0;font-weight:bold;">إجمالي المنصرف</td><td style="padding:10px;border:1px solid #ddd;text-align:center;">${fmtCur(totalPaid)}</td></tr>
-            <tr><td style="padding:10px;border:1px solid #ddd;background:#e3f2fd;font-weight:bold;">الباقي للمقاول</td><td style="padding:10px;border:1px solid #ddd;text-align:center;font-weight:bold;">${fmtCur(te-totalPaid)}</td></tr>
+            <tr><td style="padding:10px;border:1px solid #ddd;background:#e3f2fd;font-weight:bold;">الباقي للمقاول</td><td style="padding:10px;border:1px solid #ddd;text-align:center;font-weight:bold;">${fmtCur(grandTotal-totalPaid)}</td></tr>
         </table>
         ${ex.notes?`<p style="margin-top:16px;padding:10px;background:#f5f5f5;border-radius:8px;"><strong>ملاحظات:</strong> ${ex.notes}</p>`:''}
     </div>`;
-    const w=window.open('','_blank','width=900,height=700');
-    w.document.write(`<html dir="rtl"><head><title>مستخلص رقم ${ex.number} - ${ex.contractor}</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@media print{body{margin:0}}</style></head><body>${html}<script>setTimeout(()=>window.print(),500)<\/script></body></html>`);
+    const w=window.open('','_blank','width=1100,height=700');
+    w.document.write(`<html dir="rtl"><head><title>مستخلص رقم ${ex.number} - ${ex.contractor}</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact}table{font-size:10px;width:100%!important}}</style></head><body>${html}<script>setTimeout(()=>window.print(),500)<\/script></body></html>`);
     w.document.close();
+}
+
+// ========================================
+// PDF SAVE
+// ========================================
+function buildExtractHTML(){
+    const ex=extracts.find(x=>x.id===currentExtractId);if(!ex)return null;
+    let grandTotal=0;
+    ex.rows.forEach(r=>{
+        const tq=(r.prevQty||0)+(r.currentQty||0);
+        grandTotal+=tq*(r.price||0)*((r.itemPct||100)/100)*((r.disbursementPct||100)/100)-(r.deductions||0);
+    });
+    const totalPaid=payments.filter(p=>p.contractor===ex.contractor&&p.item===ex.item).reduce((s,p)=>s+p.amount,0);
+    const th='padding:6px;border:1px solid #bbb;text-align:center;font-size:11px;';
+    const td='padding:5px;border:1px solid #ddd;text-align:center;font-size:10px;';
+    const headers=['م','التاريخ','رقم العمارة','بيان الأعمال','الوحدة','النوع','السعر','نسبة البند%','كمية سابقة','كمية حالية','مجموع الكميات','نسبة الصرف%','الاستقطاعات','إجمالي المستحق'];
+    return {ex, grandTotal, totalPaid, html:`<div style="font-family:Cairo,sans-serif;direction:rtl;padding:15px;color:#333;">
+        <h3 style="text-align:center;margin:0 0 2px;color:#555;font-size:13px;">شركة الرحاب للمقاولات العموميه (ورثة سيد تهامى)</h3>
+        <h3 style="text-align:center;margin:0 0 4px;color:#555;font-size:12px;">المشروع : التوسعات الجنوبيه</h3>
+        <h2 style="text-align:center;border-bottom:2px solid #333;padding-bottom:8px;font-size:16px;">مستخلص رقم ${ex.number}</h2>
+        <table style="width:100%;margin:12px 0;border-collapse:collapse;font-size:13px;">
+            <tr><td style="padding:6px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">المقاول</td><td style="padding:6px;border:1px solid #ddd;font-size:14px;font-weight:700;">${ex.contractor}</td>
+            <td style="padding:6px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">البند</td><td style="padding:6px;border:1px solid #ddd;font-size:14px;font-weight:700;">${ex.item}</td>
+            <td style="padding:6px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">التاريخ</td><td style="padding:6px;border:1px solid #ddd;">${fmtDate(ex.date)}</td></tr>
+        </table>
+        <table style="width:100%;border-collapse:collapse;margin-bottom:15px;">
+            <thead><tr style="background:#e0e0e0;">${headers.map(h=>`<th style="${th}">${h}</th>`).join('')}</tr></thead>
+            <tbody>${ex.rows.map((r,i)=>{
+                const tq=(r.prevQty||0)+(r.currentQty||0);
+                const rowTotal=tq*(r.price||0)*((r.itemPct||100)/100)*((r.disbursementPct||100)/100)-(r.deductions||0);
+                return `<tr>${[toAr(i+1),fmtDate(r.rowDate),r.buildingNo||'—',r.description||'—',r.unit,r.type,fmtNum(r.price),toAr(r.itemPct)+'%',fmtNum(r.prevQty||0),fmtNum(r.currentQty||0),fmtNum(tq),toAr(r.disbursementPct)+'%',fmtNum(r.deductions||0),fmtNum(rowTotal)].map(c=>`<td style="${td}">${c}</td>`).join('')}</tr>`;
+            }).join('')}</tbody>
+            <tfoot><tr style="background:#f0f0f0;font-weight:bold;"><td colspan="13" style="${th}">إجمالي المستحق للمقاول</td><td style="${th}">${fmtNum(grandTotal)}</td></tr></tfoot>
+        </table>
+        <table style="width:50%;margin:0 auto;border-collapse:collapse;font-size:12px;">
+            <tr><td style="padding:8px;border:1px solid #ddd;background:#e8f5e9;font-weight:bold;">إجمالي المستحق</td><td style="padding:8px;border:1px solid #ddd;text-align:center;">${fmtCur(grandTotal)}</td></tr>
+            <tr><td style="padding:8px;border:1px solid #ddd;background:#fff3e0;font-weight:bold;">إجمالي المنصرف</td><td style="padding:8px;border:1px solid #ddd;text-align:center;">${fmtCur(totalPaid)}</td></tr>
+            <tr><td style="padding:8px;border:1px solid #ddd;background:#e3f2fd;font-weight:bold;">الباقي للمقاول</td><td style="padding:8px;border:1px solid #ddd;text-align:center;font-weight:bold;">${fmtCur(grandTotal-totalPaid)}</td></tr>
+        </table>
+    </div>`};
+}
+
+function saveExtractPDF(){
+    const data=buildExtractHTML();if(!data)return;
+    const container=document.createElement('div');
+    container.innerHTML=data.html;
+    document.body.appendChild(container);
+    html2pdf().set({
+        margin:5,
+        filename:`مستخلص_${data.ex.number}_${data.ex.contractor}.pdf`,
+        image:{type:'jpeg',quality:0.98},
+        html2canvas:{scale:2,useCORS:true,scrollY:0},
+        jsPDF:{unit:'mm',format:'a4',orientation:'landscape'}
+    }).from(container).save().then(()=>{
+        document.body.removeChild(container);
+        showToast('✅ تم حفظ المستخلص كـ PDF','success');
+    });
+}
+
+function saveStatementPDF(){
+    const content=gi('statementContent');if(!content)return;
+    const ctr=gv('statementContractor'),item=gv('statementItem');
+    // Clone and add header
+    const clone=content.cloneNode(true);
+    clone.style.display='block';
+    clone.style.direction='rtl';
+    clone.style.fontFamily='Cairo,sans-serif';
+    clone.style.padding='15px';
+    clone.style.color='#333';
+    clone.style.background='#fff';
+    // Add company & project name at top
+    const header=document.createElement('div');
+    header.innerHTML=`<h3 style="text-align:center;margin:0 0 2px;font-size:13px;">شركة الرحاب للمقاولات العموميه (ورثة سيد تهامى)</h3><h3 style="text-align:center;margin:0 0 8px;font-size:12px;">المشروع : التوسعات الجنوبيه</h3>`;
+    clone.insertBefore(header,clone.firstChild);
+    // Remove print-only divs (already added via header)
+    clone.querySelectorAll('.print-only').forEach(el=>el.remove());
+    document.body.appendChild(clone);
+    html2pdf().set({
+        margin:8,
+        filename:`كشف_حساب_${ctr}_${item}.pdf`,
+        image:{type:'jpeg',quality:0.98},
+        html2canvas:{scale:2,useCORS:true,scrollY:0},
+        jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}
+    }).from(clone).save().then(()=>{
+        document.body.removeChild(clone);
+        showToast('✅ تم حفظ كشف الحساب كـ PDF','success');
+    });
+}
+
+// ========================================
+// SUPPLIERS PAGE
+// ========================================
+function isSupplyItem(item){ return supplyItemsList.includes(item); }
+
+function initSupplierListeners(){
+    const bind=(id,evt,fn)=>{const el=gi(id);if(el)el.addEventListener(evt,fn);};
+    bind('supplierSearch','input',renderSuppliers);
+    bind('supplyItemFilter','change',renderSuppliers);
+    bind('supExtractItemSelect','change',e=>{
+        fillSupplierDD('supExtractSupplierSelect',e.target.value);
+        hide('supBalanceCard');hide('supExtractContent');show('supExtractEmpty');hide('btnNewSupExtract');hide('supExtractNumberSelect');
+    });
+    bind('supExtractSupplierSelect','change',onSupExtractSupplierChange);
+    bind('supExtractNumberSelect','change',onSupExtractNumberChange);
+    bind('newSupExtractForm','submit',submitNewSupExtract);
+}
+
+function populateSupplyDropdowns(){
+    // Supply item filter on suppliers page
+    const filterSel=gi('supplyItemFilter');
+    if(filterSel){
+        const first=filterSel.options[0];filterSel.innerHTML='';filterSel.appendChild(first);
+        items.filter(i=>isSupplyItem(i)).forEach(it=>{const o=document.createElement('option');o.value=it;o.textContent=it;filterSel.appendChild(o);});
+    }
+    // Extract dropdowns
+    const extSel=gi('supExtractItemSelect');
+    if(extSel){
+        const first=extSel.options[0];extSel.innerHTML='';extSel.appendChild(first);
+        items.filter(i=>isSupplyItem(i)).forEach(it=>{const o=document.createElement('option');o.value=it;o.textContent=it;extSel.appendChild(o);});
+    }
+    // Add supplier modal item dropdown
+    const addSel=gi('addSupplierItem');
+    if(addSel){
+        const first=addSel.options[0];addSel.innerHTML='';addSel.appendChild(first);
+        items.filter(i=>isSupplyItem(i)).forEach(it=>{const o=document.createElement('option');o.value=it;o.textContent=it;addSel.appendChild(o);});
+    }
+}
+
+function fillSupplierDD(selId,item){
+    const s=gi(selId);if(!s)return;
+    s.innerHTML='<option value="">اختر المورد...</option>';
+    if(!item){s.disabled=true;return;}
+    contractors.filter(c=>c.item===item).forEach(c=>{const o=document.createElement('option');o.value=c.name;o.textContent=c.name;s.appendChild(o);});
+    s.disabled=false;
+}
+
+function renderSuppliers(){
+    const search=(gi('supplierSearch')?gv('supplierSearch'):'').trim().toLowerCase();
+    const itemF=gi('supplyItemFilter')?gv('supplyItemFilter'):'';
+    const totals={};
+    payments.forEach(p=>{const k=p.contractor+'|'+p.item;totals[k]=(totals[k]||0)+p.amount;});
+    const container=gi('suppliersGrouped');if(!container)return;
+    const supItems=itemF?items.filter(i=>i===itemF&&isSupplyItem(i)):items.filter(i=>isSupplyItem(i));
+    let totalShown=0;
+    container.innerHTML=supItems.map((item,ii)=>{
+        let sups=contractors.filter(c=>c.item===item);
+        if(search)sups=sups.filter(c=>c.name.toLowerCase().includes(search)||c.item.toLowerCase().includes(search));
+        if(!sups.length&&search)return '';
+        totalShown+=sups.length;
+        const color=getColor(item);
+        return `<div class="item-group">
+            <div class="item-group-header" style="--item-color:${color}">
+                <div class="item-group-title"><span class="item-dot" style="background:${color}"></span><h3>${item}</h3><span class="badge">${sups.length} مورد</span></div>
+                <div class="action-buttons">
+                    <button class="btn btn-icon-only btn-view" onclick="openEditItem('${esc(item)}')" title="تعديل البند">✏️</button>
+                </div>
+            </div>
+            <div class="item-group-body">
+                <table class="data-table"><thead><tr><th style="width:40px">م</th><th>اسم المورد</th><th>إجمالي المدفوع</th><th style="width:140px">إجراء</th></tr></thead>
+                <tbody>${sups.map((c,ci)=>{
+                    const t=totals[c.name+'|'+c.item]||0;
+                    return `<tr style="animation-delay:${ci*0.02}s"><td>${ci+1}</td><td><strong>${c.name}</strong></td><td class="amount-cell">${fmtCur(t)}</td>
+                    <td class="action-buttons">
+                        <button class="btn btn-icon-only btn-view" onclick="openEditContractor(${c.id})" title="تعديل">✏️</button>
+                        <button class="btn btn-icon-only btn-view" onclick="viewStatement('${esc(c.item)}','${esc(c.name)}')" title="كشف حساب">🧾</button>
+                        <button class="btn btn-icon-only btn-delete" onclick="confirmDeleteContractor(${c.id})" title="حذف">🗑️</button>
+                    </td></tr>`;
+                }).join('')}</tbody></table>
+            </div>
+        </div>`;
+    }).join('');
+    const cnt=gi('supplierCount');if(cnt)cnt.textContent=`${totalShown} مورد`;
+}
+
+function submitAddSupplier(e){
+    e.preventDefault();
+    const name=gv('addSupplierName').trim(),item=gv('addSupplierItem');
+    if(!name||!item){showToast('يرجى ملء الاسم والبند','error');return;}
+    if(contractors.some(c=>c.name===name&&c.item===item)){showToast('⚠️ المورد موجود بالفعل','error');return;}
+    contractors.push({id:contractors.length?Math.max(...contractors.map(c=>c.id))+1:1,name,item});
+    save();renderAll();populateDropdowns();populateSupplyDropdowns();
+    e.target.reset();closeModal('addSupplierModal');
+    showToast(`✅ تمت إضافة "${name}" في "${item}"`,'success');
+}
+
+function submitAddSupplyItem(e){
+    e.preventDefault();
+    const name=gv('addSupplyItemName').trim();
+    if(!name){showToast('يرجى إدخال اسم البند','error');return;}
+    if(items.includes(name)){showToast('⚠️ البند موجود بالفعل','error');return;}
+    items.push(name);
+    if(!supplyItemsList.includes(name)) supplyItemsList.push(name);
+    save();populateDropdowns();populateSupplyDropdowns();renderAll();
+    e.target.reset();closeModal('addSupplyItemModal');
+    showToast(`✅ تمت إضافة بند توريد "${name}"`,'success');
+}
+
+// ========================================
+// SUPPLIER EXTRACTS
+// ========================================
+function onSupExtractSupplierChange(){
+    const item=gv('supExtractItemSelect'),sup=gv('supExtractSupplierSelect');
+    if(!item||!sup){hide('supBalanceCard');hide('supExtractContent');show('supExtractEmpty');hide('btnNewSupExtract');hide('supExtractNumberSelect');return;}
+    show('btnNewSupExtract');
+    const sExtracts=supplierExtracts.filter(ex=>ex.supplier===sup&&ex.item===item).sort((a,b)=>a.number-b.number);
+    const sel=gi('supExtractNumberSelect');
+    sel.innerHTML='<option value="">اختر المستخلص...</option>';
+    sExtracts.forEach(ex=>{const o=document.createElement('option');o.value=ex.id;o.textContent=`مستخلص رقم ${ex.number}`;sel.appendChild(o);});
+    if(sExtracts.length>=1){const o=document.createElement('option');o.value='combined';o.textContent='📊 مستخلص مجمع';sel.appendChild(o);}
+    sel.disabled=false;sel.style.display='';
+    // Balance
+    renderSupBalance(item,sup);
+    if(sExtracts.length){sel.value=sExtracts[sExtracts.length-1].id;onSupExtractNumberChange();}
+    else{hide('supExtractContent');show('supExtractEmpty');}
+}
+
+function renderSupBalance(item,sup){
+    let executed=0;
+    supplierExtracts.filter(ex=>ex.supplier===sup&&ex.item===item).forEach(ex=>{
+        ex.rows.forEach(r=>{executed+=(r.qty||0)*(r.price||0)-(r.discounts||0);});
+    });
+    const paid=payments.filter(p=>p.contractor===sup&&p.item===item).reduce((s,p)=>s+p.amount,0);
+    gi('supBalExecuted').textContent=fmtCur(executed);
+    gi('supBalPaid').textContent=fmtCur(paid);
+    gi('supBalRemaining').textContent=fmtCur(executed-paid);
+    show('supBalanceCard');
+}
+
+function onSupExtractNumberChange(){
+    const exId=gv('supExtractNumberSelect');
+    if(!exId){hide('supExtractContent');show('supExtractEmpty');return;}
+    if(exId==='combined'){renderCombinedSupExtract();return;}
+    currentSupExtractId=parseFloat(exId);
+    show('supExtractContent');hide('supExtractEmpty');
+    renderSupExtract();
+}
+
+function renderSupExtract(){
+    const ex=supplierExtracts.find(x=>x.id===currentSupExtractId);if(!ex)return;
+    gi('supExtractNum').textContent=`مستخلص رقم ${ex.number}`;
+    gi('supExtractSupplierName').textContent=ex.supplier;
+    gi('supExtractItemName').textContent=ex.item;
+    gi('supExtractDate').value=ex.date||'';
+    gi('supExtractNotes').value=ex.notes||'';
+    const tb=gi('supExtractBody');
+    tb.innerHTML=ex.rows.map((r,i)=>{
+        const rowTotal=(r.qty||0)*(r.price||0)-(r.discounts||0);
+        return `<tr>
+        <td>${toAr(i+1)}</td>
+        <td><input type="text" class="extract-input" placeholder="يوم/شهر/سنة" value="${r.rowDate||''}" onchange="updateSupExtractRow(${i},'rowDate',this.value)"></td>
+        <td><input type="text" class="extract-input wide" value="${r.description||''}" onchange="updateSupExtractRow(${i},'description',this.value)"></td>
+        <td><select class="extract-select" onchange="updateSupExtractRow(${i},'unit',this.value)">${SUPPLY_UNITS.map(u=>`<option${r.unit===u?' selected':''}>${u}</option>`).join('')}</select></td>
+        <td><input type="text" class="extract-input" value="${r.invoiceNo||''}" onchange="updateSupExtractRow(${i},'invoiceNo',this.value)"></td>
+        <td><input type="number" class="extract-input num qty-cell" value="${r.qty||0}" min="0" step="0.01" onchange="updateSupExtractRow(${i},'qty',parseFloat(this.value)||0)"></td>
+        <td><input type="number" class="extract-input num price-cell" value="${r.price||0}" min="0" step="0.01" onchange="updateSupExtractRow(${i},'price',parseFloat(this.value)||0)"></td>
+        <td><input type="number" class="extract-input num" value="${r.discounts||0}" min="0" step="0.01" onchange="updateSupExtractRow(${i},'discounts',parseFloat(this.value)||0)"></td>
+        <td class="amount-cell calculated">${fmtNum(rowTotal)}</td>
+        <td><button class="btn btn-icon-only btn-delete" onclick="removeSupExtractRow(${i})">🗑️</button></td>
+    </tr>`;
+    }).join('');
+    calcSupExtractTotals(ex);
+}
+
+function updateSupExtractRow(idx,field,val){
+    const ex=supplierExtracts.find(x=>x.id===currentSupExtractId);if(!ex||!ex.rows[idx])return;
+    ex.rows[idx][field]=val;
+    save();renderSupExtract();
+    renderSupBalance(ex.item,ex.supplier);
+}
+function addSupExtractRow(){
+    const ex=supplierExtracts.find(x=>x.id===currentSupExtractId);if(!ex)return;
+    ex.rows.push({rowDate:'',description:'',unit:'عدد',invoiceNo:'',qty:0,price:0,discounts:0});
+    save();renderSupExtract();
+}
+function removeSupExtractRow(idx){
+    const ex=supplierExtracts.find(x=>x.id===currentSupExtractId);if(!ex)return;
+    ex.rows.splice(idx,1);save();renderSupExtract();
+    renderSupBalance(ex.item,ex.supplier);
+}
+function renderCombinedSupExtract(){
+    const item=gv('supExtractItemSelect'),sup=gv('supExtractSupplierSelect');
+    const sExtracts=supplierExtracts.filter(ex=>ex.supplier===sup&&ex.item===item).sort((a,b)=>a.number-b.number);
+    if(!sExtracts.length)return;
+    currentSupExtractId=null;
+    show('supExtractContent');hide('supExtractEmpty');
+    gi('supExtractNum').textContent='مستخلص مجمع';
+    gi('supExtractSupplierName').textContent=sup;
+    gi('supExtractItemName').textContent=item;
+    gi('supExtractDate').value=today();
+    gi('supExtractNotes').value='';
+    const tb=gi('supExtractBody');
+    let allRows=[],counter=0;
+    sExtracts.forEach(ex=>{
+        ex.rows.forEach(r=>{
+            counter++;
+            const rowTotal=(r.qty||0)*(r.price||0)-(r.discounts||0);
+            allRows.push(`<tr>
+                <td>${toAr(counter)}</td>
+                <td>${fmtDate(r.rowDate)}</td>
+                <td>${r.description||'—'}</td>
+                <td>${r.unit||'—'}</td>
+                <td>${r.invoiceNo||'—'}</td>
+                <td class="amount-cell">${fmtNum(r.qty||0)}</td>
+                <td class="amount-cell">${fmtNum(r.price||0)}</td>
+                <td>${fmtNum(r.discounts||0)}</td>
+                <td class="amount-cell calculated">${fmtNum(rowTotal)}</td>
+                <td><span class="badge">${toAr(ex.number)}</span></td>
+            </tr>`);
+        });
+    });
+    tb.innerHTML=allRows.join('');
+    let grandTotal=0;
+    sExtracts.forEach(ex=>ex.rows.forEach(r=>{grandTotal+=(r.qty||0)*(r.price||0)-(r.discounts||0);}));
+    gi('supExtractGrandTotal').textContent=fmtNum(grandTotal);
+}
+function calcSupExtractTotals(ex){
+    let grandTotal=0;
+    ex.rows.forEach(r=>{grandTotal+=(r.qty||0)*(r.price||0)-(r.discounts||0);});
+    gi('supExtractGrandTotal').textContent=fmtNum(grandTotal);
+}
+function saveCurrentSupExtract(){
+    const ex=supplierExtracts.find(x=>x.id===currentSupExtractId);if(!ex)return;
+    ex.date=gv('supExtractDate');ex.notes=gv('supExtractNotes').trim();
+    save();showToast('💾 تم حفظ المستخلص','success');
+}
+function deleteCurrentSupExtract(){
+    if(!currentSupExtractId)return;
+    deleteTarget=currentSupExtractId;deleteType='supExtract';
+    gi('deleteModalText').innerHTML='هل تريد حذف هذا المستخلص؟';
+    openModal('deleteModal');
+}
+
+function openNewSupExtractModal(){
+    const item=gv('supExtractItemSelect'),sup=gv('supExtractSupplierSelect');
+    if(!item||!sup){showToast('اختر المورد أولاً','error');return;}
+    gi('newSupExtractDate').value=today();openModal('newSupExtractModal');
+}
+function submitNewSupExtract(e){
+    e.preventDefault();
+    const item=gv('supExtractItemSelect'),sup=gv('supExtractSupplierSelect'),date=gv('newSupExtractDate'),notes=gv('newSupExtractNotes').trim();
+    const sExtracts=supplierExtracts.filter(ex=>ex.supplier===sup&&ex.item===item);
+    const num=sExtracts.length?Math.max(...sExtracts.map(ex=>ex.number))+1:1;
+    const newEx={id:uid(),supplier:sup,item,number:num,date,notes,rows:[{description:'',unit:'عدد',invoiceNo:'',qty:0,price:0,discounts:0}]};
+    supplierExtracts.push(newEx);save();
+    closeModal('newSupExtractModal');e.target.reset();
+    onSupExtractSupplierChange();
+    currentSupExtractId=newEx.id;
+    const sel=gi('supExtractNumberSelect');if(sel)sel.value=newEx.id;
+    onSupExtractNumberChange();
+    showToast(`✅ تم إنشاء مستخلص رقم ${num}`,'success');
+}
+
+// ========================================
+// SUPPLIER EXTRACT PRINT & PDF
+// ========================================
+function printSupExtract(){
+    const ex=supplierExtracts.find(x=>x.id===currentSupExtractId);if(!ex)return;
+    let grandTotal=0;
+    ex.rows.forEach(r=>{grandTotal+=(r.qty||0)*(r.price||0)-(r.discounts||0);});
+    const totalPaid=payments.filter(p=>p.contractor===ex.supplier&&p.item===ex.item).reduce((s,p)=>s+p.amount,0);
+    const th='padding:8px;border:1px solid #bbb;text-align:center;font-size:12px;';
+    const td='padding:6px;border:1px solid #ddd;text-align:center;font-size:11px;';
+    const headers=['م','التاريخ','البيان','الوحدة','رقم الفاتورة','الكمية','السعر','خصومات','إجمالي المستحق'];
+    const html=`<div style="font-family:Cairo,sans-serif;direction:rtl;padding:20px;color:#333;">
+        <h2 style="text-align:center;margin:0 0 2px;color:#555;font-size:15px;">شركة الرحاب للمقاولات العموميه (ورثة سيد تهامى)</h2>
+        <h2 style="text-align:center;margin:0 0 5px;color:#555;">المشروع : التوسعات الجنوبيه</h2>
+        <h1 style="text-align:center;border-bottom:3px solid #333;padding-bottom:10px;">مستخلص مورد رقم ${ex.number}</h1>
+        <table style="width:100%;margin:20px 0;border-collapse:collapse;font-size:16px;">
+            <tr><td style="padding:10px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">المورد</td><td style="padding:10px;border:1px solid #ddd;font-size:18px;font-weight:700;">${ex.supplier}</td>
+            <td style="padding:10px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">البند</td><td style="padding:10px;border:1px solid #ddd;font-size:18px;font-weight:700;">${ex.item}</td>
+            <td style="padding:10px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">التاريخ</td><td style="padding:10px;border:1px solid #ddd;">${fmtDate(ex.date)}</td></tr>
+        </table>
+        <table style="width:100%;border-collapse:collapse;margin-bottom:20px;">
+            <thead><tr style="background:#e0e0e0;">${headers.map(h=>`<th style="${th}">${h}</th>`).join('')}</tr></thead>
+            <tbody>${ex.rows.map((r,i)=>{
+                const rowTotal=(r.qty||0)*(r.price||0)-(r.discounts||0);
+                return `<tr>${[toAr(i+1),fmtDate(r.rowDate),r.description||'—',r.unit,r.invoiceNo||'—',fmtNum(r.qty||0),fmtNum(r.price||0),fmtNum(r.discounts||0),fmtNum(rowTotal)].map(c=>`<td style="${td}">${c}</td>`).join('')}</tr>`;
+            }).join('')}</tbody>
+            <tfoot><tr style="background:#f0f0f0;font-weight:bold;"><td colspan="8" style="${th}">إجمالي المستحق للمورد</td><td style="${th}">${fmtNum(grandTotal)}</td></tr></tfoot>
+        </table>
+        <table style="width:50%;margin:0 auto;border-collapse:collapse;font-size:14px;">
+            <tr><td style="padding:10px;border:1px solid #ddd;background:#e8f5e9;font-weight:bold;">إجمالي المستحق</td><td style="padding:10px;border:1px solid #ddd;text-align:center;">${fmtCur(grandTotal)}</td></tr>
+            <tr><td style="padding:10px;border:1px solid #ddd;background:#fff3e0;font-weight:bold;">إجمالي المنصرف</td><td style="padding:10px;border:1px solid #ddd;text-align:center;">${fmtCur(totalPaid)}</td></tr>
+            <tr><td style="padding:10px;border:1px solid #ddd;background:#e3f2fd;font-weight:bold;">الباقي للمورد</td><td style="padding:10px;border:1px solid #ddd;text-align:center;font-weight:bold;">${fmtCur(grandTotal-totalPaid)}</td></tr>
+        </table>
+        ${ex.notes?`<p style="margin-top:16px;padding:10px;background:#f5f5f5;border-radius:8px;"><strong>ملاحظات:</strong> ${ex.notes}</p>`:''}
+    </div>`;
+    const w=window.open('','_blank','width=1100,height=700');
+    w.document.write(`<html dir="rtl"><head><title>مستخلص مورد رقم ${ex.number} - ${ex.supplier}</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact}table{font-size:10px;width:100%!important}}</style></head><body>${html}<script>setTimeout(()=>window.print(),500)<\/script></body></html>`);
+    w.document.close();
+}
+
+function saveSupExtractPDF(){
+    const ex=supplierExtracts.find(x=>x.id===currentSupExtractId);if(!ex)return;
+    let grandTotal=0;
+    ex.rows.forEach(r=>{grandTotal+=(r.qty||0)*(r.price||0)-(r.discounts||0);});
+    const totalPaid=payments.filter(p=>p.contractor===ex.supplier&&p.item===ex.item).reduce((s,p)=>s+p.amount,0);
+    const th='padding:6px;border:1px solid #bbb;text-align:center;font-size:11px;';
+    const td='padding:5px;border:1px solid #ddd;text-align:center;font-size:10px;';
+    const headers=['م','التاريخ','البيان','الوحدة','رقم الفاتورة','الكمية','السعر','خصومات','إجمالي المستحق'];
+    const pdfHtml=`<div style="font-family:Cairo,sans-serif;direction:rtl;padding:15px;color:#333;">
+        <h3 style="text-align:center;margin:0 0 2px;font-size:13px;">شركة الرحاب للمقاولات العموميه (ورثة سيد تهامى)</h3>
+        <h3 style="text-align:center;margin:0 0 4px;font-size:12px;">المشروع : التوسعات الجنوبيه</h3>
+        <h2 style="text-align:center;border-bottom:2px solid #333;padding-bottom:8px;font-size:16px;">مستخلص مورد رقم ${ex.number}</h2>
+        <table style="width:100%;margin:12px 0;border-collapse:collapse;font-size:13px;">
+            <tr><td style="padding:6px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">المورد</td><td style="padding:6px;border:1px solid #ddd;font-size:14px;font-weight:700;">${ex.supplier}</td>
+            <td style="padding:6px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">البند</td><td style="padding:6px;border:1px solid #ddd;font-size:14px;font-weight:700;">${ex.item}</td>
+            <td style="padding:6px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">التاريخ</td><td style="padding:6px;border:1px solid #ddd;">${fmtDate(ex.date)}</td></tr>
+        </table>
+        <table style="width:100%;border-collapse:collapse;margin-bottom:15px;">
+            <thead><tr style="background:#e0e0e0;">${headers.map(h=>`<th style="${th}">${h}</th>`).join('')}</tr></thead>
+            <tbody>${ex.rows.map((r,i)=>{
+                const rowTotal=(r.qty||0)*(r.price||0)-(r.discounts||0);
+                return `<tr>${[toAr(i+1),fmtDate(r.rowDate),r.description||'—',r.unit,r.invoiceNo||'—',fmtNum(r.qty||0),fmtNum(r.price||0),fmtNum(r.discounts||0),fmtNum(rowTotal)].map(c=>`<td style="${td}">${c}</td>`).join('')}</tr>`;
+            }).join('')}</tbody>
+            <tfoot><tr style="background:#f0f0f0;font-weight:bold;"><td colspan="8" style="${th}">إجمالي المستحق للمورد</td><td style="${th}">${fmtNum(grandTotal)}</td></tr></tfoot>
+        </table>
+        <table style="width:50%;margin:0 auto;border-collapse:collapse;font-size:12px;">
+            <tr><td style="padding:8px;border:1px solid #ddd;background:#e8f5e9;font-weight:bold;">إجمالي المستحق</td><td style="padding:8px;border:1px solid #ddd;text-align:center;">${fmtCur(grandTotal)}</td></tr>
+            <tr><td style="padding:8px;border:1px solid #ddd;background:#fff3e0;font-weight:bold;">إجمالي المنصرف</td><td style="padding:8px;border:1px solid #ddd;text-align:center;">${fmtCur(totalPaid)}</td></tr>
+            <tr><td style="padding:8px;border:1px solid #ddd;background:#e3f2fd;font-weight:bold;">الباقي للمورد</td><td style="padding:8px;border:1px solid #ddd;text-align:center;font-weight:bold;">${fmtCur(grandTotal-totalPaid)}</td></tr>
+        </table>
+    </div>`;
+    const container=document.createElement('div');
+    container.innerHTML=pdfHtml;
+    document.body.appendChild(container);
+    html2pdf().set({
+        margin:5,
+        filename:`مستخلص_مورد_${ex.number}_${ex.supplier}.pdf`,
+        image:{type:'jpeg',quality:0.98},
+        html2canvas:{scale:2,useCORS:true,scrollY:0},
+        jsPDF:{unit:'mm',format:'a4',orientation:'landscape'}
+    }).from(container).save().then(()=>{
+        document.body.removeChild(container);
+        showToast('✅ تم حفظ المستخلص كـ PDF','success');
+    });
 }
 
 // ========================================
@@ -716,10 +1289,11 @@ function hide(id){const el=typeof id==='string'?gi(id):id;if(el)el.style.display
 function uid(){return Date.now()+Math.random();}
 function today(){return new Date().toISOString().split('T')[0];}
 function esc(s){return s.replace(/'/g,"\\'").replace(/"/g,'&quot;');}
-function fmtCur(a){return a===0?'٠ ج.م':a.toLocaleString('ar-EG',{minimumFractionDigits:0,maximumFractionDigits:2})+' ج.م';}
-function fmtNum(n){return n===0?'٠':n.toLocaleString('ar-EG',{minimumFractionDigits:0,maximumFractionDigits:2});}
+function toAr(s){return String(s).replace(/[0-9]/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);}
+function fmtCur(a){return a===0?'٠ ج.م':toAr(a.toLocaleString('en',{minimumFractionDigits:0,maximumFractionDigits:2}))+' ج.م';}
+function fmtNum(n){return n===0?'٠':toAr(n.toLocaleString('en',{minimumFractionDigits:0,maximumFractionDigits:2}));}
 function fmtCompact(n){if(n>=1e6)return(n/1e6).toFixed(1)+'M';if(n>=1e3)return(n/1e3).toFixed(0)+'K';return n;}
-function fmtDate(d){return d?new Date(d).toLocaleDateString('ar-EG',{year:'numeric',month:'short',day:'numeric'}):'—';}
+function fmtDate(d){if(!d)return '—';const dt=new Date(d);if(isNaN(dt))return String(d);return dt.toLocaleDateString('ar-EG',{year:'numeric',month:'short',day:'numeric'});}
 function itemBadge(item){return `<span class="item-badge"><span class="item-dot" style="background:${getColor(item)}"></span>${item}</span>`;}
 function setDate(){const el=gi('currentDate');if(el)el.textContent=new Date().toLocaleDateString('ar-EG',{weekday:'long',year:'numeric',month:'long',day:'numeric'});}
 function animCount(id,target){const el=gi(id);if(!el)return;const s=parseInt(el.textContent)||0,dur=800,st=performance.now();function u(t){const p=Math.min((t-st)/dur,1);el.textContent=Math.round(s+(target-s)*(1-Math.pow(1-p,3))).toLocaleString('ar-EG');if(p<1)requestAnimationFrame(u);}requestAnimationFrame(u);}
@@ -733,3 +1307,8 @@ window.moveItem=moveItem;window.moveContractor=moveContractor;
 window.viewStatement=viewStatement;
 window.openNewExtractModal=openNewExtractModal;window.addExtractRow=addExtractRow;window.removeExtractRow=removeExtractRow;
 window.updateExtractRow=updateExtractRow;window.saveCurrentExtract=saveCurrentExtract;window.deleteCurrentExtract=deleteCurrentExtract;window.printExtract=printExtract;
+window.saveExtractPDF=saveExtractPDF;window.saveStatementPDF=saveStatementPDF;
+window.submitAddSupplier=submitAddSupplier;window.submitAddSupplyItem=submitAddSupplyItem;
+window.openNewSupExtractModal=openNewSupExtractModal;window.addSupExtractRow=addSupExtractRow;window.removeSupExtractRow=removeSupExtractRow;
+window.updateSupExtractRow=updateSupExtractRow;window.saveCurrentSupExtract=saveCurrentSupExtract;window.deleteCurrentSupExtract=deleteCurrentSupExtract;
+window.printSupExtract=printSupExtract;window.saveSupExtractPDF=saveSupExtractPDF;
