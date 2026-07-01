@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>داشبورد مقاولي الباطن - متابعة الدفعات والمستخلصات</title>
-    <meta name="description" content="لوحة تحكم تفاعلية لمتابعة دفعات ومستخلصات مقاولي الباطن">
+    <title>داشبورد مقاولي الباطن والموردين - متابعة الدفعات والمستخلصات</title>
+    <meta name="description" content="لوحة تحكم تفاعلية لمتابعة دفعات ومستخلصات مقاولي الباطن والموردين">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -19,6 +20,8 @@
             <div class="logo-icon"><span>📊</span></div>
             <h2>مقاولي الباطن</h2>
             <p class="subtitle">لوحة متابعة الدفعات</p>
+            <div class="project-name">المشروع : التوسعات الجنوبيه</div>
+            <div class="company-name">شركة الرحاب للمقاولات العموميه (ورثة سيد تهامى)</div>
         </div>
         <nav class="sidebar-nav">
             <a href="#" class="nav-link active" data-section="overview" id="nav-overview">
@@ -27,6 +30,9 @@
             <a href="#" class="nav-link" data-section="contractors" id="nav-contractors">
                 <span class="nav-icon">👷</span><span class="nav-text">المقاولين</span>
             </a>
+            <a href="#" class="nav-link" data-section="suppliers" id="nav-suppliers">
+                <span class="nav-icon">🚚</span><span class="nav-text">الموردين</span>
+            </a>
             <a href="#" class="nav-link" data-section="new-payment" id="nav-new-payment">
                 <span class="nav-icon">💰</span><span class="nav-text">تسجيل دفعة</span>
             </a>
@@ -34,7 +40,10 @@
                 <span class="nav-icon">📜</span><span class="nav-text">سجل الدفعات</span>
             </a>
             <a href="#" class="nav-link" data-section="extract" id="nav-extract">
-                <span class="nav-icon">📋</span><span class="nav-text">المستخلصات</span>
+                <span class="nav-icon">📋</span><span class="nav-text">مستخلصات المقاولين</span>
+            </a>
+            <a href="#" class="nav-link" data-section="sup-extract" id="nav-sup-extract">
+                <span class="nav-icon">📑</span><span class="nav-text">مستخلصات الموردين</span>
             </a>
             <a href="#" class="nav-link" data-section="statement" id="nav-statement">
                 <span class="nav-icon">🧾</span><span class="nav-text">كشف حساب</span>
@@ -69,7 +78,7 @@
         <!-- ===== Overview Section ===== -->
         <section class="section active" id="section-overview">
             <div class="section-header">
-                <h1 class="section-title">نظرة عامة</h1>
+                <div><h1 class="section-title">نظرة عامة</h1><span class="project-badge">المشروع : التوسعات الجنوبيه</span><span class="company-badge">شركة الرحاب للمقاولات العموميه (ورثة سيد تهامى)</span></div>
                 <span class="section-date" id="currentDate"></span>
             </div>
             <div class="stats-grid">
@@ -78,6 +87,13 @@
                     <div class="stat-info">
                         <span class="stat-value" id="statContractors">0</span>
                         <span class="stat-label">إجمالي المقاولين</span>
+                    </div><div class="stat-decoration"></div>
+                </div>
+                <div class="stat-card" style="--accent:#7c4dff;--accent-rgb:124,77,255;">
+                    <div class="stat-icon-wrap"><span>🚚</span></div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="statSuppliers">0</span>
+                        <span class="stat-label">إجمالي الموردين</span>
                     </div><div class="stat-decoration"></div>
                 </div>
                 <div class="stat-card" style="--accent:#00e676;--accent-rgb:0,230,118;">
@@ -95,10 +111,17 @@
                     </div><div class="stat-decoration"></div>
                 </div>
                 <div class="stat-card" style="--accent:#e040fb;--accent-rgb:224,64,251;">
-                    <div class="stat-icon-wrap"><span>📝</span></div>
+                    <div class="stat-icon-wrap"><span>📁</span></div>
                     <div class="stat-info">
                         <span class="stat-value" id="statPaymentCount">0</span>
                         <span class="stat-label">عدد الدفعات</span>
+                    </div><div class="stat-decoration"></div>
+                </div>
+                <div class="stat-card" style="--accent:#00bfa5;--accent-rgb:0,191,165;">
+                    <div class="stat-icon-wrap"><span>🏷️</span></div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="statSupplierPaid">٠ ج.م</span>
+                        <span class="stat-label">مدفوعات الموردين</span>
                     </div><div class="stat-decoration"></div>
                 </div>
             </div>
@@ -109,7 +132,7 @@
                     <div class="chart-empty" id="pieEmpty"><p>لا توجد دفعات بعد</p></div>
                 </div>
                 <div class="card chart-card">
-                    <h3 class="card-title">📈 أكثر 10 مقاولين دفعات</h3>
+                    <h3 class="card-title">📈 أكثر 10 مقاولين/موردين دفعات</h3>
                     <div class="chart-container"><canvas id="barChart"></canvas></div>
                     <div class="chart-empty" id="barEmpty"><p>لا توجد دفعات بعد</p></div>
                 </div>
@@ -122,7 +145,7 @@
                         <thead>
                             <tr>
                                 <th>البند</th>
-                                <th>عدد المقاولين</th>
+                                <th>عدد المقاولين/الموردين</th>
                                 <th>عدد الدفعات</th>
                                 <th>إجمالي المدفوع</th>
                                 <th>النسبة</th>
@@ -140,19 +163,19 @@
                         </tfoot>
                     </table>
                 </div>
-                <div class="empty-state" id="spendingEmpty"><span class="empty-icon">📭</span><p>لا توجد دفعات بعد</p></div>
+                <div class="empty-state" id="spendingEmpty"><span class="empty-icon">🔭</span><p>لا توجد دفعات بعد</p></div>
             </div>
             <!-- Recent Payments -->
             <div class="card">
                 <h3 class="card-title">🕐 آخر الدفعات</h3>
                 <div class="table-wrapper">
                     <table class="data-table" id="recentTable">
-                        <thead><tr><th>المقاول</th><th>البند</th><th>المبلغ</th><th>التاريخ</th></tr></thead>
+                        <thead><tr><th>المقاول/المورد</th><th>البند</th><th>المبلغ</th><th>التاريخ</th></tr></thead>
                         <tbody id="recentBody"></tbody>
                     </table>
                 </div>
                 <div class="empty-state" id="recentEmpty">
-                    <span class="empty-icon">📭</span><p>لا توجد دفعات مسجلة بعد</p>
+                    <span class="empty-icon">🔭</span><p>لا توجد دفعات مسجلة بعد</p>
                     <button class="btn btn-primary btn-sm" onclick="navigateTo('new-payment')">سجل أول دفعة</button>
                 </div>
             </div>
@@ -161,7 +184,7 @@
         <!-- ===== Contractors Section ===== -->
         <section class="section" id="section-contractors">
             <div class="section-header">
-                <h1 class="section-title">المقاولين</h1>
+                <div><h1 class="section-title">المقاولين</h1><span class="project-badge">المشروع : التوسعات الجنوبيه</span><span class="company-badge">شركة الرحاب للمقاولات العموميه (ورثة سيد تهامى)</span></div>
                 <div class="header-actions">
                     <span class="badge badge-info" id="contractorCount"></span>
                     <button class="btn btn-primary btn-sm" onclick="openModal('addContractorModal')">➕ إضافة مقاول</button>
@@ -175,13 +198,32 @@
                 </div>
                 <select class="select-input" id="itemFilter"><option value="">كل البنود</option></select>
             </div>
-            <!-- Grouped Contractors Table -->
             <div id="contractorsGrouped"></div>
+        </section>
+
+        <!-- ===== Suppliers Section ===== -->
+        <section class="section" id="section-suppliers">
+            <div class="section-header">
+                <div><h1 class="section-title">الموردين</h1><span class="project-badge">المشروع : التوسعات الجنوبيه</span><span class="company-badge">شركة الرحاب للمقاولات العموميه (ورثة سيد تهامى)</span></div>
+                <div class="header-actions">
+                    <span class="badge badge-info" id="supplierCount"></span>
+                    <button class="btn btn-primary btn-sm" onclick="openModal('addSupplierModal')">➕ إضافة مورد</button>
+                    <button class="btn btn-ghost btn-sm" onclick="openModal('addSupplyItemModal')">📦 إضافة بند توريد</button>
+                </div>
+            </div>
+            <div class="filters-bar">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="supplierSearch" placeholder="بحث بالاسم..." autocomplete="off">
+                </div>
+                <select class="select-input" id="supplyItemFilter"><option value="">كل بنود التوريد</option></select>
+            </div>
+            <div id="suppliersGrouped"></div>
         </section>
 
         <!-- ===== New Payment Section ===== -->
         <section class="section" id="section-new-payment">
-            <div class="section-header"><h1 class="section-title">تسجيل دفعة جديدة</h1></div>
+            <div class="section-header"><div><h1 class="section-title">تسجيل دفعة جديدة</h1><span class="project-badge">المشروع : التوسعات الجنوبيه</span><span class="company-badge">شركة الرحاب للمقاولات العموميه (ورثة سيد تهامى)</span></div></div>
             <div class="card form-card">
                 <form id="paymentForm" novalidate>
                     <div class="form-row">
@@ -190,7 +232,7 @@
                             <select class="select-input" id="paymentItem" required><option value="">اختر البند...</option></select>
                         </div>
                         <div class="form-group">
-                            <label for="paymentContractor">المقاول <span class="required">*</span></label>
+                            <label for="paymentContractor">المقاول / المورد <span class="required">*</span></label>
                             <select class="select-input" id="paymentContractor" required disabled><option value="">اختر البند أولاً...</option></select>
                         </div>
                     </div>
@@ -223,7 +265,7 @@
         <!-- ===== Payments History Section ===== -->
         <section class="section" id="section-payments">
             <div class="section-header">
-                <h1 class="section-title">سجل الدفعات</h1>
+                <div><h1 class="section-title">سجل الدفعات</h1><span class="project-badge">المشروع : التوسعات الجنوبيه</span><span class="company-badge">شركة الرحاب للمقاولات العموميه (ورثة سيد تهامى)</span></div>
                 <span class="badge badge-info" id="paymentsCount"></span>
             </div>
             <div class="filters-bar">
@@ -237,18 +279,18 @@
             <div class="card">
                 <div class="table-wrapper">
                     <table class="data-table" id="paymentsTable">
-                        <thead><tr><th>#</th><th>المقاول</th><th>البند</th><th>المبلغ</th><th>التاريخ</th><th>المرجع</th><th>ملاحظات</th><th>إجراء</th></tr></thead>
+                        <thead><tr><th>#</th><th>المقاول/المورد</th><th>البند</th><th>المبلغ</th><th>التاريخ</th><th>المرجع</th><th>ملاحظات</th><th>إجراء</th></tr></thead>
                         <tbody id="paymentsBody"></tbody>
                     </table>
                 </div>
-                <div class="empty-state" id="paymentsEmpty"><span class="empty-icon">📭</span><p>لا توجد دفعات مسجلة</p></div>
+                <div class="empty-state" id="paymentsEmpty"><span class="empty-icon">🔭</span><p>لا توجد دفعات مسجلة</p></div>
             </div>
         </section>
 
-        <!-- ===== Extract/Invoice Section ===== -->
+        <!-- ===== Contractor Extract Section ===== -->
         <section class="section" id="section-extract">
             <div class="section-header">
-                <h1 class="section-title">المستخلصات</h1>
+                <div><h1 class="section-title">مستخلصات المقاولين</h1><span class="project-badge">المشروع : التوسعات الجنوبيه</span><span class="company-badge">شركة الرحاب للمقاولات العموميه (ورثة سيد تهامى)</span></div>
                 <div class="header-actions">
                     <button class="btn btn-primary btn-sm" id="btnNewExtract" onclick="openNewExtractModal()" style="display:none;">➕ مستخلص جديد</button>
                 </div>
@@ -259,7 +301,6 @@
                 <select class="select-input" id="extractNumberSelect" disabled style="display:none;"><option value="">اختر المستخلص...</option></select>
             </div>
 
-            <!-- Contractor Balance Card -->
             <div class="balance-card" id="balanceCard" style="display:none;">
                 <div class="balance-item">
                     <span class="balance-label">قيمة الأعمال المنفذة</span>
@@ -277,55 +318,47 @@
                 </div>
             </div>
 
-            <!-- Extract Content -->
             <div id="extractContent" style="display:none;">
                 <div class="card extract-header-card">
                     <div class="extract-meta">
                         <div class="form-row">
-                            <div class="form-group">
-                                <label>رقم المستخلص</label>
-                                <div class="readonly-field" id="extractNum">—</div>
-                            </div>
-                            <div class="form-group">
-                                <label>المقاول</label>
-                                <div class="readonly-field" id="extractContractorName">—</div>
-                            </div>
-                            <div class="form-group">
-                                <label>البند الرئيسي</label>
-                                <div class="readonly-field" id="extractItemName">—</div>
-                            </div>
-                            <div class="form-group">
-                                <label>التاريخ</label>
-                                <input type="date" class="text-input" id="extractDate">
-                            </div>
+                            <div class="form-group"><label>رقم المستخلص</label><div class="readonly-field" id="extractNum">—</div></div>
+                            <div class="form-group"><label>المقاول</label><div class="readonly-field" id="extractContractorName">—</div></div>
+                            <div class="form-group"><label>البند الرئيسي</label><div class="readonly-field" id="extractItemName">—</div></div>
+                            <div class="form-group"><label>التاريخ</label><input type="date" class="text-input" id="extractDate"></div>
                         </div>
                     </div>
                 </div>
-
                 <div class="card">
                     <div class="table-wrapper">
                         <table class="data-table extract-table" id="extractTable">
                             <thead>
                                 <tr>
-                                    <th style="width:40px;">م</th>
-                                    <th>بند المستخلص</th>
-                                    <th>النوع</th>
-                                    <th>الوحدة</th>
-                                    <th>الكمية</th>
-                                    <th>السعر</th>
-                                    <th>القيمة</th>
-                                    <th>نسبة التنفيذ %</th>
-                                    <th>القيمة المنفذة</th>
-                                    <th style="width:50px;">إجراء</th>
+                                    <th rowspan="2" style="width:40px;">مسلسل</th>
+                                    <th rowspan="2">التاريخ</th>
+                                    <th rowspan="2">رقم العمارة</th>
+                                    <th rowspan="2">بيان الأعمال</th>
+                                    <th rowspan="2">الوحدة</th>
+                                    <th rowspan="2">النوع</th>
+                                    <th rowspan="2">السعر</th>
+                                    <th rowspan="2">نسبة البند %</th>
+                                    <th colspan="3" class="th-group">الكمية</th>
+                                    <th rowspan="2">نسبة الصرف %</th>
+                                    <th rowspan="2">الاستقطاعات</th>
+                                    <th rowspan="2">إجمالي المستحق</th>
+                                    <th rowspan="2" style="width:45px;">إجراء</th>
+                                </tr>
+                                <tr>
+                                    <th class="th-sub">سابقة</th>
+                                    <th class="th-sub">حالية</th>
+                                    <th class="th-sub">المجموع</th>
                                 </tr>
                             </thead>
                             <tbody id="extractBody"></tbody>
                             <tfoot>
                                 <tr class="total-row">
-                                    <td colspan="6"><strong>الإجمالي</strong></td>
-                                    <td class="amount-cell" id="extractTotalValue">٠</td>
-                                    <td></td>
-                                    <td class="amount-cell" id="extractTotalExecuted">٠</td>
+                                    <td colspan="13"><strong>إجمالي المستحق للمقاول</strong></td>
+                                    <td class="amount-cell" id="extractGrandTotal">٠</td>
                                     <td></td>
                                 </tr>
                             </tfoot>
@@ -335,6 +368,7 @@
                         <button class="btn btn-primary btn-sm" onclick="addExtractRow()">➕ إضافة بند</button>
                         <button class="btn btn-ghost btn-sm" onclick="saveCurrentExtract()">💾 حفظ المستخلص</button>
                         <button class="btn btn-ghost btn-sm" onclick="printExtract()">🖨️ طباعة</button>
+                        <button class="btn btn-ghost btn-sm" onclick="saveExtractPDF()">📄 حفظ PDF</button>
                         <button class="btn btn-delete btn-sm" onclick="deleteCurrentExtract()">🗑️ حذف المستخلص</button>
                     </div>
                 </div>
@@ -350,15 +384,107 @@
             </div>
         </section>
 
+        <!-- ===== Supplier Extract Section ===== -->
+        <section class="section" id="section-sup-extract">
+            <div class="section-header">
+                <div><h1 class="section-title">مستخلصات الموردين</h1><span class="project-badge">المشروع : التوسعات الجنوبيه</span><span class="company-badge">شركة الرحاب للمقاولات العموميه (ورثة سيد تهامى)</span></div>
+                <div class="header-actions">
+                    <button class="btn btn-primary btn-sm" id="btnNewSupExtract" onclick="openNewSupExtractModal()" style="display:none;">➕ مستخلص جديد</button>
+                </div>
+            </div>
+            <div class="filters-bar">
+                <select class="select-input" id="supExtractItemSelect"><option value="">اختر بند التوريد...</option></select>
+                <select class="select-input" id="supExtractSupplierSelect" disabled><option value="">اختر البند أولاً...</option></select>
+                <select class="select-input" id="supExtractNumberSelect" disabled style="display:none;"><option value="">اختر المستخلص...</option></select>
+            </div>
+
+            <div class="balance-card" id="supBalanceCard" style="display:none;">
+                <div class="balance-item">
+                    <span class="balance-label">قيمة التوريدات</span>
+                    <span class="balance-value accent-green" id="supBalExecuted">٠ ج.م</span>
+                </div>
+                <div class="balance-divider">−</div>
+                <div class="balance-item">
+                    <span class="balance-label">إجمالي المنصرف</span>
+                    <span class="balance-value accent-orange" id="supBalPaid">٠ ج.م</span>
+                </div>
+                <div class="balance-divider">=</div>
+                <div class="balance-item">
+                    <span class="balance-label">الباقي للمورد</span>
+                    <span class="balance-value accent-cyan" id="supBalRemaining">٠ ج.م</span>
+                </div>
+            </div>
+
+            <div id="supExtractContent" style="display:none;">
+                <div class="card extract-header-card">
+                    <div class="extract-meta">
+                        <div class="form-row">
+                            <div class="form-group"><label>رقم المستخلص</label><div class="readonly-field" id="supExtractNum">—</div></div>
+                            <div class="form-group"><label>المورد</label><div class="readonly-field" id="supExtractSupplierName">—</div></div>
+                            <div class="form-group"><label>بند التوريد</label><div class="readonly-field" id="supExtractItemName">—</div></div>
+                            <div class="form-group"><label>التاريخ</label><input type="date" class="text-input" id="supExtractDate"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="table-wrapper">
+                        <table class="data-table extract-table" id="supExtractTable">
+                            <thead>
+                                <tr>
+                                    <th style="width:40px;">مسلسل</th>
+                                    <th>التاريخ</th>
+                                    <th>البيان</th>
+                                    <th>الوحدة</th>
+                                    <th>رقم الفاتورة</th>
+                                    <th>الكمية</th>
+                                    <th>السعر</th>
+                                    <th>خصومات</th>
+                                    <th>إجمالي المستحق</th>
+                                    <th style="width:45px;">إجراء</th>
+                                </tr>
+                            </thead>
+                            <tbody id="supExtractBody"></tbody>
+                            <tfoot>
+                                <tr class="total-row">
+                                    <td colspan="8"><strong>إجمالي المستحق للمورد</strong></td>
+                                    <td class="amount-cell" id="supExtractGrandTotal">٠</td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <div class="extract-actions">
+                        <button class="btn btn-primary btn-sm" onclick="addSupExtractRow()">➕ إضافة بند</button>
+                        <button class="btn btn-ghost btn-sm" onclick="saveCurrentSupExtract()">💾 حفظ المستخلص</button>
+                        <button class="btn btn-ghost btn-sm" onclick="printSupExtract()">🖨️ طباعة</button>
+                        <button class="btn btn-ghost btn-sm" onclick="saveSupExtractPDF()">📄 حفظ PDF</button>
+                        <button class="btn btn-delete btn-sm" onclick="deleteCurrentSupExtract()">🗑️ حذف المستخلص</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="supExtractNotes">ملاحظات المستخلص</label>
+                    <textarea class="text-input" id="supExtractNotes" rows="2" placeholder="ملاحظات..."></textarea>
+                </div>
+            </div>
+
+            <div class="empty-state" id="supExtractEmpty">
+                <span class="empty-icon">📑</span>
+                <p>اختر مورد لعرض مستخلصاته أو إنشاء مستخلص جديد</p>
+            </div>
+        </section>
+
         <!-- ===== Statement Section ===== -->
         <section class="section" id="section-statement">
-            <div class="section-header"><h1 class="section-title">كشف حساب مقاول</h1></div>
+            <div class="section-header"><div><h1 class="section-title">كشف حساب</h1><span class="project-badge">المشروع : التوسعات الجنوبيه</span><span class="company-badge">شركة الرحاب للمقاولات العموميه (ورثة سيد تهامى)</span></div></div>
             <div class="filters-bar">
                 <select class="select-input" id="statementItem"><option value="">اختر البند...</option></select>
                 <select class="select-input" id="statementContractor" disabled><option value="">اختر البند أولاً...</option></select>
                 <button class="btn btn-primary btn-sm" id="printStatement" style="display:none;" onclick="window.print()">🖨️ طباعة</button>
+                <button class="btn btn-ghost btn-sm" id="pdfStatement" style="display:none;" onclick="saveStatementPDF()">📄 حفظ PDF</button>
             </div>
             <div id="statementContent" style="display:none;">
+                <div class="print-only" style="text-align:center;margin-bottom:4px;font-size:16px;font-weight:700;">شركة الرحاب للمقاولات العموميه (ورثة سيد تهامى)</div>
+                <div class="print-only" style="text-align:center;margin-bottom:10px;font-size:18px;font-weight:bold;">المشروع : التوسعات الجنوبيه</div>
                 <div class="statement-header-card">
                     <div class="statement-identity">
                         <div class="statement-avatar">👷</div>
@@ -376,10 +502,10 @@
                             <tbody id="statementBody"></tbody>
                         </table>
                     </div>
-                    <div class="empty-state" id="statementEmpty" style="display:none;"><span class="empty-icon">📭</span><p>لا توجد دفعات لهذا المقاول</p></div>
+                    <div class="empty-state" id="statementEmpty" style="display:none;"><span class="empty-icon">🔭</span><p>لا توجد دفعات لهذا المقاول/المورد</p></div>
                 </div>
             </div>
-            <div class="empty-state" id="noStatementSelected"><span class="empty-icon">🧾</span><p>اختر مقاول لعرض كشف حسابه</p></div>
+            <div class="empty-state" id="noStatementSelected"><span class="empty-icon">🧾</span><p>اختر مقاول أو مورد لعرض كشف حسابه</p></div>
         </section>
     </main>
 
@@ -407,10 +533,10 @@
 
     <!-- Edit Contractor Modal -->
     <div class="modal-overlay" id="editContractorModal">
-        <div class="modal modal-form"><div class="modal-icon">✏️</div><h3>تعديل المقاول</h3>
+        <div class="modal modal-form"><div class="modal-icon">✏️</div><h3>تعديل المقاول/المورد</h3>
             <form id="editContractorForm">
                 <div class="form-group"><label>البند</label><div class="readonly-field" id="editContractorCurrentItem">—</div></div>
-                <div class="form-group"><label>اسم المقاول <span class="required">*</span></label><input type="text" class="text-input" id="editContractorName" required></div>
+                <div class="form-group"><label>الاسم <span class="required">*</span></label><input type="text" class="text-input" id="editContractorName" required></div>
                 <div class="modal-actions"><button type="submit" class="btn btn-primary">💾 حفظ</button><button type="button" class="btn btn-ghost" data-close-modal="editContractorModal">إلغاء</button></div>
             </form>
         </div>
@@ -439,7 +565,7 @@
 
     <!-- New Extract Modal -->
     <div class="modal-overlay" id="newExtractModal">
-        <div class="modal modal-form"><div class="modal-icon">📋</div><h3>مستخلص جديد</h3>
+        <div class="modal modal-form"><div class="modal-icon">📋</div><h3>مستخلص مقاول جديد</h3>
             <form id="newExtractForm">
                 <div class="form-group"><label>تاريخ المستخلص <span class="required">*</span></label><input type="date" class="text-input" id="newExtractDate" required></div>
                 <div class="form-group"><label>ملاحظات</label><textarea class="text-input" id="newExtractNotes" rows="2" placeholder="اختياري..."></textarea></div>
@@ -448,7 +574,39 @@
         </div>
     </div>
 
-    <!-- Print Container (hidden, used for extract printing) -->
+    <!-- Add Supplier Modal -->
+    <div class="modal-overlay" id="addSupplierModal">
+        <div class="modal modal-form"><div class="modal-icon">🚚</div><h3>إضافة مورد جديد</h3>
+            <form id="addSupplierForm">
+                <div class="form-group"><label>اسم المورد <span class="required">*</span></label><input type="text" class="text-input" id="addSupplierName" required placeholder="الاسم الحقيقي للمورد"></div>
+                <div class="form-group"><label>بند التوريد <span class="required">*</span></label><select class="select-input" id="addSupplierItem" required><option value="">اختر البند...</option></select></div>
+                <div class="modal-actions"><button type="submit" class="btn btn-primary">➕ إضافة</button><button type="button" class="btn btn-ghost" data-close-modal="addSupplierModal">إلغاء</button></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Supply Item Modal -->
+    <div class="modal-overlay" id="addSupplyItemModal">
+        <div class="modal modal-form"><div class="modal-icon">📦</div><h3>إضافة بند توريد جديد</h3>
+            <form id="addSupplyItemForm">
+                <div class="form-group"><label>اسم بند التوريد <span class="required">*</span></label><input type="text" class="text-input" id="addSupplyItemName" required placeholder="مثال: توريد رخام"></div>
+                <div class="modal-actions"><button type="submit" class="btn btn-primary">➕ إضافة</button><button type="button" class="btn btn-ghost" data-close-modal="addSupplyItemModal">إلغاء</button></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- New Supplier Extract Modal -->
+    <div class="modal-overlay" id="newSupExtractModal">
+        <div class="modal modal-form"><div class="modal-icon">📑</div><h3>مستخلص مورد جديد</h3>
+            <form id="newSupExtractForm">
+                <div class="form-group"><label>تاريخ المستخلص <span class="required">*</span></label><input type="date" class="text-input" id="newSupExtractDate" required></div>
+                <div class="form-group"><label>ملاحظات</label><textarea class="text-input" id="newSupExtractNotes" rows="2" placeholder="اختياري..."></textarea></div>
+                <div class="modal-actions"><button type="submit" class="btn btn-primary">➕ إنشاء</button><button type="button" class="btn btn-ghost" data-close-modal="newSupExtractModal">إلغاء</button></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Print Container -->
     <div id="printContainer" class="print-only"></div>
 
     <script src="app.js"></script>
