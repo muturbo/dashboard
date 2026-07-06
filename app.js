@@ -968,19 +968,25 @@ function renderSuppliers(){
         if(!sups.length&&search)return '';
         totalShown+=sups.length;
         const color=getColor(item);
+        const isFirst=ii===0,isLast=ii===supItems.length-1;
         return `<div class="item-group">
             <div class="item-group-header" style="--item-color:${color}">
                 <div class="item-group-title"><span class="item-dot" style="background:${color}"></span><h3>${item}</h3><span class="badge">${sups.length} مورد</span></div>
                 <div class="action-buttons">
+                    <button class="btn btn-reorder" onclick="moveItem('${esc(item)}',-1)" title="⬆️" ${isFirst?'disabled':''}>▲</button>
+                    <button class="btn btn-reorder" onclick="moveItem('${esc(item)}',1)" title="⬇️" ${isLast?'disabled':''}>▼</button>
                     <button class="btn btn-icon-only btn-view" onclick="openEditItem('${esc(item)}')" title="تعديل البند">✏️</button>
+                    <button class="btn btn-icon-only btn-delete" onclick="confirmDeleteItem('${esc(item)}')" title="حذف البند">🗑️</button>
                 </div>
             </div>
             <div class="item-group-body">
-                <table class="data-table"><thead><tr><th style="width:40px">م</th><th>اسم المورد</th><th>إجمالي المدفوع</th><th style="width:140px">إجراء</th></tr></thead>
+                <table class="data-table"><thead><tr><th style="width:40px">م</th><th>اسم المورد</th><th>إجمالي المدفوع</th><th style="width:180px">إجراء</th></tr></thead>
                 <tbody>${sups.map((c,ci)=>{
                     const t=totals[c.name+'|'+c.item]||0;
                     return `<tr style="animation-delay:${ci*0.02}s"><td>${ci+1}</td><td><strong>${c.name}</strong></td><td class="amount-cell">${fmtCur(t)}</td>
                     <td class="action-buttons">
+                        <button class="btn btn-reorder" onclick="moveContractor(${c.id},-1)" ${ci===0?'disabled':''}>▲</button>
+                        <button class="btn btn-reorder" onclick="moveContractor(${c.id},1)" ${ci===sups.length-1?'disabled':''}>▼</button>
                         <button class="btn btn-icon-only btn-view" onclick="openEditContractor(${c.id})" title="تعديل">✏️</button>
                         <button class="btn btn-icon-only btn-view" onclick="viewStatement('${esc(c.item)}','${esc(c.name)}')" title="كشف حساب">🧾</button>
                         <button class="btn btn-icon-only btn-delete" onclick="confirmDeleteContractor(${c.id})" title="حذف">🗑️</button>
