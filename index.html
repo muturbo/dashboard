@@ -243,7 +243,7 @@
                         </div>
                         <div class="form-group">
                             <label for="paymentDate">التاريخ <span class="required">*</span></label>
-                            <input type="date" class="text-input" id="paymentDate" required>
+                            <input type="text" class="text-input" id="paymentDate" placeholder="يوم/شهر/سنة" required>
                         </div>
                     </div>
                     <div class="form-group">
@@ -266,15 +266,26 @@
         <section class="section" id="section-payments">
             <div class="section-header">
                 <div><h1 class="section-title">سجل الدفعات</h1><span class="project-badge">المشروع : التوسعات الجنوبيه</span><span class="company-badge">شركة الرحاب للمقاولات العموميه (ورثة سيد تهامى)</span></div>
-                <span class="badge badge-info" id="paymentsCount"></span>
+                <div class="header-actions">
+                    <span class="badge badge-info" id="paymentsCount"></span>
+                    <button class="btn btn-primary btn-sm" onclick="printPayments()">🖨️ طباعة</button>
+                    <button class="btn btn-ghost btn-sm" onclick="savePaymentsPDF()">📄 حفظ PDF</button>
+                </div>
             </div>
             <div class="filters-bar">
                 <div class="search-box"><span class="search-icon">🔍</span>
                     <input type="text" id="paymentSearch" placeholder="بحث..." autocomplete="off">
                 </div>
-                <select class="select-input" id="paymentItemFilter"><option value="">كل البنود</option></select>
-                <input type="date" class="text-input date-input" id="dateFrom" title="من تاريخ">
-                <input type="date" class="text-input date-input" id="dateTo" title="إلى تاريخ">
+                <select class="select-input" id="paymentItemFilter" onchange="onPaymentItemFilterChange()"><option value="">كل البنود</option></select>
+                <select class="select-input" id="paymentContractorFilter" disabled onchange="renderPayments()"><option value="">كل المقاولين/الموردين</option></select>
+                <input type="text" class="text-input date-input" id="dateFrom" placeholder="من تاريخ" title="من تاريخ">
+                <input type="text" class="text-input date-input" id="dateTo" placeholder="إلى تاريخ" title="إلى تاريخ">
+            </div>
+            <div class="balance-card" id="paymentsTotalCard">
+                <div class="balance-item">
+                    <span class="balance-label">إجمالي الدفعات المعروضة</span>
+                    <span class="balance-value accent-green" id="paymentsTotalAmount">٠ ج.م</span>
+                </div>
             </div>
             <div class="card">
                 <div class="table-wrapper">
