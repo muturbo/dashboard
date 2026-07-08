@@ -48,6 +48,9 @@
             <a href="#" class="nav-link" data-section="statement" id="nav-statement">
                 <span class="nav-icon">🧾</span><span class="nav-text">كشف حساب</span>
             </a>
+            <a href="#" class="nav-link" data-section="balances" id="nav-balances">
+                <span class="nav-icon">💳</span><span class="nav-text">الأرصدة الدائنة المستحقة</span>
+            </a>
         </nav>
         <div class="sidebar-footer">
             <button class="btn btn-save-main" id="saveAllBtn" onclick="saveAllData()">
@@ -122,6 +125,13 @@
                     <div class="stat-info">
                         <span class="stat-value" id="statSupplierPaid">٠ ج.م</span>
                         <span class="stat-label">مدفوعات الموردين</span>
+                    </div><div class="stat-decoration"></div>
+                </div>
+                <div class="stat-card" style="--accent:#ff5252;--accent-rgb:255,82,82;">
+                    <div class="stat-icon-wrap"><span>💳</span></div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="statOutstanding">٠ ج.م</span>
+                        <span class="stat-label">الأرصدة الدائنة المستحقة</span>
                     </div><div class="stat-decoration"></div>
                 </div>
             </div>
@@ -517,6 +527,55 @@
                 </div>
             </div>
             <div class="empty-state" id="noStatementSelected"><span class="empty-icon">🧾</span><p>اختر مقاول أو مورد لعرض كشف حسابه</p></div>
+        </section>
+
+        <!-- ===== Creditor Balances Section ===== -->
+        <section class="section" id="section-balances">
+            <div class="section-header">
+                <div><h1 class="section-title">الأرصدة الدائنة المستحقة</h1><span class="project-badge">المشروع : التوسعات الجنوبيه</span><span class="company-badge">شركة الرحاب للمقاولات العموميه (ورثة سيد تهامى)</span></div>
+                <div class="header-actions">
+                    <button class="btn btn-primary btn-sm" onclick="printBalances()">🖨️ طباعة</button>
+                    <button class="btn btn-ghost btn-sm" onclick="saveBalancesPDF()">📄 حفظ PDF</button>
+                </div>
+            </div>
+            <div class="balance-card" id="balancesTotalCard">
+                <div class="balance-item">
+                    <span class="balance-label">إجمالي الأرصدة المستحقة (مقاولين)</span>
+                    <span class="balance-value accent-orange" id="balContractorOutstanding">٠ ج.م</span>
+                </div>
+                <div class="balance-divider">+</div>
+                <div class="balance-item">
+                    <span class="balance-label">إجمالي الأرصدة المستحقة (موردين)</span>
+                    <span class="balance-value accent-cyan" id="balSupplierOutstanding">٠ ج.م</span>
+                </div>
+                <div class="balance-divider">=</div>
+                <div class="balance-item">
+                    <span class="balance-label">إجمالي الأرصدة الدائنة</span>
+                    <span class="balance-value accent-green" id="balTotalOutstanding">٠ ج.م</span>
+                </div>
+            </div>
+
+            <h3 style="color:var(--text-color);margin:16px 0 8px;font-size:1rem;">👷 أرصدة المقاولين</h3>
+            <div class="card">
+                <div class="table-wrapper">
+                    <table class="data-table" id="balContractorsTable">
+                        <thead><tr><th>م</th><th>اسم المقاول</th><th>البند</th><th>قيمة المستخلصات</th><th>إجمالي المدفوع</th><th>الرصيد المستحق</th></tr></thead>
+                        <tbody id="balContractorsBody"></tbody>
+                    </table>
+                </div>
+                <div class="empty-state" id="balContractorsEmpty" style="display:none;"><span class="empty-icon">✅</span><p>لا توجد أرصدة مستحقة للمقاولين</p></div>
+            </div>
+
+            <h3 style="color:var(--text-color);margin:24px 0 8px;font-size:1rem;">🚚 أرصدة الموردين</h3>
+            <div class="card">
+                <div class="table-wrapper">
+                    <table class="data-table" id="balSuppliersTable">
+                        <thead><tr><th>م</th><th>اسم المورد</th><th>البند</th><th>قيمة المستخلصات</th><th>إجمالي المدفوع</th><th>الرصيد المستحق</th></tr></thead>
+                        <tbody id="balSuppliersBody"></tbody>
+                    </table>
+                </div>
+                <div class="empty-state" id="balSuppliersEmpty" style="display:none;"><span class="empty-icon">✅</span><p>لا توجد أرصدة مستحقة للموردين</p></div>
+            </div>
         </section>
     </main>
 
