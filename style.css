@@ -1383,6 +1383,18 @@ button {
   font-size: 0.85rem;
 }
 
+.extract-table td:nth-child(2) input[placeholder] {
+  min-width: 110px;
+  text-align: center;
+}
+
+@media print {
+  .extract-table td:nth-child(2) input[placeholder] {
+    min-width: auto;
+    font-size: 9px;
+  }
+}
+
 .extract-actions {
   display: flex;
   align-items: center;
