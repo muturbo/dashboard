@@ -144,6 +144,7 @@ function showSyncStatus(status){
 function save(){
     saveToCache();
     saveToServer();
+    if(typeof renderBalances==='function') try{renderBalances();}catch(e){}
 }
 
 function initDefaults(){
@@ -464,7 +465,7 @@ function initSorting(){
 // ========================================
 // RENDER ALL
 // ========================================
-function renderAll(){renderOverview();renderContractors();renderSuppliers();renderPayments();renderCharts();renderSpending();}
+function renderAll(){renderOverview();renderContractors();renderSuppliers();renderPayments();renderCharts();renderSpending();renderBalances();}
 
 // ========================================
 // OVERVIEW
@@ -1318,6 +1319,110 @@ function saveSupExtractPDF(){
 }
 
 // ========================================
+// CREDITOR BALANCES (الأرصدة الدائنة المستحقة)
+// ========================================
+function calcBalances(){
+    const results=[];
+    const seen={};
+    // Contractor extracts - group by contractor+item
+    extracts.forEach(ex=>{
+        const key=ex.contractor+'||'+ex.item;
+        if(!seen[key]) seen[key]={name:ex.contractor,item:ex.item,type:'contractor',extractTotal:0,paidTotal:0};
+        ex.rows.forEach(r=>{
+            const qty=(parseFloat(r.currentQty)||0)+(parseFloat(r.prevQty)||0);
+            const gross=qty*(parseFloat(r.price)||0);
+            seen[key].extractTotal+=gross-(parseFloat(r.deductions)||0);
+        });
+    });
+    // Supplier extracts - group by supplier+item
+    supplierExtracts.forEach(ex=>{
+        const key=ex.supplier+'||'+ex.item;
+        if(!seen[key]) seen[key]={name:ex.supplier,item:ex.item,type:'supplier',extractTotal:0,paidTotal:0};
+        ex.rows.forEach(r=>{
+            seen[key].extractTotal+=(parseFloat(r.qty)||0)*(parseFloat(r.price)||0)-(parseFloat(r.discounts)||0);
+        });
+    });
+    // Calculate paid totals
+    Object.values(seen).forEach(entry=>{
+        entry.paidTotal=payments.filter(p=>p.contractor===entry.name&&p.item===entry.item).reduce((s,p)=>s+p.amount,0);
+        entry.remaining=entry.extractTotal-entry.paidTotal;
+        if(entry.remaining>0) results.push(entry);
+    });
+    return results;
+}
+
+function renderBalances(){
+    const all=calcBalances();
+    const ctrBal=all.filter(b=>b.type==='contractor');
+    const supBal=all.filter(b=>b.type==='supplier');
+    const ctrTotal=ctrBal.reduce((s,b)=>s+b.remaining,0);
+    const supTotal=supBal.reduce((s,b)=>s+b.remaining,0);
+    const grandTotal=ctrTotal+supTotal;
+    // Update summary cards
+    const e1=gi('balContractorOutstanding');if(e1)e1.textContent=fmtCur(ctrTotal);
+    const e2=gi('balSupplierOutstanding');if(e2)e2.textContent=fmtCur(supTotal);
+    const e3=gi('balTotalOutstanding');if(e3)e3.textContent=fmtCur(grandTotal);
+    // Update overview stat
+    const ov=gi('statOutstanding');if(ov)ov.textContent=fmtCur(grandTotal);
+    // Contractors table
+    const ctb=gi('balContractorsBody');
+    if(ctb){
+        if(ctrBal.length){hide('balContractorsEmpty');show('balContractorsTable');
+            ctb.innerHTML=ctrBal.map((b,i)=>`<tr><td>${toAr(i+1)}</td><td><strong>${b.name}</strong></td><td>${itemBadge(b.item)}</td><td class="amount-cell">${fmtCur(b.extractTotal)}</td><td class="amount-cell">${fmtCur(b.paidTotal)}</td><td class="amount-cell" style="color:${b.remaining>0?'#ff9100':b.remaining<0?'#00e676':'inherit'};font-weight:700;">${fmtCur(b.remaining)}</td></tr>`).join('');
+            ctb.innerHTML+=`<tr class="total-row"><td colspan="3" style="text-align:center;font-weight:700;">\u0625\u062c\u0645\u0627\u0644\u064a</td><td class="amount-cell">${fmtCur(ctrBal.reduce((s,b)=>s+b.extractTotal,0))}</td><td class="amount-cell">${fmtCur(ctrBal.reduce((s,b)=>s+b.paidTotal,0))}</td><td class="amount-cell" style="font-weight:800;color:#ff9100;">${fmtCur(ctrTotal)}</td></tr>`;
+        } else {ctb.innerHTML='';show('balContractorsEmpty');hide('balContractorsTable');}
+    }
+    // Suppliers table
+    const stb=gi('balSuppliersBody');
+    if(stb){
+        if(supBal.length){hide('balSuppliersEmpty');show('balSuppliersTable');
+            stb.innerHTML=supBal.map((b,i)=>`<tr><td>${toAr(i+1)}</td><td><strong>${b.name}</strong></td><td>${itemBadge(b.item)}</td><td class="amount-cell">${fmtCur(b.extractTotal)}</td><td class="amount-cell">${fmtCur(b.paidTotal)}</td><td class="amount-cell" style="color:${b.remaining>0?'#ff9100':b.remaining<0?'#00e676':'inherit'};font-weight:700;">${fmtCur(b.remaining)}</td></tr>`).join('');
+            stb.innerHTML+=`<tr class="total-row"><td colspan="3" style="text-align:center;font-weight:700;">\u0625\u062c\u0645\u0627\u0644\u064a</td><td class="amount-cell">${fmtCur(supBal.reduce((s,b)=>s+b.extractTotal,0))}</td><td class="amount-cell">${fmtCur(supBal.reduce((s,b)=>s+b.paidTotal,0))}</td><td class="amount-cell" style="font-weight:800;color:#ff9100;">${fmtCur(supTotal)}</td></tr>`;
+        } else {stb.innerHTML='';show('balSuppliersEmpty');hide('balSuppliersTable');}
+    }
+}
+
+function buildBalancesPrintHTML(){
+    const all=calcBalances();
+    const ctrBal=all.filter(b=>b.type==='contractor');
+    const supBal=all.filter(b=>b.type==='supplier');
+    const ctrTotal=ctrBal.reduce((s,b)=>s+b.remaining,0);
+    const supTotal=supBal.reduce((s,b)=>s+b.remaining,0);
+    const th='padding:6px;border:1px solid #bbb;text-align:center;font-size:11px;';
+    const td='padding:5px;border:1px solid #ddd;text-align:center;font-size:10px;';
+    const buildTable=(title,data,total)=>{
+        if(!data.length) return '';
+        return `<h3 style="margin:15px 0 5px;">${title}</h3>
+        <table style="width:100%;border-collapse:collapse;margin-bottom:10px;">
+            <thead><tr style="background:#e0e0e0;">${['\u0645','\u0627\u0644\u0627\u0633\u0645','\u0627\u0644\u0628\u0646\u062f','\u0642\u064a\u0645\u0629 \u0627\u0644\u0645\u0633\u062a\u062e\u0644\u0635\u0627\u062a','\u0625\u062c\u0645\u0627\u0644\u064a \u0627\u0644\u0645\u062f\u0641\u0648\u0639','\u0627\u0644\u0631\u0635\u064a\u062f \u0627\u0644\u0645\u0633\u062a\u062d\u0642'].map(h=>`<th style="${th}">${h}</th>`).join('')}</tr></thead>
+            <tbody>${data.map((b,i)=>`<tr>${[toAr(i+1),b.name,b.item,fmtCur(b.extractTotal),fmtCur(b.paidTotal),fmtCur(b.remaining)].map(c=>`<td style="${td}">${c}</td>`).join('')}</tr>`).join('')}</tbody>
+            <tfoot><tr style="background:#f0f0f0;font-weight:bold;"><td colspan="3" style="${th}">\u0625\u062c\u0645\u0627\u0644\u064a</td><td style="${th}">${fmtCur(data.reduce((s,b)=>s+b.extractTotal,0))}</td><td style="${th}">${fmtCur(data.reduce((s,b)=>s+b.paidTotal,0))}</td><td style="${th};color:#c00;">${fmtCur(total)}</td></tr></tfoot>
+        </table>`;
+    };
+    return `<div style="font-family:Cairo,sans-serif;direction:rtl;padding:15px;color:#333;">
+        <h3 style="text-align:center;margin:0 0 2px;font-size:13px;">\u0634\u0631\u0643\u0629 \u0627\u0644\u0631\u062d\u0627\u0628 \u0644\u0644\u0645\u0642\u0627\u0648\u0644\u0627\u062a \u0627\u0644\u0639\u0645\u0648\u0645\u064a\u0647 (\u0648\u0631\u062b\u0629 \u0633\u064a\u062f \u062a\u0647\u0627\u0645\u0649)</h3>
+        <h3 style="text-align:center;margin:0 0 4px;font-size:12px;">\u0627\u0644\u0645\u0634\u0631\u0648\u0639 : \u0627\u0644\u062a\u0648\u0633\u0639\u0627\u062a \u0627\u0644\u062c\u0646\u0648\u0628\u064a\u0647</h3>
+        <h2 style="text-align:center;border-bottom:2px solid #333;padding-bottom:8px;font-size:16px;">\u0627\u0644\u0623\u0631\u0635\u062f\u0629 \u0627\u0644\u062f\u0627\u0626\u0646\u0629 \u0627\u0644\u0645\u0633\u062a\u062d\u0642\u0629</h2>
+        ${buildTable('\ud83d\udc77 \u0623\u0631\u0635\u062f\u0629 \u0627\u0644\u0645\u0642\u0627\u0648\u0644\u064a\u0646',ctrBal,ctrTotal)}
+        ${buildTable('\ud83d\ude9a \u0623\u0631\u0635\u062f\u0629 \u0627\u0644\u0645\u0648\u0631\u062f\u064a\u0646',supBal,supTotal)}
+        <div style="text-align:center;margin-top:15px;font-size:14px;font-weight:800;border:2px solid #333;padding:10px;">\u0625\u062c\u0645\u0627\u0644\u064a \u0627\u0644\u0623\u0631\u0635\u062f\u0629 \u0627\u0644\u062f\u0627\u0626\u0646\u0629 \u0627\u0644\u0645\u0633\u062a\u062d\u0642\u0629: ${fmtCur(ctrTotal+supTotal)}</div>
+    </div>`;
+}
+
+function printBalances(){
+    const html=buildBalancesPrintHTML();
+    const w=window.open('','_blank','width=1100,height=700');
+    w.document.write(`<html dir="rtl"><head><title>\u0627\u0644\u0623\u0631\u0635\u062f\u0629 \u0627\u0644\u062f\u0627\u0626\u0646\u0629 \u0627\u0644\u0645\u0633\u062a\u062d\u0642\u0629</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact}}</style></head><body>${html}<script>setTimeout(()=>window.print(),500)<\/script></body></html>`);
+    w.document.close();
+}
+
+function saveBalancesPDF(){
+    const html=buildBalancesPrintHTML();
+    const container=document.createElement('div');container.innerHTML=html;document.body.appendChild(container);
+    html2pdf().set({margin:5,filename:'\u0627\u0644\u0623\u0631\u0635\u062f\u0629 \u0627\u0644\u062f\u0627\u0626\u0646\u0629 \u0627\u0644\u0645\u0633\u062a\u062d\u0642\u0629.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,useCORS:true,scrollY:0},jsPDF:{unit:'mm',format:'a4',orientation:'landscape'}}).from(container).save().then(()=>document.body.removeChild(container));
+}
+
+// ========================================
 // CHARTS
 // ========================================
 function renderCharts(){
@@ -1374,3 +1479,4 @@ window.openNewSupExtractModal=openNewSupExtractModal;window.addSupExtractRow=add
 window.updateSupExtractRow=updateSupExtractRow;window.saveCurrentSupExtract=saveCurrentSupExtract;window.deleteCurrentSupExtract=deleteCurrentSupExtract;
 window.printSupExtract=printSupExtract;window.saveSupExtractPDF=saveSupExtractPDF;
 window.printPayments=printPayments;window.savePaymentsPDF=savePaymentsPDF;window.onPaymentItemFilterChange=onPaymentItemFilterChange;
+window.printBalances=printBalances;window.saveBalancesPDF=saveBalancesPDF;
