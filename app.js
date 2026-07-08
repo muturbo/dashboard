@@ -547,7 +547,7 @@ function renderContractors(){
                 <table class="data-table"><thead><tr><th style="width:40px">م</th><th>اسم المقاول</th><th>إجمالي المدفوع</th><th style="width:180px">إجراء</th></tr></thead>
                 <tbody>${ctrs.map((c,ci)=>{
                     const t=totals[c.name+'|'+c.item]||0;
-                    return `<tr style="animation-delay:${ci*0.02}s"><td>${ci+1}</td><td><strong>${c.name}</strong></td><td class="amount-cell">${fmtCur(t)}</td>
+                    return `<tr style="animation-delay:${ci*0.02}s"><td>${toAr(ci+1)}</td><td><strong>${c.name}</strong></td><td class="amount-cell">${fmtCur(t)}</td>
                     <td class="action-buttons">
                         <button class="btn btn-reorder" onclick="moveContractor(${c.id},-1)" ${ci===0?'disabled':''}>▲</button>
                         <button class="btn btn-reorder" onclick="moveContractor(${c.id},1)" ${ci===ctrs.length-1?'disabled':''}>▼</button>
@@ -566,15 +566,70 @@ function renderContractors(){
 // PAYMENTS
 // ========================================
 function renderPayments(){
-    const search=gv('paymentSearch').trim().toLowerCase(),itemF=gv('paymentItemFilter'),df=gv('dateFrom'),dt=gv('dateTo');
+    const search=gv('paymentSearch').trim().toLowerCase(),itemF=gv('paymentItemFilter'),ctrF=gv('paymentContractorFilter')||'',df=gv('dateFrom'),dt=gv('dateTo');
     let fil=payments.filter(p=>{
         return(!search||p.contractor.toLowerCase().includes(search)||p.item.toLowerCase().includes(search)||(p.notes&&p.notes.toLowerCase().includes(search))||(p.checkNo&&p.checkNo.toLowerCase().includes(search)))
-        &&(!itemF||p.item===itemF)&&(!df||p.date>=df)&&(!dt||p.date<=dt);
+        &&(!itemF||p.item===itemF)&&(!ctrF||p.contractor===ctrF)&&(!df||p.date>=df)&&(!dt||p.date<=dt);
     }).sort((a,b)=>new Date(b.date)-new Date(a.date));
-    gi('paymentsCount').textContent=`${fil.length} دفعة`;
+    const totalAmount=fil.reduce((s,p)=>s+p.amount,0);
+    gi('paymentsCount').textContent=toAr(fil.length)+' دفعة';
+    const totalEl=gi('paymentsTotalAmount');if(totalEl)totalEl.textContent=fmtCur(totalAmount);
     const tb=gi('paymentsBody'),em=gi('paymentsEmpty');
     if(!fil.length){tb.innerHTML='';show('paymentsEmpty');hide('paymentsTable');}
-    else{hide('paymentsEmpty');show('paymentsTable');tb.innerHTML=fil.map((p,i)=>`<tr style="animation-delay:${Math.min(i*0.02,0.5)}s"><td>${i+1}</td><td><strong>${p.contractor}</strong></td><td>${itemBadge(p.item)}</td><td class="amount-cell">${fmtCur(p.amount)}</td><td class="date-cell">${fmtDate(p.date)}</td><td>${p.checkNo||'—'}</td><td>${p.notes||'—'}</td><td><button class="btn btn-icon-only btn-delete" onclick="confirmDeletePayment(${p.id})" title="حذف">🗑️</button></td></tr>`).join('');}
+    else{hide('paymentsEmpty');show('paymentsTable');tb.innerHTML=fil.map((p,i)=>`<tr style="animation-delay:${Math.min(i*0.02,0.5)}s"><td>${toAr(i+1)}</td><td><strong>${p.contractor}</strong></td><td>${itemBadge(p.item)}</td><td class="amount-cell">${fmtCur(p.amount)}</td><td class="date-cell">${fmtDate(p.date)}</td><td>${p.checkNo||'—'}</td><td>${p.notes||'—'}</td><td><button class="btn btn-icon-only btn-delete" onclick="confirmDeletePayment(${p.id})" title="حذف">🗑️</button></td></tr>`).join('');}
+}
+
+function onPaymentItemFilterChange(){
+    const itemF=gv('paymentItemFilter');
+    const sel=gi('paymentContractorFilter');if(!sel)return;
+    sel.innerHTML='<option value="">\u0643\u0644 \u0627\u0644\u0645\u0642\u0627\u0648\u0644\u064a\u0646/\u0627\u0644\u0645\u0648\u0631\u062f\u064a\u0646</option>';
+    if(itemF){
+        const names=[...new Set(contractors.filter(c=>c.item===itemF).map(c=>c.name))];
+        names.forEach(n=>{const o=document.createElement('option');o.value=n;o.textContent=n;sel.appendChild(o);});
+    }
+    sel.disabled=!itemF;
+    renderPayments();
+}
+
+function printPayments(){
+    const itemF=gv('paymentItemFilter'),ctrF=gv('paymentContractorFilter')||'',df=gv('dateFrom'),dt=gv('dateTo');
+    let fil=payments.filter(p=>(!itemF||p.item===itemF)&&(!ctrF||p.contractor===ctrF)&&(!df||p.date>=df)&&(!dt||p.date<=dt)).sort((a,b)=>new Date(b.date)-new Date(a.date));
+    const total=fil.reduce((s,p)=>s+p.amount,0);
+    const th='padding:8px;border:1px solid #bbb;text-align:center;font-size:12px;';
+    const td='padding:6px;border:1px solid #ddd;text-align:center;font-size:11px;';
+    const title=ctrF?`\u0643\u0634\u0641 \u062f\u0641\u0639\u0627\u062a - ${ctrF}`+(itemF?` (${itemF})`:''):itemF?`\u0643\u0634\u0641 \u062f\u0641\u0639\u0627\u062a - ${itemF}`:'\u0643\u0634\u0641 \u062c\u0645\u064a\u0639 \u0627\u0644\u062f\u0641\u0639\u0627\u062a';
+    const html=`<div style="font-family:Cairo,sans-serif;direction:rtl;padding:20px;color:#333;">
+        <h2 style="text-align:center;margin:0 0 2px;color:#555;font-size:15px;">\u0634\u0631\u0643\u0629 \u0627\u0644\u0631\u062d\u0627\u0628 \u0644\u0644\u0645\u0642\u0627\u0648\u0644\u0627\u062a \u0627\u0644\u0639\u0645\u0648\u0645\u064a\u0647 (\u0648\u0631\u062b\u0629 \u0633\u064a\u062f \u062a\u0647\u0627\u0645\u0649)</h2>
+        <h2 style="text-align:center;margin:0 0 5px;color:#555;">\u0627\u0644\u0645\u0634\u0631\u0648\u0639 : \u0627\u0644\u062a\u0648\u0633\u0639\u0627\u062a \u0627\u0644\u062c\u0646\u0648\u0628\u064a\u0647</h2>
+        <h1 style="text-align:center;border-bottom:3px solid #333;padding-bottom:10px;">${title}</h1>
+        <table style="width:100%;border-collapse:collapse;margin:20px 0;">
+            <thead><tr style="background:#e0e0e0;">${['\u0645','\u0627\u0644\u0645\u0642\u0627\u0648\u0644/\u0627\u0644\u0645\u0648\u0631\u062f','\u0627\u0644\u0628\u0646\u062f','\u0627\u0644\u0645\u0628\u0644\u063a','\u0627\u0644\u062a\u0627\u0631\u064a\u062e','\u0627\u0644\u0645\u0631\u062c\u0639','\u0645\u0644\u0627\u062d\u0638\u0627\u062a'].map(h=>`<th style="${th}">${h}</th>`).join('')}</tr></thead>
+            <tbody>${fil.map((p,i)=>`<tr>${[toAr(i+1),p.contractor,p.item,fmtCur(p.amount),fmtDate(p.date),p.checkNo||'\u2014',p.notes||'\u2014'].map(c=>`<td style="${td}">${c}</td>`).join('')}</tr>`).join('')}</tbody>
+            <tfoot><tr style="background:#f0f0f0;font-weight:bold;"><td colspan="3" style="${th}">\u0625\u062c\u0645\u0627\u0644\u064a \u0627\u0644\u062f\u0641\u0639\u0627\u062a</td><td style="${th}">${fmtCur(total)}</td><td colspan="3" style="${th}">${toAr(fil.length)} \u062f\u0641\u0639\u0629</td></tr></tfoot>
+        </table></div>`;
+    const w=window.open('','_blank','width=1100,height=700');
+    w.document.write(`<html dir="rtl"><head><title>${title}</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact}}</style></head><body>${html}<script>setTimeout(()=>window.print(),500)<\/script></body></html>`);
+    w.document.close();
+}
+
+function savePaymentsPDF(){
+    const itemF=gv('paymentItemFilter'),ctrF=gv('paymentContractorFilter')||'',df=gv('dateFrom'),dt=gv('dateTo');
+    let fil=payments.filter(p=>(!itemF||p.item===itemF)&&(!ctrF||p.contractor===ctrF)&&(!df||p.date>=df)&&(!dt||p.date<=dt)).sort((a,b)=>new Date(b.date)-new Date(a.date));
+    const total=fil.reduce((s,p)=>s+p.amount,0);
+    const th='padding:6px;border:1px solid #bbb;text-align:center;font-size:11px;';
+    const td='padding:5px;border:1px solid #ddd;text-align:center;font-size:10px;';
+    const title=ctrF?`\u0643\u0634\u0641 \u062f\u0641\u0639\u0627\u062a - ${ctrF}`+(itemF?` (${itemF})`:''):itemF?`\u0643\u0634\u0641 \u062f\u0641\u0639\u0627\u062a - ${itemF}`:'\u0643\u0634\u0641 \u062c\u0645\u064a\u0639 \u0627\u0644\u062f\u0641\u0639\u0627\u062a';
+    const pdfHtml=`<div style="font-family:Cairo,sans-serif;direction:rtl;padding:15px;color:#333;">
+        <h3 style="text-align:center;margin:0 0 2px;font-size:13px;">\u0634\u0631\u0643\u0629 \u0627\u0644\u0631\u062d\u0627\u0628 \u0644\u0644\u0645\u0642\u0627\u0648\u0644\u0627\u062a \u0627\u0644\u0639\u0645\u0648\u0645\u064a\u0647 (\u0648\u0631\u062b\u0629 \u0633\u064a\u062f \u062a\u0647\u0627\u0645\u0649)</h3>
+        <h3 style="text-align:center;margin:0 0 4px;font-size:12px;">\u0627\u0644\u0645\u0634\u0631\u0648\u0639 : \u0627\u0644\u062a\u0648\u0633\u0639\u0627\u062a \u0627\u0644\u062c\u0646\u0648\u0628\u064a\u0647</h3>
+        <h2 style="text-align:center;border-bottom:2px solid #333;padding-bottom:8px;font-size:16px;">${title}</h2>
+        <table style="width:100%;border-collapse:collapse;margin:15px 0;">
+            <thead><tr style="background:#e0e0e0;">${['\u0645','\u0627\u0644\u0645\u0642\u0627\u0648\u0644/\u0627\u0644\u0645\u0648\u0631\u062f','\u0627\u0644\u0628\u0646\u062f','\u0627\u0644\u0645\u0628\u0644\u063a','\u0627\u0644\u062a\u0627\u0631\u064a\u062e','\u0627\u0644\u0645\u0631\u062c\u0639','\u0645\u0644\u0627\u062d\u0638\u0627\u062a'].map(h=>`<th style="${th}">${h}</th>`).join('')}</tr></thead>
+            <tbody>${fil.map((p,i)=>`<tr>${[toAr(i+1),p.contractor,p.item,fmtCur(p.amount),fmtDate(p.date),p.checkNo||'\u2014',p.notes||'\u2014'].map(c=>`<td style="${td}">${c}</td>`).join('')}</tr>`).join('')}</tbody>
+            <tfoot><tr style="background:#f0f0f0;font-weight:bold;"><td colspan="3" style="${th}">\u0625\u062c\u0645\u0627\u0644\u064a \u0627\u0644\u062f\u0641\u0639\u0627\u062a</td><td style="${th}">${fmtCur(total)}</td><td colspan="3" style="${th}">${toAr(fil.length)} \u062f\u0641\u0639\u0629</td></tr></tfoot>
+        </table></div>`;
+    const container=document.createElement('div');container.innerHTML=pdfHtml;document.body.appendChild(container);
+    html2pdf().set({margin:5,filename:`${title}.pdf`,image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,useCORS:true,scrollY:0},jsPDF:{unit:'mm',format:'a4',orientation:'landscape'}}).from(container).save().then(()=>document.body.removeChild(container));
 }
 
 // ========================================
@@ -587,10 +642,10 @@ function renderStatement(){
     gi('statementName').textContent=ctr;gi('statementItemBadge').textContent=item;
     const cp=payments.filter(p=>p.contractor===ctr&&p.item===item).sort((a,b)=>new Date(a.date)-new Date(b.date));
     const total=cp.reduce((s,p)=>s+p.amount,0);
-    gi('statementTotal').textContent=fmtCur(total);gi('statementPayCount').textContent=cp.length.toLocaleString('ar-EG');
+    gi('statementTotal').textContent=fmtCur(total);gi('statementPayCount').textContent=toAr(cp.length);
     const tb=gi('statementBody'),em=gi('statementEmpty');
     if(!cp.length){tb.innerHTML='';show('statementEmpty');hide('statementTable');}
-    else{hide('statementEmpty');show('statementTable');tb.innerHTML=cp.map((p,i)=>`<tr style="animation-delay:${i*0.05}s"><td>${i+1}</td><td class="amount-cell">${fmtCur(p.amount)}</td><td class="date-cell">${fmtDate(p.date)}</td><td>${p.checkNo||'—'}</td><td>${p.notes||'—'}</td></tr>`).join('');}
+    else{hide('statementEmpty');show('statementTable');tb.innerHTML=cp.map((p,i)=>`<tr style="animation-delay:${i*0.05}s"><td>${toAr(i+1)}</td><td class="amount-cell">${fmtCur(p.amount)}</td><td class="date-cell">${fmtDate(p.date)}</td><td>${p.checkNo||'—'}</td><td>${p.notes||'—'}</td></tr>`).join('');}
 }
 function viewStatement(item,ctr){
     navigateTo('statement');gi('statementItem').value=item;fillContractorDD('statementContractor',item);
@@ -983,7 +1038,7 @@ function renderSuppliers(){
                 <table class="data-table"><thead><tr><th style="width:40px">م</th><th>اسم المورد</th><th>إجمالي المدفوع</th><th style="width:180px">إجراء</th></tr></thead>
                 <tbody>${sups.map((c,ci)=>{
                     const t=totals[c.name+'|'+c.item]||0;
-                    return `<tr style="animation-delay:${ci*0.02}s"><td>${ci+1}</td><td><strong>${c.name}</strong></td><td class="amount-cell">${fmtCur(t)}</td>
+                    return `<tr style="animation-delay:${ci*0.02}s"><td>${toAr(ci+1)}</td><td><strong>${c.name}</strong></td><td class="amount-cell">${fmtCur(t)}</td>
                     <td class="action-buttons">
                         <button class="btn btn-reorder" onclick="moveContractor(${c.id},-1)" ${ci===0?'disabled':''}>▲</button>
                         <button class="btn btn-reorder" onclick="moveContractor(${c.id},1)" ${ci===sups.length-1?'disabled':''}>▼</button>
@@ -1298,11 +1353,11 @@ function esc(s){return s.replace(/'/g,"\\'").replace(/"/g,'&quot;');}
 function toAr(s){return String(s).replace(/[0-9]/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);}
 function fmtCur(a){return a===0?'٠ ج.م':toAr(a.toLocaleString('en',{minimumFractionDigits:0,maximumFractionDigits:2}))+' ج.م';}
 function fmtNum(n){return n===0?'٠':toAr(n.toLocaleString('en',{minimumFractionDigits:0,maximumFractionDigits:2}));}
-function fmtCompact(n){if(n>=1e6)return(n/1e6).toFixed(1)+'M';if(n>=1e3)return(n/1e3).toFixed(0)+'K';return n;}
-function fmtDate(d){if(!d)return '—';const dt=new Date(d);if(isNaN(dt))return String(d);return dt.toLocaleDateString('ar-EG',{year:'numeric',month:'short',day:'numeric'});}
+function fmtCompact(n){if(n>=1e6)return toAr((n/1e6).toFixed(1))+'م';if(n>=1e3)return toAr((n/1e3).toFixed(0))+'أ';return toAr(n);}
+function fmtDate(d){if(!d)return '—';d=String(d);var r;if(d.includes('/'))r=toAr(d);else if(/^\d{4}-\d{2}-\d{2}/.test(d)){const p=d.split('-');r=toAr(parseInt(p[2])+'/'+parseInt(p[1])+'/'+p[0]);}else r=toAr(d);return '\u2066'+r+'\u2069';}
 function itemBadge(item){return `<span class="item-badge"><span class="item-dot" style="background:${getColor(item)}"></span>${item}</span>`;}
-function setDate(){const el=gi('currentDate');if(el)el.textContent=new Date().toLocaleDateString('ar-EG',{weekday:'long',year:'numeric',month:'long',day:'numeric'});}
-function animCount(id,target){const el=gi(id);if(!el)return;const s=parseInt(el.textContent)||0,dur=800,st=performance.now();function u(t){const p=Math.min((t-st)/dur,1);el.textContent=Math.round(s+(target-s)*(1-Math.pow(1-p,3))).toLocaleString('ar-EG');if(p<1)requestAnimationFrame(u);}requestAnimationFrame(u);}
+function setDate(){const el=gi('currentDate');if(!el)return;const n=new Date(),days=['\u0627\u0644\u0623\u062d\u062f','\u0627\u0644\u0627\u062b\u0646\u064a\u0646','\u0627\u0644\u062b\u0644\u0627\u062b\u0627\u0621','\u0627\u0644\u0623\u0631\u0628\u0639\u0627\u0621','\u0627\u0644\u062e\u0645\u064a\u0633','\u0627\u0644\u062c\u0645\u0639\u0629','\u0627\u0644\u0633\u0628\u062a'];el.textContent=days[n.getDay()]+' '+toAr(n.getDate()+'/'+( n.getMonth()+1)+'/'+n.getFullYear());}
+function animCount(id,target){const el=gi(id);if(!el)return;const s=parseInt(el.textContent)||0,dur=800,st=performance.now();function u(t){const p=Math.min((t-st)/dur,1);el.textContent=toAr(Math.round(s+(target-s)*(1-Math.pow(1-p,3))).toLocaleString('en'));if(p<1)requestAnimationFrame(u);}requestAnimationFrame(u);}
 function showToast(msg,type='info'){const c=gi('toastContainer'),t=document.createElement('div');t.className=`toast ${type}`;t.textContent=msg;c.appendChild(t);setTimeout(()=>{t.classList.add('removing');setTimeout(()=>t.remove(),300);},3500);}
 
 // Global
@@ -1318,3 +1373,4 @@ window.submitAddSupplier=submitAddSupplier;window.submitAddSupplyItem=submitAddS
 window.openNewSupExtractModal=openNewSupExtractModal;window.addSupExtractRow=addSupExtractRow;window.removeSupExtractRow=removeSupExtractRow;
 window.updateSupExtractRow=updateSupExtractRow;window.saveCurrentSupExtract=saveCurrentSupExtract;window.deleteCurrentSupExtract=deleteCurrentSupExtract;
 window.printSupExtract=printSupExtract;window.saveSupExtractPDF=saveSupExtractPDF;
+window.printPayments=printPayments;window.savePaymentsPDF=savePaymentsPDF;window.onPaymentItemFilterChange=onPaymentItemFilterChange;
