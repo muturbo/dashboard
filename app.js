@@ -41,11 +41,15 @@ const SK = {
     payments: 'sc_payments_v3',
     extracts: 'sc_extracts_v3',
     supplierExtracts: 'sc_supplierExtracts_v3',
-    supplyItemsList: 'sc_supplyItemsList_v1'
+    supplyItemsList: 'sc_supplyItemsList_v1',
+    expenses: 'sc_expenses_v1',
+    revenue: 'sc_revenue_v1'
 };
 
 let items=[], contractors=[], payments=[], extracts=[];
 let supplierExtracts=[];
+let expenses=[];
+let revenue=[];
 let supplyItemsList=[...DEFAULT_SUPPLY_ITEMS];
 let pieChart=null, barChart=null;
 let deleteTarget=null, deleteType='', editTarget=null, editItemTarget=null;
@@ -67,6 +71,8 @@ function saveToCache(){
     saveLocal(SK.extracts,extracts);
     saveLocal(SK.supplierExtracts,supplierExtracts);
     saveLocal(SK.supplyItemsList,supplyItemsList);
+    saveLocal(SK.expenses,expenses);
+    saveLocal(SK.revenue,revenue);
 }
 
 // Firebase URL
@@ -76,7 +82,7 @@ const FIREBASE_URL='https://dashboard-77bb2-default-rtdb.firebaseio.com';
 async function saveToServer(){
     if(!isServerMode) return;
     try{
-        const data={items,contractors,payments,extracts,supplierExtracts,supplyItemsList};
+        const data={items,contractors,payments,extracts,supplierExtracts,supplyItemsList,expenses,revenue};
         await fetch(FIREBASE_URL+'/data.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
         lastSyncHash=JSON.stringify(data);
         showSyncStatus('synced');
@@ -97,6 +103,8 @@ async function loadFromServer(){
         if(data.extracts)extracts=data.extracts;
         if(data.supplierExtracts)supplierExtracts=data.supplierExtracts;
         if(data.supplyItemsList)supplyItemsList=data.supplyItemsList;
+        if(data.expenses)expenses=data.expenses;
+        if(data.revenue)revenue=data.revenue;
         lastSyncHash=JSON.stringify(data);
         saveToCache();
         showSyncStatus('synced');
@@ -124,6 +132,8 @@ async function autoSync(){
             payments=data.payments||payments;
             extracts=data.extracts||extracts;
             supplierExtracts=data.supplierExtracts||supplierExtracts;
+            expenses=data.expenses||expenses;
+            revenue=data.revenue||revenue;
             saveToCache();
             populateDropdowns();
             renderAll();
@@ -191,6 +201,8 @@ document.addEventListener('DOMContentLoaded',async()=>{
         extracts=loadLocal(SK.extracts,[]);
         supplierExtracts=loadLocal(SK.supplierExtracts,[]);
         supplyItemsList=loadLocal(SK.supplyItemsList,[...DEFAULT_SUPPLY_ITEMS]);
+        expenses=loadLocal(SK.expenses,[]);
+        revenue=loadLocal(SK.revenue,[]);
     }
     initDefaults();
     initNav(); initSidebar(); populateDropdowns(); initForms(); initModals(); initSorting(); initSupplierListeners();
@@ -444,6 +456,12 @@ function initModals(){
             if(ci&&cc)onExtractContractorChange();
             showToast('🗑️ تم حذف المستخلص','info');
         }
+        else if(deleteType==='expense'){
+            expenses=expenses.filter(e=>e.id!==deleteTarget);save();showToast('🗑️ تم حذف المصروف','info');
+        }
+        else if(deleteType==='revenue'){
+            revenue=revenue.filter(r=>r.id!==deleteTarget);save();showToast('🗑️ تم حذف الإيراد','info');
+        }
         renderAll();closeModal('deleteModal');deleteTarget=null;deleteType='';
     });
     gi('cancelDelete').addEventListener('click',()=>closeModal('deleteModal'));
@@ -465,23 +483,25 @@ function initSorting(){
 // ========================================
 // RENDER ALL
 // ========================================
-function renderAll(){renderOverview();renderContractors();renderSuppliers();renderPayments();renderCharts();renderSpending();renderBalances();}
+function renderAll(){renderOverview();renderContractors();renderSuppliers();renderPayments();renderCharts();renderSpending();renderBalances();renderExpenses();renderRevenue();renderFinancialSummary();}
 
 // ========================================
 // OVERVIEW
 // ========================================
 function renderOverview(){
-    const ctrOnly=contractors.filter(c=>!DEFAULT_SUPPLY_ITEMS.includes(c.item));
-    const supOnly=contractors.filter(c=>DEFAULT_SUPPLY_ITEMS.includes(c.item));
+    const ctrOnly=contractors.filter(c=>!isSupplyItem(c.item));
+    const supOnly=contractors.filter(c=>isSupplyItem(c.item));
     animCount('statContractors',ctrOnly.length);
-    const tp=payments.reduce((s,p)=>s+p.amount,0);
-    gi('statTotalPaid').textContent=fmtCur(tp);
-    animCount('statActiveItems',new Set(payments.map(p=>p.item)).size);
-    animCount('statPaymentCount',payments.length);
-    // Supplier stats
     animCount('statSuppliers',supOnly.length);
-    const supPayTotal=payments.filter(p=>DEFAULT_SUPPLY_ITEMS.includes(p.item)).reduce((s,p)=>s+p.amount,0);
-    const el=gi('statSupplierPaid');if(el)el.textContent=fmtCur(supPayTotal);
+    // Contractor payments
+    const ctrPayTotal=payments.filter(p=>!isSupplyItem(p.item)).reduce((s,p)=>s+p.amount,0);
+    const ctrEl=gi('statContractorPaid');if(ctrEl)ctrEl.textContent=fmtCur(ctrPayTotal);
+    // Supplier payments
+    const supPayTotal=payments.filter(p=>isSupplyItem(p.item)).reduce((s,p)=>s+p.amount,0);
+    const supEl=gi('statSupplierPaid');if(supEl)supEl.textContent=fmtCur(supPayTotal);
+    // Grand total
+    const tp=ctrPayTotal+supPayTotal;
+    gi('statTotalPaid').textContent=fmtCur(tp);
     // Recent 5
     const recent=[...payments].sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,5);
     const tb=gi('recentBody'),em=gi('recentEmpty');
@@ -577,7 +597,7 @@ function renderPayments(){
     const totalEl=gi('paymentsTotalAmount');if(totalEl)totalEl.textContent=fmtCur(totalAmount);
     const tb=gi('paymentsBody'),em=gi('paymentsEmpty');
     if(!fil.length){tb.innerHTML='';show('paymentsEmpty');hide('paymentsTable');}
-    else{hide('paymentsEmpty');show('paymentsTable');tb.innerHTML=fil.map((p,i)=>`<tr style="animation-delay:${Math.min(i*0.02,0.5)}s"><td>${toAr(i+1)}</td><td><strong>${p.contractor}</strong></td><td>${itemBadge(p.item)}</td><td class="amount-cell">${fmtCur(p.amount)}</td><td class="date-cell">${fmtDate(p.date)}</td><td>${p.checkNo||'—'}</td><td>${p.notes||'—'}</td><td><button class="btn btn-icon-only btn-delete" onclick="confirmDeletePayment(${p.id})" title="حذف">🗑️</button></td></tr>`).join('');}
+    else{hide('paymentsEmpty');show('paymentsTable');tb.innerHTML=fil.map((p,i)=>`<tr style="animation-delay:${Math.min(i*0.02,0.5)}s"><td>${toAr(i+1)}</td><td><strong>${p.contractor}</strong></td><td>${itemBadge(p.item)}</td><td class="amount-cell">${fmtCur(p.amount)}</td><td class="date-cell">${fmtDate(p.date)}</td><td>${p.checkNo?toAr(p.checkNo):'—'}</td><td>${p.notes||'—'}</td><td><button class="btn btn-icon-only btn-delete" onclick="confirmDeletePayment(${p.id})" title="حذف">🗑️</button></td></tr>`).join('');}
 }
 
 function onPaymentItemFilterChange(){
@@ -605,7 +625,7 @@ function printPayments(){
         <h1 style="text-align:center;border-bottom:3px solid #333;padding-bottom:10px;">${title}</h1>
         <table style="width:100%;border-collapse:collapse;margin:20px 0;">
             <thead><tr style="background:#e0e0e0;">${['\u0645','\u0627\u0644\u0645\u0642\u0627\u0648\u0644/\u0627\u0644\u0645\u0648\u0631\u062f','\u0627\u0644\u0628\u0646\u062f','\u0627\u0644\u0645\u0628\u0644\u063a','\u0627\u0644\u062a\u0627\u0631\u064a\u062e','\u0627\u0644\u0645\u0631\u062c\u0639','\u0645\u0644\u0627\u062d\u0638\u0627\u062a'].map(h=>`<th style="${th}">${h}</th>`).join('')}</tr></thead>
-            <tbody>${fil.map((p,i)=>`<tr>${[toAr(i+1),p.contractor,p.item,fmtCur(p.amount),fmtDate(p.date),p.checkNo||'\u2014',p.notes||'\u2014'].map(c=>`<td style="${td}">${c}</td>`).join('')}</tr>`).join('')}</tbody>
+            <tbody>${fil.map((p,i)=>`<tr>${[toAr(i+1),p.contractor,p.item,fmtCur(p.amount),fmtDate(p.date),p.checkNo?toAr(p.checkNo):'\u2014',p.notes||'\u2014'].map(c=>`<td style="${td}">${c}</td>`).join('')}</tr>`).join('')}</tbody>
             <tfoot><tr style="background:#f0f0f0;font-weight:bold;"><td colspan="3" style="${th}">\u0625\u062c\u0645\u0627\u0644\u064a \u0627\u0644\u062f\u0641\u0639\u0627\u062a</td><td style="${th}">${fmtCur(total)}</td><td colspan="3" style="${th}">${toAr(fil.length)} \u062f\u0641\u0639\u0629</td></tr></tfoot>
         </table></div>`;
     const w=window.open('','_blank','width=1100,height=700');
@@ -626,7 +646,7 @@ function savePaymentsPDF(){
         <h2 style="text-align:center;border-bottom:2px solid #333;padding-bottom:8px;font-size:16px;">${title}</h2>
         <table style="width:100%;border-collapse:collapse;margin:15px 0;">
             <thead><tr style="background:#e0e0e0;">${['\u0645','\u0627\u0644\u0645\u0642\u0627\u0648\u0644/\u0627\u0644\u0645\u0648\u0631\u062f','\u0627\u0644\u0628\u0646\u062f','\u0627\u0644\u0645\u0628\u0644\u063a','\u0627\u0644\u062a\u0627\u0631\u064a\u062e','\u0627\u0644\u0645\u0631\u062c\u0639','\u0645\u0644\u0627\u062d\u0638\u0627\u062a'].map(h=>`<th style="${th}">${h}</th>`).join('')}</tr></thead>
-            <tbody>${fil.map((p,i)=>`<tr>${[toAr(i+1),p.contractor,p.item,fmtCur(p.amount),fmtDate(p.date),p.checkNo||'\u2014',p.notes||'\u2014'].map(c=>`<td style="${td}">${c}</td>`).join('')}</tr>`).join('')}</tbody>
+            <tbody>${fil.map((p,i)=>`<tr>${[toAr(i+1),p.contractor,p.item,fmtCur(p.amount),fmtDate(p.date),p.checkNo?toAr(p.checkNo):'\u2014',p.notes||'\u2014'].map(c=>`<td style="${td}">${c}</td>`).join('')}</tr>`).join('')}</tbody>
             <tfoot><tr style="background:#f0f0f0;font-weight:bold;"><td colspan="3" style="${th}">\u0625\u062c\u0645\u0627\u0644\u064a \u0627\u0644\u062f\u0641\u0639\u0627\u062a</td><td style="${th}">${fmtCur(total)}</td><td colspan="3" style="${th}">${toAr(fil.length)} \u062f\u0641\u0639\u0629</td></tr></tfoot>
         </table></div>`;
     const container=document.createElement('div');container.innerHTML=pdfHtml;document.body.appendChild(container);
@@ -646,7 +666,7 @@ function renderStatement(){
     gi('statementTotal').textContent=fmtCur(total);gi('statementPayCount').textContent=toAr(cp.length);
     const tb=gi('statementBody'),em=gi('statementEmpty');
     if(!cp.length){tb.innerHTML='';show('statementEmpty');hide('statementTable');}
-    else{hide('statementEmpty');show('statementTable');tb.innerHTML=cp.map((p,i)=>`<tr style="animation-delay:${i*0.05}s"><td>${toAr(i+1)}</td><td class="amount-cell">${fmtCur(p.amount)}</td><td class="date-cell">${fmtDate(p.date)}</td><td>${p.checkNo||'—'}</td><td>${p.notes||'—'}</td></tr>`).join('');}
+    else{hide('statementEmpty');show('statementTable');tb.innerHTML=cp.map((p,i)=>`<tr style="animation-delay:${i*0.05}s"><td>${toAr(i+1)}</td><td class="amount-cell">${fmtCur(p.amount)}</td><td class="date-cell">${fmtDate(p.date)}</td><td>${p.checkNo?toAr(p.checkNo):'—'}</td><td>${p.notes||'—'}</td></tr>`).join('');}
 }
 function viewStatement(item,ctr){
     navigateTo('statement');gi('statementItem').value=item;fillContractorDD('statementContractor',item);
@@ -1319,6 +1339,162 @@ function saveSupExtractPDF(){
 }
 
 // ========================================
+// OPERATIONS EXPENSES (مصروفات العمليات)
+// ========================================
+function submitAddExpense(e){
+    e.preventDefault();
+    const date=gv('expenseDate'),desc=gv('expenseDescription').trim(),type=gv('expenseType');
+    const beneficiary=gv('expenseBeneficiary').trim(),amount=parseFloat(gv('expenseAmount'));
+    if(!date||!desc||!type||!beneficiary||!amount||amount<=0){showToast('⚠️ أكمل جميع البيانات','error');return;}
+    expenses.push({id:uid(),date,description:desc,type,beneficiary,amount,createdAt:new Date().toISOString()});
+    save();renderExpenses();
+    e.target.reset();
+    showToast('✅ تم تسجيل المصروف','success');
+}
+
+function renderExpenses(){
+    const total=expenses.reduce((s,e)=>s+e.amount,0);
+    // Update summary
+    const gt=gi('expensesGrandTotal');if(gt)gt.textContent=fmtCur(total);
+    const ec=gi('expensesCount');if(ec)ec.textContent=toAr(expenses.length);
+    // Update overview stat
+    const ov=gi('statExpenses');if(ov)ov.textContent=fmtCur(total);
+    // Table
+    const tb=gi('expensesBody');
+    if(!tb)return;
+    if(!expenses.length){tb.innerHTML='';show('expensesEmpty');hide('expensesTable');return;}
+    hide('expensesEmpty');show('expensesTable');
+    tb.innerHTML=expenses.map((e,i)=>`<tr style="animation-delay:${Math.min(i*0.02,0.5)}s"><td>${toAr(i+1)}</td><td class="date-cell">${fmtDate(e.date)}</td><td>${e.description}</td><td>${itemBadge(e.type)}</td><td><strong>${e.beneficiary}</strong></td><td class="amount-cell">${fmtCur(e.amount)}</td><td><button class="btn btn-icon-only btn-delete" onclick="confirmDeleteExpense(${e.id})" title="حذف">🗑️</button></td></tr>`).join('');
+    // Total row
+    tb.innerHTML+=`<tr class="total-row"><td colspan="5" style="text-align:center;font-weight:700;">\u0625\u062c\u0645\u0627\u0644\u064a</td><td class="amount-cell" style="font-weight:800;">${fmtCur(total)}</td><td></td></tr>`;
+}
+
+function confirmDeleteExpense(id){
+    deleteTarget=id;deleteType='expense';
+    gi('deleteModalText').innerHTML='هل تريد حذف هذا المصروف؟';
+    openModal('deleteModal');
+}
+
+function buildExpensesPrintHTML(){
+    const total=expenses.reduce((s,e)=>s+e.amount,0);
+    const th='padding:6px;border:1px solid #bbb;text-align:center;font-size:11px;';
+    const td='padding:5px;border:1px solid #ddd;text-align:center;font-size:10px;';
+    return `<div style="font-family:Cairo,sans-serif;direction:rtl;padding:15px;color:#333;">
+        <h3 style="text-align:center;margin:0 0 2px;font-size:13px;">\u0634\u0631\u0643\u0629 \u0627\u0644\u0631\u062d\u0627\u0628 \u0644\u0644\u0645\u0642\u0627\u0648\u0644\u0627\u062a \u0627\u0644\u0639\u0645\u0648\u0645\u064a\u0647 (\u0648\u0631\u062b\u0629 \u0633\u064a\u062f \u062a\u0647\u0627\u0645\u0649)</h3>
+        <h3 style="text-align:center;margin:0 0 4px;font-size:12px;">\u0627\u0644\u0645\u0634\u0631\u0648\u0639 : \u0627\u0644\u062a\u0648\u0633\u0639\u0627\u062a \u0627\u0644\u062c\u0646\u0648\u0628\u064a\u0647</h3>
+        <h2 style="text-align:center;border-bottom:2px solid #333;padding-bottom:8px;font-size:16px;">\u0645\u0635\u0631\u0648\u0641\u0627\u062a \u0627\u0644\u0639\u0645\u0644\u064a\u0627\u062a</h2>
+        <table style="width:100%;border-collapse:collapse;margin:15px 0;">
+            <thead><tr style="background:#e0e0e0;">${['\u0645','\u062a\u0627\u0631\u064a\u062e \u0627\u0644\u0635\u0631\u0641','\u0628\u064a\u0627\u0646 \u0627\u0644\u0645\u0635\u0631\u0648\u0641','\u0646\u0648\u0639 \u0627\u0644\u0645\u0635\u0631\u0648\u0641','\u0627\u0633\u0645 \u0627\u0644\u0645\u0633\u062a\u0641\u064a\u062f','\u0627\u0644\u0642\u064a\u0645\u0629'].map(h=>`<th style="${th}">${h}</th>`).join('')}</tr></thead>
+            <tbody>${expenses.map((e,i)=>`<tr>${[toAr(i+1),fmtDate(e.date),e.description,e.type,e.beneficiary,fmtCur(e.amount)].map(c=>`<td style="${td}">${c}</td>`).join('')}</tr>`).join('')}</tbody>
+            <tfoot><tr style="background:#f0f0f0;font-weight:bold;"><td colspan="5" style="${th}">\u0625\u062c\u0645\u0627\u0644\u064a \u0645\u0635\u0631\u0648\u0641\u0627\u062a \u0627\u0644\u0639\u0645\u0644\u064a\u0627\u062a</td><td style="${th};color:#c00;">${fmtCur(total)}</td></tr></tfoot>
+        </table></div>`;
+}
+
+function printExpenses(){
+    const html=buildExpensesPrintHTML();
+    const w=window.open('','_blank','width=1100,height=700');
+    w.document.write(`<html dir="rtl"><head><title>\u0645\u0635\u0631\u0648\u0641\u0627\u062a \u0627\u0644\u0639\u0645\u0644\u064a\u0627\u062a</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact}}</style></head><body>${html}<script>setTimeout(()=>window.print(),500)<\/script></body></html>`);
+    w.document.close();
+}
+
+function saveExpensesPDF(){
+    const html=buildExpensesPrintHTML();
+    const container=document.createElement('div');container.innerHTML=html;document.body.appendChild(container);
+    html2pdf().set({margin:5,filename:'\u0645\u0635\u0631\u0648\u0641\u0627\u062a \u0627\u0644\u0639\u0645\u0644\u064a\u0627\u062a.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,useCORS:true,scrollY:0},jsPDF:{unit:'mm',format:'a4',orientation:'landscape'}}).from(container).save().then(()=>document.body.removeChild(container));
+}
+
+// ========================================
+// REVENUE (إيرادات المشروع)
+// ========================================
+function submitAddRevenue(e){
+    e.preventDefault();
+    const date=gv('revenueDate'),tender=gv('revenueTender').trim(),extractNo=gv('revenueExtractNo').trim();
+    const ref=gv('revenueRef').trim(),flowType=gv('revenueFlowType').trim(),amount=parseFloat(gv('revenueAmount'));
+    if(!date||!flowType||!amount||amount<=0){showToast('\u26a0\ufe0f أكمل البيانات المطلوبة','error');return;}
+    revenue.push({id:uid(),date,tender,extractNo,ref,flowType,amount,createdAt:new Date().toISOString()});
+    save();renderRevenue();
+    e.target.reset();
+    showToast('\u2705 تم تسجيل الإيراد','success');
+}
+
+function renderRevenue(){
+    const total=revenue.reduce((s,r)=>s+r.amount,0);
+    const gt=gi('revenueGrandTotal');if(gt)gt.textContent=fmtCur(total);
+    const rc=gi('revenueCount');if(rc)rc.textContent=toAr(revenue.length);
+    const tb=gi('revenueBody');
+    if(!tb)return;
+    if(!revenue.length){tb.innerHTML='';show('revenueEmpty');hide('revenueTable');return;}
+    hide('revenueEmpty');show('revenueTable');
+    tb.innerHTML=revenue.map((r,i)=>`<tr style="animation-delay:${Math.min(i*0.02,0.5)}s"><td>${toAr(i+1)}</td><td class="date-cell">${fmtDate(r.date)}</td><td>${r.tender?toAr(r.tender):'\u2014'}</td><td>${r.extractNo?toAr(r.extractNo):'\u2014'}</td><td>${r.ref?toAr(r.ref):'\u2014'}</td><td>${r.flowType}</td><td class="amount-cell">${fmtCur(r.amount)}</td><td><button class="btn btn-icon-only btn-delete" onclick="confirmDeleteRevenue(${r.id})" title="\u062d\u0630\u0641">\ud83d\uddd1\ufe0f</button></td></tr>`).join('');
+    tb.innerHTML+=`<tr class="total-row"><td colspan="6" style="text-align:center;font-weight:700;">\u0625\u062c\u0645\u0627\u0644\u064a</td><td class="amount-cell" style="font-weight:800;">${fmtCur(total)}</td><td></td></tr>`;
+}
+
+function confirmDeleteRevenue(id){
+    deleteTarget=id;deleteType='revenue';
+    gi('deleteModalText').innerHTML='\u0647\u0644 \u062a\u0631\u064a\u062f \u062d\u0630\u0641 \u0647\u0630\u0627 \u0627\u0644\u0625\u064a\u0631\u0627\u062f\u061f';
+    openModal('deleteModal');
+}
+
+function buildRevenuePrintHTML(){
+    const total=revenue.reduce((s,r)=>s+r.amount,0);
+    const th='padding:6px;border:1px solid #bbb;text-align:center;font-size:11px;';
+    const td='padding:5px;border:1px solid #ddd;text-align:center;font-size:10px;';
+    return `<div style="font-family:Cairo,sans-serif;direction:rtl;padding:15px;color:#333;">
+        <h3 style="text-align:center;margin:0 0 2px;font-size:13px;">\u0634\u0631\u0643\u0629 \u0627\u0644\u0631\u062d\u0627\u0628 \u0644\u0644\u0645\u0642\u0627\u0648\u0644\u0627\u062a \u0627\u0644\u0639\u0645\u0648\u0645\u064a\u0647 (\u0648\u0631\u062b\u0629 \u0633\u064a\u062f \u062a\u0647\u0627\u0645\u0649)</h3>
+        <h3 style="text-align:center;margin:0 0 4px;font-size:12px;">\u0627\u0644\u0645\u0634\u0631\u0648\u0639 : \u0627\u0644\u062a\u0648\u0633\u0639\u0627\u062a \u0627\u0644\u062c\u0646\u0648\u0628\u064a\u0647</h3>
+        <h2 style="text-align:center;border-bottom:2px solid #333;padding-bottom:8px;font-size:16px;">\u0625\u064a\u0631\u0627\u062f\u0627\u062a \u0627\u0644\u0645\u0634\u0631\u0648\u0639</h2>
+        <table style="width:100%;border-collapse:collapse;margin:15px 0;">
+            <thead><tr style="background:#e0e0e0;">${['\u0645','\u062a\u0627\u0631\u064a\u062e \u0627\u0644\u0635\u0631\u0641','\u0631\u0642\u0645 \u0627\u0644\u0645\u0646\u0627\u0642\u0635\u0629','\u0631\u0642\u0645 \u0627\u0644\u0645\u0633\u062a\u062e\u0644\u0635','\u0627\u0644\u0631\u0642\u0645 \u0627\u0644\u0645\u0631\u062c\u0639\u064a','\u0646\u0648\u0639 \u0627\u0644\u062a\u062f\u0641\u0642','\u0627\u0644\u0645\u0628\u0644\u063a \u0627\u0644\u0645\u0633\u062a\u0644\u0645'].map(h=>`<th style="${th}">${h}</th>`).join('')}</tr></thead>
+            <tbody>${revenue.map((r,i)=>`<tr>${[toAr(i+1),fmtDate(r.date),r.tender?toAr(r.tender):'\u2014',r.extractNo?toAr(r.extractNo):'\u2014',r.ref?toAr(r.ref):'\u2014',r.flowType,fmtCur(r.amount)].map(c=>`<td style="${td}">${c}</td>`).join('')}</tr>`).join('')}</tbody>
+            <tfoot><tr style="background:#f0f0f0;font-weight:bold;"><td colspan="6" style="${th}">\u0625\u062c\u0645\u0627\u0644\u064a \u0625\u064a\u0631\u0627\u062f\u0627\u062a \u0627\u0644\u0645\u0634\u0631\u0648\u0639</td><td style="${th};color:#008800;">${fmtCur(total)}</td></tr></tfoot>
+        </table></div>`;
+}
+
+function printRevenue(){
+    const html=buildRevenuePrintHTML();
+    const w=window.open('','_blank','width=1100,height=700');
+    w.document.write(`<html dir="rtl"><head><title>\u0625\u064a\u0631\u0627\u062f\u0627\u062a \u0627\u0644\u0645\u0634\u0631\u0648\u0639</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact}}</style></head><body>${html}<script>setTimeout(()=>window.print(),500)<\/script></body></html>`);
+    w.document.close();
+}
+
+function saveRevenuePDF(){
+    const html=buildRevenuePrintHTML();
+    const container=document.createElement('div');container.innerHTML=html;document.body.appendChild(container);
+    html2pdf().set({margin:5,filename:'\u0625\u064a\u0631\u0627\u062f\u0627\u062a \u0627\u0644\u0645\u0634\u0631\u0648\u0639.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,useCORS:true,scrollY:0},jsPDF:{unit:'mm',format:'a4',orientation:'landscape'}}).from(container).save().then(()=>document.body.removeChild(container));
+}
+
+// ========================================
+// FINANCIAL SUMMARY (الملخص المالي الشامل)
+// ========================================
+function renderFinancialSummary(){
+    const ctrPay=payments.filter(p=>!isSupplyItem(p.item)).reduce((s,p)=>s+p.amount,0);
+    const supPay=payments.filter(p=>isSupplyItem(p.item)).reduce((s,p)=>s+p.amount,0);
+    const expTotal=expenses.reduce((s,e)=>s+e.amount,0);
+    const totalExpenses=ctrPay+supPay+expTotal;
+    const totalRevenue=revenue.reduce((s,r)=>s+r.amount,0);
+    const net=totalRevenue-totalExpenses;
+
+    const set=(id,val)=>{const el=gi(id);if(el)el.textContent=fmtCur(val);};
+    set('sumContractorPay',ctrPay);
+    set('sumSupplierPay',supPay);
+    set('sumExpenses',expTotal);
+    set('sumTotalExpenses',totalExpenses);
+    set('sumTotalRevenue',totalRevenue);
+
+    const netEl=gi('sumNetProfit');
+    if(netEl){
+        netEl.textContent=fmtCur(Math.abs(net));
+        if(net>=0){
+            netEl.style.color='#00e676';
+            netEl.textContent=fmtCur(net)+' \u2705';
+        } else {
+            netEl.style.color='#ff5252';
+            netEl.textContent='- '+fmtCur(Math.abs(net))+' \u274c';
+        }
+    }
+}
+
+// ========================================
 // CREDITOR BALANCES (الأرصدة الدائنة المستحقة)
 // ========================================
 function calcBalances(){
@@ -1480,3 +1656,5 @@ window.updateSupExtractRow=updateSupExtractRow;window.saveCurrentSupExtract=save
 window.printSupExtract=printSupExtract;window.saveSupExtractPDF=saveSupExtractPDF;
 window.printPayments=printPayments;window.savePaymentsPDF=savePaymentsPDF;window.onPaymentItemFilterChange=onPaymentItemFilterChange;
 window.printBalances=printBalances;window.saveBalancesPDF=saveBalancesPDF;
+window.submitAddExpense=submitAddExpense;window.confirmDeleteExpense=confirmDeleteExpense;window.printExpenses=printExpenses;window.saveExpensesPDF=saveExpensesPDF;
+window.submitAddRevenue=submitAddRevenue;window.confirmDeleteRevenue=confirmDeleteRevenue;window.printRevenue=printRevenue;window.saveRevenuePDF=saveRevenuePDF;
