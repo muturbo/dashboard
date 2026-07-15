@@ -14,6 +14,27 @@
 </head>
 <body>
 
+    <!-- Login Screen -->
+    <div id="loginScreen" style="position:fixed;inset:0;z-index:9999;background:#080c24;display:flex;align-items:center;justify-content:center;">
+        <div style="background:rgba(255,255,255,0.04);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:40px;width:380px;text-align:center;">
+            <div style="font-size:3rem;margin-bottom:10px;">🔐</div>
+            <h2 style="color:#e8eaf6;font-family:Cairo;margin-bottom:5px;">تسجيل الدخول</h2>
+            <p style="color:rgba(232,234,246,0.5);font-size:0.85rem;margin-bottom:25px;">شركة الرحاب للمقاولات العموميه</p>
+            <form id="loginForm" onsubmit="handleLogin(event)" style="text-align:right;">
+                <div style="margin-bottom:15px;">
+                    <label style="color:rgba(232,234,246,0.7);font-size:0.85rem;display:block;margin-bottom:5px;">اسم المستخدم</label>
+                    <input type="text" id="loginUser" class="text-input" placeholder="اسم المستخدم" required style="width:100%;padding:12px;font-size:0.95rem;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;color:#e8eaf6;font-family:Cairo;">
+                </div>
+                <div style="margin-bottom:20px;">
+                    <label style="color:rgba(232,234,246,0.7);font-size:0.85rem;display:block;margin-bottom:5px;">كلمة المرور</label>
+                    <input type="password" id="loginPass" class="text-input" placeholder="كلمة المرور" required style="width:100%;padding:12px;font-size:0.95rem;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;color:#e8eaf6;font-family:Cairo;">
+                </div>
+                <div id="loginError" style="color:#ff5252;font-size:0.8rem;margin-bottom:10px;display:none;">⚠️ بيانات الدخول غير صحيحة</div>
+                <button type="submit" class="btn btn-primary" style="width:100%;padding:12px;font-size:1rem;border-radius:10px;background:linear-gradient(135deg,#00d2ff,#7c4dff);border:none;color:#fff;cursor:pointer;font-family:Cairo;font-weight:700;">🔓 دخول</button>
+            </form>
+        </div>
+    </div>
+
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
@@ -63,6 +84,10 @@
                 <span>💾</span> حفظ البيانات
             </button>
             <div class="sync-status offline" id="syncStatus">🟡 وضع محلي</div>
+            <div style="margin-top:8px;text-align:center;">
+                <span style="color:rgba(232,234,246,0.6);font-size:0.75rem;" id="loggedInUser"></span>
+                <button class="btn btn-ghost btn-sm" onclick="handleLogout()" style="margin-top:5px;width:100%;font-size:0.8rem;">🚪 تسجيل خروج</button>
+            </div>
             <div class="footer-info">
                 <span class="version">الإصدار 3.0</span>
                 <span class="copyright">القسم المالي &copy; 2025</span>
