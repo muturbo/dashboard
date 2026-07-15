@@ -4,6 +4,106 @@
    ======================================== */
 
 // ========================================
+// AUTH SYSTEM
+// ========================================
+const USERS=[
+    {username:'admin1',password:'23456',role:'admin',label:'المدير العام'},
+    {username:'admin2',password:'097531',role:'limited',label:'مهندس المستخلصات'}
+];
+let currentUser=null;
+
+function handleLogin(e){
+    e.preventDefault();
+    const user=document.getElementById('loginUser').value.trim();
+    const pass=document.getElementById('loginPass').value;
+    const found=USERS.find(u=>u.username===user&&u.password===pass);
+    if(!found){
+        document.getElementById('loginError').style.display='block';
+        return;
+    }
+    currentUser=found;
+    sessionStorage.setItem('sc_user',JSON.stringify({username:found.username,role:found.role,label:found.label}));
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('loggedInUser').textContent='\ud83d\udc64 '+found.label;
+    applyPermissions();
+}
+
+function handleLogout(){
+    currentUser=null;
+    sessionStorage.removeItem('sc_user');
+    const rs=document.getElementById('restrictStyle');if(rs)rs.textContent='';
+    document.getElementById('loginScreen').style.display='flex';
+    document.getElementById('loginUser').value='';
+    document.getElementById('loginPass').value='';
+    document.getElementById('loginError').style.display='none';
+}
+
+function checkSession(){
+    const saved=sessionStorage.getItem('sc_user');
+    if(saved){
+        try{
+            const u=JSON.parse(saved);
+            const found=USERS.find(x=>x.username===u.username);
+            if(found){currentUser=found;document.getElementById('loginScreen').style.display='none';document.getElementById('loggedInUser').textContent='\ud83d\udc64 '+found.label;applyPermissions();return;}
+        }catch{}
+    }
+    document.getElementById('loginScreen').style.display='flex';
+}
+
+function applyPermissions(){
+    if(!currentUser)return;
+    if(currentUser.role==='admin')return; // Full access
+    // Limited: hide add/delete on all pages EXCEPT extracts
+    // CSS class to hide restricted elements
+    let style=document.getElementById('restrictStyle');
+    if(!style){
+        style=document.createElement('style');
+        style.id='restrictStyle';
+        document.head.appendChild(style);
+    }
+    style.textContent=`
+        /* Hide ALL editing on contractors & suppliers pages */
+        #section-contractors .form-card,
+        #section-contractors .btn-delete,
+        #section-contractors .btn-reorder,
+        #section-contractors .btn-view[title],
+        #section-contractors .action-buttons,
+        #section-contractors .header-actions,
+        #section-contractors .item-group-header button,
+        #section-suppliers .form-card,
+        #section-suppliers .btn-delete,
+        #section-suppliers .btn-reorder,
+        #section-suppliers .btn-view[title],
+        #section-suppliers .action-buttons,
+        #section-suppliers .header-actions,
+        #section-suppliers .item-group-header button,
+        /* Hide payment editing */
+        #section-new-payment,
+        #nav-new-payment,
+        #section-payments .btn-delete,
+        /* Hide expenses editing */
+        #section-expenses .form-card,
+        #section-expenses .btn-delete,
+        /* Hide revenue editing */
+        #section-revenue .form-card,
+        #section-revenue .btn-delete,
+        /* Hide balances edit */
+        #section-balances .header-actions .btn-primary,
+        /* Hide modals for add/edit */
+        #addContractorModal,
+        #editContractorModal,
+        #addItemModal,
+        #editItemModal,
+        #addSupplierModal,
+        #addSupplyItemModal,
+        /* Hide save button */
+        #saveAllBtn { display:none !important; }
+    `;
+}
+window.handleLogin=handleLogin;
+window.handleLogout=handleLogout;
+
+// ========================================
 // DEFAULT DATA
 // ========================================
 const DEFAULT_ITEMS = [
@@ -209,6 +309,8 @@ document.addEventListener('DOMContentLoaded',async()=>{
     setDate(); renderAll();
     // Start auto-sync every 10 seconds
     if(isServerMode) syncTimer=setInterval(autoSync,10000);
+    // Check auth
+    checkSession();
 });
 
 // ========================================
