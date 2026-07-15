@@ -51,6 +51,12 @@
             <a href="#" class="nav-link" data-section="balances" id="nav-balances">
                 <span class="nav-icon">💳</span><span class="nav-text">الأرصدة الدائنة المستحقة</span>
             </a>
+            <a href="#" class="nav-link" data-section="expenses" id="nav-expenses">
+                <span class="nav-icon">📝</span><span class="nav-text">مصروفات العمليات</span>
+            </a>
+            <a href="#" class="nav-link" data-section="revenue" id="nav-revenue">
+                <span class="nav-icon">💰</span><span class="nav-text">إيرادات المشروع</span>
+            </a>
         </nav>
         <div class="sidebar-footer">
             <button class="btn btn-save-main" id="saveAllBtn" onclick="saveAllData()">
@@ -100,31 +106,24 @@
                     </div><div class="stat-decoration"></div>
                 </div>
                 <div class="stat-card" style="--accent:#00e676;--accent-rgb:0,230,118;">
-                    <div class="stat-icon-wrap"><span>💵</span></div>
+                    <div class="stat-icon-wrap"><span>👷💵</span></div>
                     <div class="stat-info">
-                        <span class="stat-value" id="statTotalPaid">٠ ج.م</span>
-                        <span class="stat-label">إجمالي المدفوعات</span>
-                    </div><div class="stat-decoration"></div>
-                </div>
-                <div class="stat-card" style="--accent:#ff9100;--accent-rgb:255,145,0;">
-                    <div class="stat-icon-wrap"><span>📦</span></div>
-                    <div class="stat-info">
-                        <span class="stat-value" id="statActiveItems">0</span>
-                        <span class="stat-label">بنود نشطة</span>
-                    </div><div class="stat-decoration"></div>
-                </div>
-                <div class="stat-card" style="--accent:#e040fb;--accent-rgb:224,64,251;">
-                    <div class="stat-icon-wrap"><span>📁</span></div>
-                    <div class="stat-info">
-                        <span class="stat-value" id="statPaymentCount">0</span>
-                        <span class="stat-label">عدد الدفعات</span>
+                        <span class="stat-value" id="statContractorPaid">٠ ج.م</span>
+                        <span class="stat-label">مدفوعات المقاولين</span>
                     </div><div class="stat-decoration"></div>
                 </div>
                 <div class="stat-card" style="--accent:#00bfa5;--accent-rgb:0,191,165;">
-                    <div class="stat-icon-wrap"><span>🏷️</span></div>
+                    <div class="stat-icon-wrap"><span>🚚💵</span></div>
                     <div class="stat-info">
                         <span class="stat-value" id="statSupplierPaid">٠ ج.م</span>
                         <span class="stat-label">مدفوعات الموردين</span>
+                    </div><div class="stat-decoration"></div>
+                </div>
+                <div class="stat-card" style="--accent:#7c4dff;--accent-rgb:124,77,255;">
+                    <div class="stat-icon-wrap"><span>💰</span></div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="statTotalPaid">٠ ج.م</span>
+                        <span class="stat-label">إجمالي المدفوعات</span>
                     </div><div class="stat-decoration"></div>
                 </div>
                 <div class="stat-card" style="--accent:#ff5252;--accent-rgb:255,82,82;">
@@ -132,6 +131,13 @@
                     <div class="stat-info">
                         <span class="stat-value" id="statOutstanding">٠ ج.م</span>
                         <span class="stat-label">الأرصدة الدائنة المستحقة</span>
+                    </div><div class="stat-decoration"></div>
+                </div>
+                <div class="stat-card" style="--accent:#ff9100;--accent-rgb:255,145,0;">
+                    <div class="stat-icon-wrap"><span>📝</span></div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="statExpenses">٠ ج.م</span>
+                        <span class="stat-label">مصروفات العمليات</span>
                     </div><div class="stat-decoration"></div>
                 </div>
             </div>
@@ -187,6 +193,24 @@
                 <div class="empty-state" id="recentEmpty">
                     <span class="empty-icon">🔭</span><p>لا توجد دفعات مسجلة بعد</p>
                     <button class="btn btn-primary btn-sm" onclick="navigateTo('new-payment')">سجل أول دفعة</button>
+                </div>
+            </div>
+
+            <!-- Financial Summary -->
+            <div class="card" style="margin-top:20px;">
+                <h3 class="card-title">📊 الملخص المالي الشامل</h3>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead><tr><th>البند</th><th>المبلغ</th></tr></thead>
+                        <tbody>
+                            <tr><td>👷 مدفوعات المقاولين</td><td class="amount-cell" id="sumContractorPay">٠ ج.م</td></tr>
+                            <tr><td>🚚 مدفوعات الموردين</td><td class="amount-cell" id="sumSupplierPay">٠ ج.م</td></tr>
+                            <tr><td>📝 مصروفات العمليات</td><td class="amount-cell" id="sumExpenses">٠ ج.م</td></tr>
+                            <tr class="total-row" style="background:rgba(255,82,82,0.1);"><td style="font-weight:800;">💸 إجمالي المصروفات</td><td class="amount-cell" style="font-weight:800;color:#ff5252;" id="sumTotalExpenses">٠ ج.م</td></tr>
+                            <tr class="total-row" style="background:rgba(0,230,118,0.1);"><td style="font-weight:800;">💰 إجمالي الإيرادات</td><td class="amount-cell" style="font-weight:800;color:#00e676;" id="sumTotalRevenue">٠ ج.م</td></tr>
+                            <tr class="total-row" style="background:rgba(124,77,255,0.15);"><td style="font-weight:900;font-size:1.05rem;">📈 صافي الربح / الخسارة</td><td class="amount-cell" style="font-weight:900;font-size:1.1rem;" id="sumNetProfit">٠ ج.م</td></tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </section>
@@ -575,6 +599,110 @@
                     </table>
                 </div>
                 <div class="empty-state" id="balSuppliersEmpty" style="display:none;"><span class="empty-icon">✅</span><p>لا توجد أرصدة مستحقة للموردين</p></div>
+            </div>
+        </section>
+
+        <!-- ===== Operations Expenses Section ===== -->
+        <section class="section" id="section-expenses">
+            <div class="section-header">
+                <div><h1 class="section-title">مصروفات العمليات</h1><span class="project-badge">المشروع : التوسعات الجنوبيه</span><span class="company-badge">شركة الرحاب للمقاولات العموميه (ورثة سيد تهامى)</span></div>
+                <div class="header-actions">
+                    <button class="btn btn-primary btn-sm" onclick="printExpenses()">🖨️ طباعة</button>
+                    <button class="btn btn-ghost btn-sm" onclick="saveExpensesPDF()">📄 حفظ PDF</button>
+                </div>
+            </div>
+
+            <!-- Add Expense Form -->
+            <div class="card form-card" style="max-width:100%;margin-bottom:20px;">
+                <h3 style="color:var(--text-color);margin-bottom:12px;font-size:0.95rem;">➕ تسجيل مصروف جديد</h3>
+                <form id="addExpenseForm" onsubmit="submitAddExpense(event)">
+                    <div class="form-row" style="grid-template-columns:repeat(5,1fr);">
+                        <div class="form-group">
+                            <label>تاريخ الصرف <span class="required">*</span></label>
+                            <input type="text" class="text-input" id="expenseDate" placeholder="يوم/شهر/سنة" required>
+                        </div>
+                        <div class="form-group">
+                            <label>بيان المصروف <span class="required">*</span></label>
+                            <input type="text" class="text-input" id="expenseDescription" placeholder="وصف المصروف" required>
+                        </div>
+                        <div class="form-group">
+                            <label>نوع المصروف <span class="required">*</span></label>
+                            <input type="text" class="text-input" id="expenseType" placeholder="نوع المصروف" required>
+                        </div>
+                        <div class="form-group">
+                            <label>اسم المستفيد <span class="required">*</span></label>
+                            <input type="text" class="text-input" id="expenseBeneficiary" placeholder="اسم المستفيد" required>
+                        </div>
+                        <div class="form-group">
+                            <label>القيمة <span class="required">*</span></label>
+                            <input type="number" class="text-input" id="expenseAmount" placeholder="٠" min="0" step="0.01" required>
+                        </div>
+                    </div>
+                    <div class="form-actions" style="margin-top:10px;"><button type="submit" class="btn btn-primary">➕ إضافة مصروف</button></div>
+                </form>
+            </div>
+
+            <!-- Expenses Summary -->
+            <div class="balance-card" id="expensesTotalCard">
+                <div class="balance-item">
+                    <span class="balance-label">إجمالي مصروفات العمليات</span>
+                    <span class="balance-value accent-orange" id="expensesGrandTotal">٠ ج.م</span>
+                </div>
+                <div class="balance-divider">|</div>
+                <div class="balance-item">
+                    <span class="balance-label">عدد المصروفات</span>
+                    <span class="balance-value accent-cyan" id="expensesCount">٠</span>
+                </div>
+            </div>
+
+            <!-- Expenses Table -->
+            <div class="card">
+                <div class="table-wrapper">
+                    <table class="data-table" id="expensesTable">
+                        <thead><tr><th>م</th><th>تاريخ الصرف</th><th>بيان المصروف</th><th>نوع المصروف</th><th>اسم المستفيد</th><th>القيمة</th><th>حذف</th></tr></thead>
+                        <tbody id="expensesBody"></tbody>
+                    </table>
+                </div>
+                <div class="empty-state" id="expensesEmpty"><span class="empty-icon">📝</span><p>لا توجد مصروفات مسجلة بعد</p></div>
+            </div>
+        </section>
+
+        <!-- ===== Revenue Section ===== -->
+        <section class="section" id="section-revenue">
+            <div class="section-header">
+                <div><h1 class="section-title">إيرادات المشروع</h1><span class="project-badge">المشروع : التوسعات الجنوبيه</span><span class="company-badge">شركة الرحاب للمقاولات العموميه (ورثة سيد تهامى)</span></div>
+                <div class="header-actions">
+                    <button class="btn btn-primary btn-sm" onclick="printRevenue()">🖨️ طباعة</button>
+                    <button class="btn btn-ghost btn-sm" onclick="saveRevenuePDF()">📄 حفظ PDF</button>
+                </div>
+            </div>
+            <div class="card form-card" style="max-width:100%;margin-bottom:20px;">
+                <h3 style="color:var(--text-color);margin-bottom:12px;font-size:0.95rem;">➕ تسجيل إيراد جديد</h3>
+                <form id="addRevenueForm" onsubmit="submitAddRevenue(event)">
+                    <div class="form-row" style="grid-template-columns:repeat(6,1fr);">
+                        <div class="form-group"><label>تاريخ الصرف <span class="required">*</span></label><input type="text" class="text-input" id="revenueDate" placeholder="يوم/شهر/سنة" required></div>
+                        <div class="form-group"><label>رقم المناقصة</label><input type="text" class="text-input" id="revenueTender" placeholder="رقم المناقصة"></div>
+                        <div class="form-group"><label>رقم المستخلص</label><input type="text" class="text-input" id="revenueExtractNo" placeholder="رقم المستخلص"></div>
+                        <div class="form-group"><label>الرقم المرجعي</label><input type="text" class="text-input" id="revenueRef" placeholder="الرقم المرجعي"></div>
+                        <div class="form-group"><label>نوع التدفق <span class="required">*</span></label><input type="text" class="text-input" id="revenueFlowType" placeholder="نوع التدفق" required></div>
+                        <div class="form-group"><label>المبلغ المستلم <span class="required">*</span></label><input type="number" class="text-input" id="revenueAmount" placeholder="٠" min="0" step="0.01" required></div>
+                    </div>
+                    <div class="form-actions" style="margin-top:10px;"><button type="submit" class="btn btn-primary">➕ إضافة إيراد</button></div>
+                </form>
+            </div>
+            <div class="balance-card" id="revenueTotalCard">
+                <div class="balance-item"><span class="balance-label">إجمالي إيرادات المشروع</span><span class="balance-value accent-green" id="revenueGrandTotal">٠ ج.م</span></div>
+                <div class="balance-divider">|</div>
+                <div class="balance-item"><span class="balance-label">عدد الإيرادات</span><span class="balance-value accent-cyan" id="revenueCount">٠</span></div>
+            </div>
+            <div class="card">
+                <div class="table-wrapper">
+                    <table class="data-table" id="revenueTable">
+                        <thead><tr><th>م</th><th>تاريخ الصرف</th><th>رقم المناقصة</th><th>رقم المستخلص</th><th>الرقم المرجعي</th><th>نوع التدفق</th><th>المبلغ المستلم</th><th>حذف</th></tr></thead>
+                        <tbody id="revenueBody"></tbody>
+                    </table>
+                </div>
+                <div class="empty-state" id="revenueEmpty"><span class="empty-icon">💰</span><p>لا توجد إيرادات مسجلة بعد</p></div>
             </div>
         </section>
     </main>
