@@ -442,6 +442,14 @@ function fillContractorDD(selId,item){
 // FORMS
 // ========================================
 function initForms(){
+    if(typeof flatpickr !== 'undefined') {
+        flatpickr(".date-picker", {
+            dateFormat: "d/m/Y",
+            allowInput: true,
+            locale: "ar",
+            defaultDate: new Date()
+        });
+    }
     document.getElementById('paymentForm').addEventListener('submit',submitPayment);
     document.getElementById('paymentDate').value=today();
     document.getElementById('addContractorForm').addEventListener('submit',submitAddContractor);
