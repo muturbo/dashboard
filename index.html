@@ -11,7 +11,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
-    <link rel="stylesheet" href="style.css?v=8307716">
+    <link rel="stylesheet" href="style.css?v=51919933">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
 </head>
@@ -41,8 +41,8 @@
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <div class="logo-icon"><span>📊</span></div>
-            <h2>مقاولي الباطن</h2>
+            <div class="logo-icon"><img src="logo.png" style="width:44px;height:44px;object-fit:contain;" alt="Logo"></div>
+            <h2>مقاولين الباطن و الموردين</h2>
             <p class="subtitle">لوحة متابعة الدفعات</p>
             <div class="project-name">المشروع : التوسعات الجنوبيه</div>
             <div class="company-name">شركة الرحاب للمقاولات العموميه (ورثة سيد تهامى)</div>
@@ -88,12 +88,12 @@
             </button>
             <div class="sync-status offline" id="syncStatus">🟡 وضع محلي</div>
             <div style="margin-top:8px;text-align:center;">
-                <span style="color:rgba(232,234,246,0.6);font-size:0.75rem;" id="loggedInUser"></span>
-                <button class="btn btn-ghost btn-sm" onclick="handleLogout()" style="margin-top:5px;width:100%;font-size:0.8rem;">🚪 تسجيل خروج</button>
+                <span style="color:#64748b;font-size:0.78rem;font-weight:600;" id="loggedInUser"></span>
+                <button class="btn btn-ghost btn-sm" onclick="handleLogout()" style="margin-top:5px;width:100%;font-size:0.8rem;color:#475569;">🚪 تسجيل خروج</button>
             </div>
             <div class="footer-info">
                 <span class="version">الإصدار 3.0</span>
-                <span class="copyright">القسم المالي &copy; 2025</span>
+                <span class="copyright">القسم المالي &copy; 2026</span>
             </div>
         </div>
     </aside>
@@ -105,7 +105,7 @@
         <button class="menu-btn" id="menuToggle" aria-label="فتح القائمة">
             <span></span><span></span><span></span>
         </button>
-        <h1>📊 مقاولي الباطن</h1>
+        <h1>📊 مقاولين الباطن و الموردين</h1>
         <button class="btn btn-sm btn-primary" onclick="saveAllData()">💾</button>
     </header>
 
@@ -858,7 +858,7 @@
     <!-- Print Container -->
     <div id="printContainer" class="print-only"></div>
 
-    <script src="app.js?v=8307716"></script>
+    <script src="app.js?v=51919933"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://npmcdn.com/flatpickr/dist/l10n/ar.js"></script>
     <input type="file" id="importContractorsFile" accept=".xlsx, .xls" style="display:none;" onchange="importExcel(this, 'contractors')">
