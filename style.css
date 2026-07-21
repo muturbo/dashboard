@@ -966,6 +966,11 @@ body {
   transition: opacity 0.3s ease;
 }
 
+.modal-overlay.active {
+  display: flex;
+  opacity: 1;
+}
+
 .modal {
   background: var(--bg-card);
   max-width: 560px;
@@ -1228,7 +1233,11 @@ body {
   }
   
   .data-table {
-    min-width: 600px;
+    min-width: 700px;
+  }
+  
+  .extract-table {
+    min-width: 900px;
   }
   
   .form-card {
