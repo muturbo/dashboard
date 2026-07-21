@@ -132,7 +132,7 @@
                     </div><div class="stat-decoration"></div>
                 </div>
                 <div class="stat-card" style="--accent:#00e676;--accent-rgb:0,230,118;">
-                    <div class="stat-icon-wrap"><span>👷💵</span></div>
+                    <div class="stat-icon-wrap"><span>💸💵</span></div>
                     <div class="stat-info">
                         <span class="stat-value" id="statContractorPaid">٠ ج.م</span>
                         <span class="stat-label">مدفوعات المقاولين</span>
@@ -146,24 +146,38 @@
                     </div><div class="stat-decoration"></div>
                 </div>
                 <div class="stat-card" style="--accent:#7c4dff;--accent-rgb:124,77,255;">
-                    <div class="stat-icon-wrap"><span>💰</span></div>
+                    <div class="stat-icon-wrap"><span>💵</span></div>
                     <div class="stat-info">
                         <span class="stat-value" id="statTotalPaid">٠ ج.م</span>
                         <span class="stat-label">إجمالي المدفوعات</span>
                     </div><div class="stat-decoration"></div>
                 </div>
                 <div class="stat-card" style="--accent:#ff5252;--accent-rgb:255,82,82;">
-                    <div class="stat-icon-wrap"><span>💳</span></div>
+                    <div class="stat-icon-wrap"><span>📉</span></div>
                     <div class="stat-info">
                         <span class="stat-value" id="statOutstanding">٠ ج.م</span>
-                        <span class="stat-label">الأرصدة الدائنة المستحقة</span>
+                        <span class="stat-label">الارصده الدائنه المستحقه</span>
                     </div><div class="stat-decoration"></div>
                 </div>
                 <div class="stat-card" style="--accent:#ff9100;--accent-rgb:255,145,0;">
-                    <div class="stat-icon-wrap"><span>📝</span></div>
+                    <div class="stat-icon-wrap"><span>📈</span></div>
                     <div class="stat-info">
                         <span class="stat-value" id="statExpenses">٠ ج.م</span>
                         <span class="stat-label">مصروفات العمليات</span>
+                    </div><div class="stat-decoration"></div>
+                </div>
+                <div class="stat-card" style="--accent:#00e676;--accent-rgb:0,230,118;">
+                    <div class="stat-icon-wrap"><span>💰</span></div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="statRevenue">٠ ج.م</span>
+                        <span class="stat-label">الإيرادات</span>
+                    </div><div class="stat-decoration"></div>
+                </div>
+                <div class="stat-card" style="--accent:#00bfa5;--accent-rgb:0,191,165;">
+                    <div class="stat-icon-wrap"><span>⚖️</span></div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="statBalance">٠ ج.م</span>
+                        <span class="stat-label">صافي الرصيد</span>
                     </div><div class="stat-decoration"></div>
                 </div>
             </div>
@@ -269,6 +283,8 @@
                     <span class="badge badge-info" id="supplierCount"></span>
                     <button class="btn btn-primary btn-sm" onclick="openModal('addSupplierModal')">➕ إضافة مورد</button>
                     <button class="btn btn-ghost btn-sm" onclick="openModal('addSupplyItemModal')">📦 إضافة بند توريد</button>
+                    <button class="btn btn-ghost btn-sm" onclick="document.getElementById('importSuppliersFile').click()">📥 إدراج إكسيل</button>
+                    <input type="file" id="importSuppliersFile" accept=".xlsx,.xls,.csv" style="display:none" onchange="importExcel(this,'suppliers')">
                 </div>
             </div>
             <div class="filters-bar">
@@ -283,7 +299,7 @@
 
         <!-- ===== New Payment Section ===== -->
         <section class="section" id="section-new-payment">
-            <div class="section-header"><div><h1 class="section-title">تسجيل دفعة جديدة</h1><span class="project-badge">المشروع : التوسعات الجنوبيه</span><span class="company-badge">شركة الرحاب للمقاولات العموميه (ورثة سيد تهامى)</span></div></div>
+            <div class="section-header"><div><h1 class="section-title">تسجيل دفعة جديدة</h1><span class="project-badge">المشروع : التوسعات الجنوبيه</span><span class="company-badge">شركة الرحاب للمقاولات العموميه (ورثة سيد تهامى)</span></div><div class="header-actions"><button class="btn btn-ghost btn-sm" onclick="document.getElementById('importPaymentsFile').click()">📥 إدراج إكسيل</button></div></div>
             <div class="card form-card">
                 <form id="paymentForm" novalidate>
                     <div class="form-row">
