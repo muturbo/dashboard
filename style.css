@@ -1177,7 +1177,11 @@ body {
     transform: translateX(0);
   }
   .sidebar-overlay {
+    display: none;
+  }
+  .sidebar-overlay.active {
     display: block;
+    opacity: 1;
   }
   
   .mobile-header {
