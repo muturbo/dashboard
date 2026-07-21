@@ -11,7 +11,9 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=2">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
 </head>
 <body>
 
@@ -319,7 +321,7 @@
                         </div>
                         <div class="form-group">
                             <label for="paymentDate">التاريخ <span class="required">*</span></label>
-                            <input type="text" class="text-input" id="paymentDate" placeholder="يوم/شهر/سنة" required>
+                            <input type="text" class="text-input" id="paymentDate" class="text-input date-picker" placeholder="يوم/شهر/سنة" required>
                         </div>
                     </div>
                     <div class="form-group">
@@ -356,8 +358,8 @@
                 </div>
                 <select class="select-input" id="paymentItemFilter" onchange="onPaymentItemFilterChange()"><option value="">كل البنود</option></select>
                 <select class="select-input" id="paymentContractorFilter" disabled onchange="renderPayments()"><option value="">كل المقاولين/الموردين</option></select>
-                <input type="text" class="text-input date-input" id="dateFrom" placeholder="من تاريخ" title="من تاريخ">
-                <input type="text" class="text-input date-input" id="dateTo" placeholder="إلى تاريخ" title="إلى تاريخ">
+                <input type="text" class="text-input date-input" id="dateFrom" class="text-input date-picker" placeholder="من تاريخ" title="من تاريخ">
+                <input type="text" class="text-input date-input" id="dateTo" class="text-input date-picker" placeholder="إلى تاريخ" title="إلى تاريخ">
             </div>
             <div class="balance-card" id="paymentsTotalCard">
                 <div class="balance-item">
@@ -414,7 +416,7 @@
                             <div class="form-group"><label>رقم المستخلص</label><div class="readonly-field" id="extractNum">—</div></div>
                             <div class="form-group"><label>المقاول</label><div class="readonly-field" id="extractContractorName">—</div></div>
                             <div class="form-group"><label>البند الرئيسي</label><div class="readonly-field" id="extractItemName">—</div></div>
-                            <div class="form-group"><label>التاريخ</label><input type="date" class="text-input" id="extractDate"></div>
+                            <div class="form-group"><label>التاريخ</label><input type="text" class="text-input date-picker" id="extractDate"></div>
                         </div>
                     </div>
                 </div>
@@ -511,7 +513,7 @@
                             <div class="form-group"><label>رقم المستخلص</label><div class="readonly-field" id="supExtractNum">—</div></div>
                             <div class="form-group"><label>المورد</label><div class="readonly-field" id="supExtractSupplierName">—</div></div>
                             <div class="form-group"><label>بند التوريد</label><div class="readonly-field" id="supExtractItemName">—</div></div>
-                            <div class="form-group"><label>التاريخ</label><input type="date" class="text-input" id="supExtractDate"></div>
+                            <div class="form-group"><label>التاريخ</label><input type="text" class="text-input date-picker" id="supExtractDate"></div>
                         </div>
                     </div>
                 </div>
@@ -665,7 +667,7 @@
                     <div class="form-row" style="grid-template-columns:repeat(5,1fr);">
                         <div class="form-group">
                             <label>تاريخ الصرف <span class="required">*</span></label>
-                            <input type="text" class="text-input" id="expenseDate" placeholder="يوم/شهر/سنة" required>
+                            <input type="text" class="text-input" id="expenseDate" class="text-input date-picker" placeholder="يوم/شهر/سنة" required>
                         </div>
                         <div class="form-group">
                             <label>بيان المصروف <span class="required">*</span></label>
@@ -728,7 +730,7 @@
                 <h3 style="color:var(--text-color);margin-bottom:12px;font-size:0.95rem;">➕ تسجيل إيراد جديد</h3>
                 <form id="addRevenueForm" onsubmit="submitAddRevenue(event)">
                     <div class="form-row" style="grid-template-columns:repeat(6,1fr);">
-                        <div class="form-group"><label>تاريخ الصرف <span class="required">*</span></label><input type="text" class="text-input" id="revenueDate" placeholder="يوم/شهر/سنة" required></div>
+                        <div class="form-group"><label>تاريخ الصرف <span class="required">*</span></label><input type="text" class="text-input" id="revenueDate" class="text-input date-picker" placeholder="يوم/شهر/سنة" required></div>
                         <div class="form-group"><label>رقم المناقصة</label><input type="text" class="text-input" id="revenueTender" placeholder="رقم المناقصة"></div>
                         <div class="form-group"><label>رقم المستخلص</label><input type="text" class="text-input" id="revenueExtractNo" placeholder="رقم المستخلص"></div>
                         <div class="form-group"><label>الرقم المرجعي</label><input type="text" class="text-input" id="revenueRef" placeholder="الرقم المرجعي"></div>
@@ -813,7 +815,7 @@
     <div class="modal-overlay" id="newExtractModal">
         <div class="modal modal-form"><div class="modal-icon">📋</div><h3>مستخلص مقاول جديد</h3>
             <form id="newExtractForm">
-                <div class="form-group"><label>تاريخ المستخلص <span class="required">*</span></label><input type="date" class="text-input" id="newExtractDate" required></div>
+                <div class="form-group"><label>تاريخ المستخلص <span class="required">*</span></label><input type="text" class="text-input date-picker" id="newExtractDate" required></div>
                 <div class="form-group"><label>ملاحظات</label><textarea class="text-input" id="newExtractNotes" rows="2" placeholder="اختياري..."></textarea></div>
                 <div class="modal-actions"><button type="submit" class="btn btn-primary">➕ إنشاء</button><button type="button" class="btn btn-ghost" data-close-modal="newExtractModal">إلغاء</button></div>
             </form>
@@ -845,7 +847,7 @@
     <div class="modal-overlay" id="newSupExtractModal">
         <div class="modal modal-form"><div class="modal-icon">📑</div><h3>مستخلص مورد جديد</h3>
             <form id="newSupExtractForm">
-                <div class="form-group"><label>تاريخ المستخلص <span class="required">*</span></label><input type="date" class="text-input" id="newSupExtractDate" required></div>
+                <div class="form-group"><label>تاريخ المستخلص <span class="required">*</span></label><input type="text" class="text-input date-picker" id="newSupExtractDate" required></div>
                 <div class="form-group"><label>ملاحظات</label><textarea class="text-input" id="newSupExtractNotes" rows="2" placeholder="اختياري..."></textarea></div>
                 <div class="modal-actions"><button type="submit" class="btn btn-primary">➕ إنشاء</button><button type="button" class="btn btn-ghost" data-close-modal="newSupExtractModal">إلغاء</button></div>
             </form>
@@ -856,5 +858,7 @@
     <div id="printContainer" class="print-only"></div>
 
     <script src="app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/ar.js"></script>
 </body>
 </html>
