@@ -115,7 +115,7 @@ const DEFAULT_ITEMS = [
 ];
 
 const COLORS = [
-    '#00d2ff','#7c4dff','#00e676','#ff9100','#e040fb','#ff5252',
+    '#4f46e5','#7c3aed','#059669','#d97706','#0284c7','#e11d48',
     '#00bfa5','#448aff','#76ff03','#ffab40','#ea80fc','#ff8a80',
     '#64ffda','#536dfe','#b2ff59','#ffd740','#ce93d8','#ff80ab',
     '#84ffff','#8c9eff','#ccff90','#ffe57f','#b388ff','#ff9e80',
@@ -1587,10 +1587,10 @@ function renderFinancialSummary(){
     if(netEl){
         netEl.textContent=fmtCur(Math.abs(net));
         if(net>=0){
-            netEl.style.color='#00e676';
+            netEl.style.color='#059669';
             netEl.textContent=fmtCur(net)+' \u2705';
         } else {
-            netEl.style.color='#ff5252';
+            netEl.style.color='#e11d48';
             netEl.textContent='- '+fmtCur(Math.abs(net))+' \u274c';
         }
     }
@@ -1760,3 +1760,111 @@ window.printPayments=printPayments;window.savePaymentsPDF=savePaymentsPDF;window
 window.printBalances=printBalances;window.saveBalancesPDF=saveBalancesPDF;
 window.submitAddExpense=submitAddExpense;window.confirmDeleteExpense=confirmDeleteExpense;window.printExpenses=printExpenses;window.saveExpensesPDF=saveExpensesPDF;
 window.submitAddRevenue=submitAddRevenue;window.confirmDeleteRevenue=confirmDeleteRevenue;window.printRevenue=printRevenue;window.saveRevenuePDF=saveRevenuePDF;
+
+// ========================================
+// EXCEL IMPORT
+// ========================================
+function findCol(row,keywords){
+    // Find first column whose header contains any of the keywords
+    const keys=Object.keys(row);
+    for(const kw of keywords){
+        const found=keys.find(k=>k.includes(kw));
+        if(found)return row[found];
+    }
+    return '';
+}
+
+function toNum(val){
+    if(!val&&val!==0)return 0;
+    const s=val.toString().replace(/[^\d.\-]/g,'');
+    return parseFloat(s)||0;
+}
+
+function importExcel(input,type){
+    const file=input.files[0];if(!file)return;
+    const reader=new FileReader();
+    reader.onload=function(e){
+        try{
+            const wb=XLSX.read(e.target.result,{type:'array',cellDates:true});
+            const ws=wb.Sheets[wb.SheetNames[0]];
+            const rows=XLSX.utils.sheet_to_json(ws,{defval:''});
+            if(!rows.length){showToast('\u26a0\ufe0f الملف فارغ','error');return;}
+            
+            // Show found headers for debugging
+            const headers=Object.keys(rows[0]);
+            console.log('Excel headers found:',headers);
+            
+            let count=0;
+            if(type==='payments'){
+                rows.forEach(r=>{
+                    const item=findCol(r,['بند','صنف','نوع','item'])||'';
+                    const contractor=findCol(r,['مقاول','مورد','اسم','متعاقد','contractor'])||'';
+                    const amount=toNum(findCol(r,['مبلغ','قيمة','مدفوع','amount','المبلغ']));
+                    const date=parseExcelDate(findCol(r,['تاريخ','date','يوم']));
+                    const checkNo=(findCol(r,['مرجع','شيك','رقم مرجعي','checkNo'])||'').toString();
+                    if(item&&contractor&&amount>0){
+                        payments.push({id:uid(),item,contractor,amount,date:date||new Date().toISOString().slice(0,10),checkNo,createdAt:new Date().toISOString()});
+                        count++;
+                    }
+                });
+            } else if(type==='expenses'){
+                rows.forEach(r=>{
+                    const date=parseExcelDate(findCol(r,['تاريخ','date','يوم']));
+                    const description=findCol(r,['بيان','وصف','تفاصيل','مصروف','description','البيان'])||'';
+                    const type2=findCol(r,['نوع','تصنيف','type','فئة'])||'';
+                    const beneficiary=findCol(r,['مستفيد','اسم','جهة','beneficiary','المستلم'])||'';
+                    const amount=toNum(findCol(r,['قيمة','مبلغ','amount','المبلغ']));
+                    if(amount>0&&(description||beneficiary)){
+                        expenses.push({id:uid(),date:date||new Date().toISOString().slice(0,10),description,type:type2,beneficiary,amount,createdAt:new Date().toISOString()});
+                        count++;
+                    }
+                });
+            } else if(type==='revenue'){
+                rows.forEach(r=>{
+                    const date=parseExcelDate(findCol(r,['تاريخ','date','يوم']));
+                    const tender=(findCol(r,['مناقصة','tender'])||'').toString();
+                    const extractNo=(findCol(r,['مستخلص','extract'])||'').toString();
+                    const ref=(findCol(r,['مرجع','ref','مرجعي'])||'').toString();
+                    const flowType=findCol(r,['تدفق','نوع','flow','type'])||'';
+                    const amount=toNum(findCol(r,['مبلغ','مستلم','قيمة','amount','المبلغ']));
+                    if(amount>0){
+                        revenue.push({id:uid(),date:date||new Date().toISOString().slice(0,10),tender,extractNo,ref,flowType,amount,createdAt:new Date().toISOString()});
+                        count++;
+                    }
+                });
+            }
+            if(count>0){save();renderAll();showToast('\u2705 تم استيراد '+toAr(count)+' سجل','success');}
+            else{
+                const hdrText=headers.slice(0,8).join(' | ');
+                showToast('\u26a0\ufe0f لم يتم العثور على بيانات. الأعمدة الموجودة: '+hdrText,'error');
+                alert('أعمدة الملف:\n\n'+headers.join('\n')+'\n\nتأكد أن الملف يحتوي على أعمدة مثل: مبلغ/قيمة + بيان/اسم');
+            }
+        }catch(err){showToast('\u274c خطأ في قراءة الملف: '+err.message,'error');}
+        input.value='';
+    };
+    reader.readAsArrayBuffer(file);
+}
+
+function parseExcelDate(val){
+    if(!val)return '';
+    if(val instanceof Date){
+        const d=val.getDate(),m=val.getMonth()+1,y=val.getFullYear();
+        if(y<1900||y>2100)return '';
+        return y+'-'+(m<10?'0'+m:m)+'-'+(d<10?'0'+d:d);
+    }
+    const s=val.toString().trim();
+    if(!s)return '';
+    // Arabic-Indic numerals to Western
+    const west=s.replace(/[\u0660-\u0669]/g,c=>String.fromCharCode(c.charCodeAt(0)-0x0660+48));
+    // Try DD/MM/YYYY
+    const dmy=west.match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{2,4})$/);
+    if(dmy){
+        let y=dmy[3];if(y.length===2)y='20'+y;
+        return y+'-'+(dmy[2].padStart(2,'0'))+'-'+(dmy[1].padStart(2,'0'));
+    }
+    // Try YYYY-MM-DD
+    const ymd=west.match(/^(\d{4})[\/\-\.](\d{1,2})[\/\-\.](\d{1,2})$/);
+    if(ymd)return ymd[1]+'-'+(ymd[2].padStart(2,'0'))+'-'+(ymd[3].padStart(2,'0'));
+    return '';
+}
+window.importExcel=importExcel;
