@@ -63,6 +63,12 @@ function applyPermissions(){
     }
     style.textContent=`
         /* Hide ALL editing on contractors & suppliers pages */
+        #section-suppliers .form-card,
+        #section-suppliers .btn-delete,
+        #section-suppliers .btn-reorder,
+        #section-suppliers .btn-view[title],
+        #section-suppliers .action-buttons,
+        #section-suppliers .header-actions,
         #section-contractors .form-card,
         #section-contractors .btn-delete,
         #section-contractors .btn-reorder,
@@ -147,6 +153,44 @@ const SK = {
 };
 
 let items=[], contractors=[], payments=[], extracts=[];
+function sanitizeRows(){
+    if(extracts && Array.isArray(extracts)) extracts.forEach(ex=>{if(!Array.isArray(ex.rows))ex.rows=[];});
+    if(supplierExtracts && Array.isArray(supplierExtracts)) supplierExtracts.forEach(ex=>{if(!Array.isArray(ex.rows))ex.rows=[];});
+    
+    let changed = false;
+    const usedItems = new Set();
+    if(contractors && Array.isArray(contractors)) contractors.forEach(c => usedItems.add(c.item));
+    if(payments && Array.isArray(payments)) payments.forEach(p => usedItems.add(p.item));
+    if(extracts && Array.isArray(extracts)) extracts.forEach(ex => usedItems.add(ex.item));
+    if(supplierExtracts && Array.isArray(supplierExtracts)) supplierExtracts.forEach(ex => usedItems.add(ex.item));
+    
+    if(items && Array.isArray(items)) {
+        usedItems.forEach(ui => {
+            if(ui && !items.includes(ui)) {
+                items.push(ui);
+                changed = true;
+            }
+        });
+    } else {
+        items = Array.from(usedItems).filter(Boolean);
+        changed = true;
+    }
+    
+    if(extracts && Array.isArray(extracts) && supplierExtracts && Array.isArray(supplierExtracts)) {
+        const toMigrate = extracts.filter(ex => DEFAULT_SUPPLY_ITEMS.includes(ex.item));
+        if (toMigrate.length > 0) {
+            toMigrate.forEach(ex => {
+                if(!ex.supplier) ex.supplier = ex.contractor;
+                const exists = supplierExtracts.find(se => se.id === ex.id);
+                if(!exists) supplierExtracts.push(ex);
+            });
+            extracts = extracts.filter(ex => !DEFAULT_SUPPLY_ITEMS.includes(ex.item));
+            changed = true;
+        }
+    }
+    
+    if(changed && typeof saveToCache === 'function') saveToCache();
+}
 let supplierExtracts=[];
 let expenses=[];
 let revenue=[];
@@ -205,6 +249,7 @@ async function loadFromServer(){
         if(data.supplyItemsList)supplyItemsList=data.supplyItemsList;
         if(data.expenses)expenses=data.expenses;
         if(data.revenue)revenue=data.revenue;
+sanitizeRows();
         lastSyncHash=JSON.stringify(data);
         saveToCache();
         showSyncStatus('synced');
@@ -234,6 +279,7 @@ async function autoSync(){
             supplierExtracts=data.supplierExtracts||supplierExtracts;
             expenses=data.expenses||expenses;
             revenue=data.revenue||revenue;
+            sanitizeRows();
             saveToCache();
             populateDropdowns();
             renderAll();
@@ -609,6 +655,11 @@ function renderOverview(){
     const tb=gi('recentBody'),em=gi('recentEmpty');
     if(!recent.length){tb.innerHTML='';show('recentEmpty');hide('recentTable');}
     else{hide('recentEmpty');show('recentTable');tb.innerHTML=recent.map((p,i)=>`<tr style="animation-delay:${i*0.05}s"><td>${p.contractor}</td><td>${itemBadge(p.item)}</td><td class="amount-cell">${fmtCur(p.amount)}</td><td class="date-cell">${fmtDate(p.date)}</td></tr>`).join('');}
+    const expTotal=expenses.reduce((s,x)=>s+x.amount,0);
+    const revTotal=revenue.reduce((s,x)=>s+x.amount,0);
+    const ovE=gi('statExpenses');if(ovE)ovE.textContent=fmtCur(expTotal);
+    const ovR=gi('statRevenue');if(ovR)ovR.textContent=fmtCur(revTotal);
+    const ovB=gi('statBalance');if(ovB)ovB.textContent=fmtCur(revTotal-expTotal-tp);
     setDate();
 }
 
@@ -1765,10 +1816,13 @@ window.submitAddRevenue=submitAddRevenue;window.confirmDeleteRevenue=confirmDele
 // EXCEL IMPORT
 // ========================================
 function findCol(row,keywords){
-    // Find first column whose header contains any of the keywords
     const keys=Object.keys(row);
     for(const kw of keywords){
-        const found=keys.find(k=>k.includes(kw));
+        const cleanKw = kw.toLowerCase().replace(/\s+/g,'').replace(/[أإآا]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي');
+        const found=keys.find(k=>{
+            const cleanK = k.toLowerCase().replace(/\s+/g,'').replace(/[أإآا]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي');
+            return cleanK.includes(cleanKw);
+        });
         if(found)return row[found];
     }
     return '';
@@ -1787,12 +1841,30 @@ function importExcel(input,type){
         try{
             const wb=XLSX.read(e.target.result,{type:'array',cellDates:true});
             const ws=wb.Sheets[wb.SheetNames[0]];
-            const rows=XLSX.utils.sheet_to_json(ws,{defval:''});
-            if(!rows.length){showToast('\u26a0\ufe0f الملف فارغ','error');return;}
+            const rawRows = XLSX.utils.sheet_to_json(ws, {header: 1, defval: ''});
+            if(!rawRows.length){showToast('\u26a0\ufe0f الملف فارغ','error');return;}
             
-            // Show found headers for debugging
-            const headers=Object.keys(rows[0]);
-            console.log('Excel headers found:',headers);
+            // Auto-detect header row
+            let headerIdx = 0;
+            let maxMatches = 0;
+            const targetKeywords = ['اسم', 'مقاول', 'مبلغ', 'قيمة', 'تاريخ', 'بند', 'تخصص', 'نوع', 'جهة', 'مورد', 'بيان', 'الاجمالي'];
+            
+            for(let i=0; i<Math.min(15, rawRows.length); i++) {
+                let matches = 0;
+                const rowStr = rawRows[i].join(' ').toLowerCase();
+                targetKeywords.forEach(kw => { if(rowStr.includes(kw)) matches++; });
+                if(matches > maxMatches) {
+                    maxMatches = matches;
+                    headerIdx = i;
+                }
+            }
+            
+            const rows = XLSX.utils.sheet_to_json(ws, {range: headerIdx, defval: ''});
+            if(!rows.length){showToast('\u26a0\ufe0f لم يتم العثور على بيانات','error');return;}
+            
+            const headers = Object.keys(rows[0]);
+            console.log('Detected Header Row:', headerIdx);
+            console.log('Excel headers found:', headers);
             
             let count=0;
             if(type==='payments'){
@@ -1829,6 +1901,27 @@ function importExcel(input,type){
                     const amount=toNum(findCol(r,['مبلغ','مستلم','قيمة','amount','المبلغ']));
                     if(amount>0){
                         revenue.push({id:uid(),date:date||new Date().toISOString().slice(0,10),tender,extractNo,ref,flowType,amount,createdAt:new Date().toISOString()});
+                        count++;
+                    }
+                });
+            } else if(type==='contractors'){
+                rows.forEach(r=>{
+                    const name=findCol(r,['اسم المقاول','المقاول','الاسم','name','contractor'])||'';
+                    const item=findCol(r,['البند','بند','التخصص','item'])||'';
+                    if(name&&item){
+                        contractors.push({id:uid(),name,item});
+                        if(!items.includes(item)) items.push(item);
+                        count++;
+                    }
+                });
+            } else if(type==='suppliers'){
+                rows.forEach(r=>{
+                    const name=findCol(r,['اسم المورد','المورد','الاسم','name','supplier'])||'';
+                    const item=findCol(r,['البند','بند','المادة','التوريد','item'])||'';
+                    if(name&&item){
+                        contractors.push({id:uid(),name,item});
+                        if(!items.includes(item)) items.push(item);
+                        if(!DEFAULT_SUPPLY_ITEMS.includes(item)) DEFAULT_SUPPLY_ITEMS.push(item);
                         count++;
                     }
                 });
