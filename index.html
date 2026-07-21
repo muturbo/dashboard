@@ -11,7 +11,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
-    <link rel="stylesheet" href="style.css?v=2">
+    <link rel="stylesheet" href="style.css?v=740523">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
 </head>
@@ -265,6 +265,7 @@
                     <span class="badge badge-info" id="contractorCount"></span>
                     <button class="btn btn-primary btn-sm" onclick="openModal('addContractorModal')">➕ إضافة مقاول</button>
                     <button class="btn btn-ghost btn-sm" onclick="openModal('addItemModal')">📦 إضافة بند</button>
+                      <button class="btn btn-ghost btn-sm" onclick="document.getElementById(\'importContractorsFile\').click()">📥 get data from excel</button>
                 </div>
             </div>
             <div class="filters-bar">
@@ -285,7 +286,7 @@
                     <span class="badge badge-info" id="supplierCount"></span>
                     <button class="btn btn-primary btn-sm" onclick="openModal('addSupplierModal')">➕ إضافة مورد</button>
                     <button class="btn btn-ghost btn-sm" onclick="openModal('addSupplyItemModal')">📦 إضافة بند توريد</button>
-                    <button class="btn btn-ghost btn-sm" onclick="document.getElementById('importSuppliersFile').click()">📥 إدراج إكسيل</button>
+                    <button class="btn btn-ghost btn-sm" onclick="document.getElementById('importSuppliersFile').click()">📥 get data from excel</button>
                     <input type="file" id="importSuppliersFile" accept=".xlsx,.xls,.csv" style="display:none" onchange="importExcel(this,'suppliers')">
                 </div>
             </div>
@@ -301,7 +302,7 @@
 
         <!-- ===== New Payment Section ===== -->
         <section class="section" id="section-new-payment">
-            <div class="section-header"><div><h1 class="section-title">تسجيل دفعة جديدة</h1><span class="project-badge">المشروع : التوسعات الجنوبيه</span><span class="company-badge">شركة الرحاب للمقاولات العموميه (ورثة سيد تهامى)</span></div><div class="header-actions"><button class="btn btn-ghost btn-sm" onclick="document.getElementById('importPaymentsFile').click()">📥 إدراج إكسيل</button></div></div>
+            <div class="section-header"><div><h1 class="section-title">تسجيل دفعة جديدة</h1><span class="project-badge">المشروع : التوسعات الجنوبيه</span><span class="company-badge">شركة الرحاب للمقاولات العموميه (ورثة سيد تهامى)</span></div><div class="header-actions"><button class="btn btn-ghost btn-sm" onclick="document.getElementById('importPaymentsFile').click()">📥 get data from excel</button></div></div>
             <div class="card form-card">
                 <form id="paymentForm" novalidate>
                     <div class="form-row">
@@ -348,7 +349,7 @@
                     <span class="badge badge-info" id="paymentsCount"></span>
                     <button class="btn btn-primary btn-sm" onclick="printPayments()">🖨️ طباعة</button>
                     <button class="btn btn-ghost btn-sm" onclick="savePaymentsPDF()">📄 حفظ PDF</button>
-                    <button class="btn btn-ghost btn-sm" onclick="document.getElementById('importPaymentsFile').click()">📥 استيراد Excel</button>
+                    <button class="btn btn-ghost btn-sm" onclick="document.getElementById('importPaymentsFile').click()">📥 get data from excel</button>
                     <input type="file" id="importPaymentsFile" accept=".xlsx,.xls,.csv" style="display:none" onchange="importExcel(this,'payments')">
                 </div>
             </div>
@@ -655,7 +656,7 @@
                 <div class="header-actions">
                     <button class="btn btn-primary btn-sm" onclick="printExpenses()">🖨️ طباعة</button>
                     <button class="btn btn-ghost btn-sm" onclick="saveExpensesPDF()">📄 حفظ PDF</button>
-                    <button class="btn btn-ghost btn-sm" onclick="document.getElementById('importExpensesFile').click()">📥 استيراد Excel</button>
+                    <button class="btn btn-ghost btn-sm" onclick="document.getElementById('importExpensesFile').click()">📥 get data from excel</button>
                     <input type="file" id="importExpensesFile" accept=".xlsx,.xls,.csv" style="display:none" onchange="importExcel(this,'expenses')">
                 </div>
             </div>
@@ -722,7 +723,7 @@
                 <div class="header-actions">
                     <button class="btn btn-primary btn-sm" onclick="printRevenue()">🖨️ طباعة</button>
                     <button class="btn btn-ghost btn-sm" onclick="saveRevenuePDF()">📄 حفظ PDF</button>
-                    <button class="btn btn-ghost btn-sm" onclick="document.getElementById('importRevenueFile').click()">📥 استيراد Excel</button>
+                    <button class="btn btn-ghost btn-sm" onclick="document.getElementById('importRevenueFile').click()">📥 get data from excel</button>
                     <input type="file" id="importRevenueFile" accept=".xlsx,.xls,.csv" style="display:none" onchange="importExcel(this,'revenue')">
                 </div>
             </div>
@@ -857,8 +858,9 @@
     <!-- Print Container -->
     <div id="printContainer" class="print-only"></div>
 
-    <script src="app.js"></script>
+    <script src="app.js?v=740523"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://npmcdn.com/flatpickr/dist/l10n/ar.js"></script>
+    <input type="file" id="importContractorsFile" accept=".xlsx, .xls" style="display:none;" onchange="importExcel(this, 'contractors')">
 </body>
 </html>
