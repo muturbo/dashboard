@@ -624,8 +624,22 @@ function initModals(){
     document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeModal(o.id);}));
     document.querySelectorAll('[data-close-modal]').forEach(b=>b.addEventListener('click',()=>closeModal(b.dataset.closeModal)));
 }
-function openModal(id){gi(id).classList.add('active');}
-function closeModal(id){gi(id).classList.remove('active');}
+function openModal(id){
+    const el = gi(id);
+    if(el) {
+        el.classList.add('active');
+        el.style.display = 'flex';
+        setTimeout(()=>el.style.opacity='1', 10);
+    }
+}
+function closeModal(id){
+    const el = gi(id);
+    if(el) {
+        el.classList.remove('active');
+        el.style.opacity='0';
+        setTimeout(()=>el.style.display='none', 300);
+    }
+}
 
 // ========================================
 // SORTING
