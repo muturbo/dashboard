@@ -114,8 +114,8 @@ window.handleLogout=handleLogout;
 // DEFAULT DATA
 // ========================================
 const DEFAULT_ITEMS = [
-    'مساحة','اختبارات','حفر','لوادر','نجارة مسلحة','عزل',
-    'حدادة مسلحة','كهرباء','مباني','نجارة باب وشباك','سباكة',
+    'مساحة','اختبارات','حفر','لوادر','نجارة مسلحة','اعمال فرمجه',
+    'حدادة مسلحة','عزل','كهرباء','مباني','نجارة باب وشباك','سباكة',
     'بياض','بلاط موزايكو','سيراميك','بازلت','قرميد',
     'UPVC','كريتال','نقاشة','أسطورجي','تدبيش',
     'إنترلوك','بلدوره','غرف تفتيش','مطابق','خرسانة أرضيات'
@@ -158,39 +158,52 @@ function sanitizeRows(){
     if(extracts && Array.isArray(extracts)) extracts.forEach(ex=>{if(!Array.isArray(ex.rows))ex.rows=[];});
     if(supplierExtracts && Array.isArray(supplierExtracts)) supplierExtracts.forEach(ex=>{if(!Array.isArray(ex.rows))ex.rows=[];});
     
-    let changed = false;
+    // Do NOT delete contractors starting with 'مقاول' or 'مورد' anymore.
+    if(contractors && Array.isArray(contractors)) {
+        contractors = contractors.filter(c => c && c.name && c.name.trim() !== '');
+    } else {
+        contractors = [];
+    }
+
+    let maxId = contractors.reduce((m, c) => Math.max(m, c.id || 0), 0);
+    const ensureContractor = (name, item) => {
+        if(!name || !item) return;
+        const n = name.trim(), it = item.trim();
+        if(!n || !it) return;
+        const found = contractors.find(c => c.name === n && c.item === it);
+        if(!found) {
+            contractors.push({ id: ++maxId, name: n, item: it });
+        }
+    };
+
+    if(extracts && Array.isArray(extracts)) extracts.forEach(ex => ensureContractor(ex.contractor, ex.item));
+    if(supplierExtracts && Array.isArray(supplierExtracts)) supplierExtracts.forEach(ex => ensureContractor(ex.supplier, ex.item));
+    if(payments && Array.isArray(payments)) payments.forEach(p => ensureContractor(p.contractor, p.item));
+
     const usedItems = new Set();
-    if(contractors && Array.isArray(contractors)) contractors.forEach(c => usedItems.add(c.item));
+    contractors.forEach(c => usedItems.add(c.item));
     if(payments && Array.isArray(payments)) payments.forEach(p => usedItems.add(p.item));
     if(extracts && Array.isArray(extracts)) extracts.forEach(ex => usedItems.add(ex.item));
     if(supplierExtracts && Array.isArray(supplierExtracts)) supplierExtracts.forEach(ex => usedItems.add(ex.item));
     
     if(items && Array.isArray(items)) {
         usedItems.forEach(ui => {
-            if(ui && !items.includes(ui)) {
-                items.push(ui);
-                changed = true;
-            }
+            if(ui && !items.includes(ui)) items.push(ui);
         });
     } else {
         items = Array.from(usedItems).filter(Boolean);
-        changed = true;
     }
     
     if(extracts && Array.isArray(extracts) && supplierExtracts && Array.isArray(supplierExtracts)) {
-        const toMigrate = extracts.filter(ex => DEFAULT_SUPPLY_ITEMS.includes(ex.item));
+        const toMigrate = extracts.filter(ex => isSupplyItem(ex.item));
         if (toMigrate.length > 0) {
             toMigrate.forEach(ex => {
                 if(!ex.supplier) ex.supplier = ex.contractor;
                 const exists = supplierExtracts.find(se => se.id === ex.id);
                 if(!exists) supplierExtracts.push(ex);
             });
-            extracts = extracts.filter(ex => !DEFAULT_SUPPLY_ITEMS.includes(ex.item));
-            changed = true;
         }
     }
-    
-    if(changed && typeof saveToCache === 'function') saveToCache();
 }
 let supplierExtracts=[];
 let expenses=[];
@@ -305,31 +318,13 @@ function save(){
 }
 
 function initDefaults(){
-    if(contractors.length===0){
-        let id=1;
-        DEFAULT_ITEMS.forEach(item=>{
-            for(let i=1;i<=6;i++) contractors.push({id:id++,name:`مقاول ${item} ${i}`,item});
-        });
-        DEFAULT_SUPPLY_ITEMS.forEach(item=>{
-            for(let i=1;i<=6;i++) contractors.push({id:id++,name:`مورد ${item} ${i}`,item});
-        });
-    } else {
-        // Ensure suppliers exist for each supply item
-        let maxId=Math.max(...contractors.map(c=>c.id),0);
-        DEFAULT_SUPPLY_ITEMS.forEach(item=>{
-            const existing=contractors.filter(c=>c.item===item);
-            if(existing.length===0){
-                for(let i=1;i<=6;i++) contractors.push({id:++maxId,name:`مورد ${item} ${i}`,item});
-            }
-        });
-    }
+    sanitizeRows();
     if(items.length===0){
         items=[...DEFAULT_ITEMS,...DEFAULT_SUPPLY_ITEMS];
     } else {
-        // Ensure supply items exist
         DEFAULT_SUPPLY_ITEMS.forEach(si=>{ if(!items.includes(si)) items.push(si); });
     }
-    save();
+    saveToCache();
 }
 
 function getColor(item){ return COLORS[items.indexOf(item)%COLORS.length]||'#888'; }
@@ -350,6 +345,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
         supplyItemsList=loadLocal(SK.supplyItemsList,[...DEFAULT_SUPPLY_ITEMS]);
         expenses=loadLocal(SK.expenses,[]);
         revenue=loadLocal(SK.revenue,[]);
+        sanitizeRows();
     }
     initDefaults();
     initNav(); initSidebar(); populateDropdowns(); initForms(); initModals(); initSorting(); initSupplierListeners();
@@ -720,7 +716,7 @@ function renderContractors(){
     payments.forEach(p=>{const k=p.contractor+'|'+p.item;totals[k]=(totals[k]||0)+p.amount;});
 
     const container=gi('contractorsGrouped');
-    const displayItems=itemF?items.filter(i=>i===itemF&&!DEFAULT_SUPPLY_ITEMS.includes(i)):items.filter(i=>!DEFAULT_SUPPLY_ITEMS.includes(i));
+    const displayItems=itemF?items.filter(i=>i===itemF&&!isSupplyItem(i)):items.filter(i=>!isSupplyItem(i));
     let totalShown=0;
 
     container.innerHTML=displayItems.map((item,ii)=>{
@@ -767,7 +763,7 @@ function renderPayments(){
     let fil=payments.filter(p=>{
         return(!search||p.contractor.toLowerCase().includes(search)||p.item.toLowerCase().includes(search)||(p.notes&&p.notes.toLowerCase().includes(search))||(p.checkNo&&p.checkNo.toLowerCase().includes(search)))
         &&(!itemF||p.item===itemF)&&(!ctrF||p.contractor===ctrF)&&(!df||p.date>=df)&&(!dt||p.date<=dt);
-    }).sort((a,b)=>new Date(b.date)-new Date(a.date));
+    }).sort((a,b)=>{const o=gv('paymentSortOrder')||'desc';return o==='desc'?new Date(b.date)-new Date(a.date):new Date(a.date)-new Date(b.date);});
     const totalAmount=fil.reduce((s,p)=>s+p.amount,0);
     gi('paymentsCount').textContent=toAr(fil.length)+' دفعة';
     const totalEl=gi('paymentsTotalAmount');if(totalEl)totalEl.textContent=fmtCur(totalAmount);
@@ -790,7 +786,7 @@ function onPaymentItemFilterChange(){
 
 function printPayments(){
     const itemF=gv('paymentItemFilter'),ctrF=gv('paymentContractorFilter')||'',df=gv('dateFrom'),dt=gv('dateTo');
-    let fil=payments.filter(p=>(!itemF||p.item===itemF)&&(!ctrF||p.contractor===ctrF)&&(!df||p.date>=df)&&(!dt||p.date<=dt)).sort((a,b)=>new Date(b.date)-new Date(a.date));
+    let fil=payments.filter(p=>(!itemF||p.item===itemF)&&(!ctrF||p.contractor===ctrF)&&(!df||p.date>=df)&&(!dt||p.date<=dt)).sort((a,b)=>{const o=gv('paymentSortOrder')||'desc';return o==='desc'?new Date(b.date)-new Date(a.date):new Date(a.date)-new Date(b.date);});
     const total=fil.reduce((s,p)=>s+p.amount,0);
     const th='padding:8px;border:1px solid #bbb;text-align:center;font-size:12px;';
     const td='padding:6px;border:1px solid #ddd;text-align:center;font-size:11px;';
@@ -811,7 +807,7 @@ function printPayments(){
 
 function savePaymentsPDF(){
     const itemF=gv('paymentItemFilter'),ctrF=gv('paymentContractorFilter')||'',df=gv('dateFrom'),dt=gv('dateTo');
-    let fil=payments.filter(p=>(!itemF||p.item===itemF)&&(!ctrF||p.contractor===ctrF)&&(!df||p.date>=df)&&(!dt||p.date<=dt)).sort((a,b)=>new Date(b.date)-new Date(a.date));
+    let fil=payments.filter(p=>(!itemF||p.item===itemF)&&(!ctrF||p.contractor===ctrF)&&(!df||p.date>=df)&&(!dt||p.date<=dt)).sort((a,b)=>{const o=gv('paymentSortOrder')||'desc';return o==='desc'?new Date(b.date)-new Date(a.date):new Date(a.date)-new Date(b.date);});
     const total=fil.reduce((s,p)=>s+p.amount,0);
     const th='padding:6px;border:1px solid #bbb;text-align:center;font-size:11px;';
     const td='padding:5px;border:1px solid #ddd;text-align:center;font-size:10px;';
@@ -837,7 +833,11 @@ function renderStatement(){
     if(!item||!ctr){hide('statementContent');show('noStatementSelected');hide('printStatement');hide('pdfStatement');return;}
     show('statementContent');hide('noStatementSelected');show('printStatement');show('pdfStatement');
     gi('statementName').textContent=ctr;gi('statementItemBadge').textContent=item;
-    const cp=payments.filter(p=>p.contractor===ctr&&p.item===item).sort((a,b)=>new Date(a.date)-new Date(b.date));
+    const df=gv('statementDateFrom'), dt=gv('statementDateTo'), so=gv('statementSortOrder')||'desc';
+    
+    let cp=payments.filter(p=>p.contractor===ctr&&p.item===item&&(!df||p.date>=df)&&(!dt||p.date<=dt));
+    cp.sort((a,b)=> so==='desc' ? new Date(b.date)-new Date(a.date) : new Date(a.date)-new Date(b.date));
+    
     const total=cp.reduce((s,p)=>s+p.amount,0);
     gi('statementTotal').textContent=fmtCur(total);gi('statementPayCount').textContent=toAr(cp.length);
     const tb=gi('statementBody'),em=gi('statementEmpty');
@@ -1162,7 +1162,12 @@ function saveStatementPDF(){
 // ========================================
 // SUPPLIERS PAGE
 // ========================================
-function isSupplyItem(item){ return supplyItemsList.includes(item); }
+function isSupplyItem(item){
+    if(!item) return false;
+    const it = item.trim();
+    if(it.includes('توريد') || it.includes('خرسانة جاهزة') || it.includes('حديد تسليح') || it === 'الحديد' || it === 'الخرسانة الجاهزة') return true;
+    return supplyItemsList.includes(it);
+}
 
 function initSupplierListeners(){
     const bind=(id,evt,fn)=>{const el=gi(id);if(el)el.addEventListener(evt,fn);};
@@ -1529,20 +1534,15 @@ function submitAddExpense(e){
 }
 
 function renderExpenses(){
-    const total=expenses.reduce((s,e)=>s+e.amount,0);
-    // Update summary
-    const gt=gi('expensesGrandTotal');if(gt)gt.textContent=fmtCur(total);
-    const ec=gi('expensesCount');if(ec)ec.textContent=toAr(expenses.length);
-    // Update overview stat
-    const ov=gi('statExpenses');if(ov)ov.textContent=fmtCur(total);
-    // Table
+    const df=gv('expenseDateFrom'), dt=gv('expenseDateTo'), so=gv('expenseSortOrder')||'desc';
+    let fil = expenses.filter(e=>(!df||e.date>=df)&&(!dt||e.date<=dt));
+    fil.sort((a,b)=> so==='desc' ? new Date(b.date)-new Date(a.date) : new Date(a.date)-new Date(b.date));
+    const total=fil.reduce((s,e)=>s+e.amount,0);
+    const totalEl=gi('expensesGrandTotal');if(totalEl)totalEl.textContent=fmtCur(total);
+    const countEl=gi('expensesCount');if(countEl)countEl.textContent=toAr(fil.length)+' مصروف';
     const tb=gi('expensesBody');
-    if(!tb)return;
-    if(!expenses.length){tb.innerHTML='';show('expensesEmpty');hide('expensesTable');return;}
-    hide('expensesEmpty');show('expensesTable');
-    tb.innerHTML=expenses.map((e,i)=>`<tr style="animation-delay:${Math.min(i*0.02,0.5)}s"><td>${toAr(i+1)}</td><td class="date-cell">${fmtDate(e.date)}</td><td>${e.description}</td><td>${itemBadge(e.type)}</td><td><strong>${e.beneficiary}</strong></td><td class="amount-cell">${fmtCur(e.amount)}</td><td><button class="btn btn-icon-only btn-delete" onclick="confirmDeleteExpense(${e.id})" title="حذف">🗑️</button></td></tr>`).join('');
-    // Total row
-    tb.innerHTML+=`<tr class="total-row"><td colspan="5" style="text-align:center;font-weight:700;">\u0625\u062c\u0645\u0627\u0644\u064a</td><td class="amount-cell" style="font-weight:800;">${fmtCur(total)}</td><td></td></tr>`;
+    if(!fil.length){tb.innerHTML='';show('expensesEmpty');hide('expensesTable');}
+    else{hide('expensesEmpty');show('expensesTable');tb.innerHTML=fil.map((e,i)=>`<tr style="animation-delay:${Math.min(i*0.02,0.5)}s"><td>${toAr(i+1)}</td><td class="date-cell">${fmtDate(e.date)}</td><td><strong>${e.description||''}</strong></td><td>${e.type||'—'}</td><td>${e.beneficiary||'—'}</td><td class="amount-cell">${fmtCur(e.amount)}</td><td><button class="btn btn-icon-only btn-delete" onclick="confirmDeleteExpense(${e.id})" title="حذف">🗑️</button></td></tr>`).join('');}
 }
 
 function confirmDeleteExpense(id){
@@ -1594,15 +1594,15 @@ function submitAddRevenue(e){
 }
 
 function renderRevenue(){
-    const total=revenue.reduce((s,r)=>s+r.amount,0);
-    const gt=gi('revenueGrandTotal');if(gt)gt.textContent=fmtCur(total);
-    const rc=gi('revenueCount');if(rc)rc.textContent=toAr(revenue.length);
+    const df=gv('revenueDateFrom'), dt=gv('revenueDateTo'), so=gv('revenueSortOrder')||'desc';
+    let fil = revenue.filter(r=>(!df||r.date>=df)&&(!dt||r.date<=dt));
+    fil.sort((a,b)=> so==='desc' ? new Date(b.date)-new Date(a.date) : new Date(a.date)-new Date(b.date));
+    const total=fil.reduce((s,r)=>s+r.amount,0);
+    const totalEl=gi('revenueGrandTotal');if(totalEl)totalEl.textContent=fmtCur(total);
+    const countEl=gi('revenueCount');if(countEl)countEl.textContent=toAr(fil.length)+' إيراد';
     const tb=gi('revenueBody');
-    if(!tb)return;
-    if(!revenue.length){tb.innerHTML='';show('revenueEmpty');hide('revenueTable');return;}
-    hide('revenueEmpty');show('revenueTable');
-    tb.innerHTML=revenue.map((r,i)=>`<tr style="animation-delay:${Math.min(i*0.02,0.5)}s"><td>${toAr(i+1)}</td><td class="date-cell">${fmtDate(r.date)}</td><td>${r.tender?toAr(r.tender):'\u2014'}</td><td>${r.extractNo?toAr(r.extractNo):'\u2014'}</td><td>${r.ref?toAr(r.ref):'\u2014'}</td><td>${r.flowType}</td><td class="amount-cell">${fmtCur(r.amount)}</td><td><button class="btn btn-icon-only btn-delete" onclick="confirmDeleteRevenue(${r.id})" title="\u062d\u0630\u0641">\ud83d\uddd1\ufe0f</button></td></tr>`).join('');
-    tb.innerHTML+=`<tr class="total-row"><td colspan="6" style="text-align:center;font-weight:700;">\u0625\u062c\u0645\u0627\u0644\u064a</td><td class="amount-cell" style="font-weight:800;">${fmtCur(total)}</td><td></td></tr>`;
+    if(!fil.length){tb.innerHTML='';show('revenueEmpty');hide('revenueTable');}
+    else{hide('revenueEmpty');show('revenueTable');tb.innerHTML=fil.map((r,i)=>`<tr style="animation-delay:${Math.min(i*0.02,0.5)}s"><td>${toAr(i+1)}</td><td class="date-cell">${fmtDate(r.date)}</td><td>${r.flowType||'—'}</td><td><strong>${r.tender||'—'}</strong></td><td>${r.extractNo||'—'}</td><td>${r.ref?toAr(r.ref):'—'}</td><td class="amount-cell">${fmtCur(r.amount)}</td><td><button class="btn btn-icon-only btn-delete" onclick="confirmDeleteRevenue(${r.id})" title="حذف">🗑️</button></td></tr>`).join('');}
 }
 
 function confirmDeleteRevenue(id){
@@ -1984,3 +1984,13 @@ function parseExcelDate(val){
     return '';
 }
 window.importExcel=importExcel;
+
+function initFlatpickr() {
+    if(typeof flatpickr !== 'undefined') {
+        flatpickr(".date-picker", {
+            dateFormat: "Y-m-d",
+            disableMobile: "true"
+        });
+    }
+}
+setTimeout(initFlatpickr, 500);
