@@ -11,7 +11,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
-    <link rel="stylesheet" href="style.css?v=72506694">
+    <link rel="stylesheet" href="style.css?v=25692463">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
 </head>
@@ -361,6 +361,7 @@
                 <select class="select-input" id="paymentContractorFilter" disabled onchange="renderPayments()"><option value="">كل المقاولين/الموردين</option></select>
                 <input type="text" class="text-input date-input" id="dateFrom" class="text-input date-picker" placeholder="من تاريخ" title="من تاريخ">
                 <input type="text" class="text-input date-input" id="dateTo" class="text-input date-picker" placeholder="إلى تاريخ" title="إلى تاريخ">
+                <select class="select-input" id="paymentSortOrder" onchange="renderPayments()"><option value="desc">الأحدث أولاً</option><option value="asc">الأقدم أولاً</option></select>
             </div>
             <div class="balance-card" id="paymentsTotalCard">
                 <div class="balance-item">
@@ -692,7 +693,12 @@
             </div>
 
             <!-- Expenses Summary -->
-            <div class="balance-card" id="expensesTotalCard">
+                        <div class="filters-bar" style="margin-bottom: 20px;">
+                <input type="text" class="text-input date-input date-picker" id="expenseDateFrom" placeholder="من تاريخ" title="من تاريخ">
+                <input type="text" class="text-input date-input date-picker" id="expenseDateTo" placeholder="إلى تاريخ" title="إلى تاريخ">
+                <select class="select-input" id="expenseSortOrder" onchange="renderExpenses()"><option value="desc">الأحدث أولاً</option><option value="asc">الأقدم أولاً</option></select>
+            </div>
+<div class="balance-card" id="expensesTotalCard">
                 <div class="balance-item">
                     <span class="balance-label">إجمالي مصروفات العمليات</span>
                     <span class="balance-value accent-orange" id="expensesGrandTotal">٠ ج.م</span>
@@ -741,7 +747,12 @@
                     <div class="form-actions" style="margin-top:10px;"><button type="submit" class="btn btn-primary">➕ إضافة إيراد</button></div>
                 </form>
             </div>
-            <div class="balance-card" id="revenueTotalCard">
+                        <div class="filters-bar" style="margin-bottom: 20px;">
+                <input type="text" class="text-input date-input date-picker" id="revenueDateFrom" placeholder="من تاريخ" title="من تاريخ">
+                <input type="text" class="text-input date-input date-picker" id="revenueDateTo" placeholder="إلى تاريخ" title="إلى تاريخ">
+                <select class="select-input" id="revenueSortOrder" onchange="renderRevenue()"><option value="desc">الأحدث أولاً</option><option value="asc">الأقدم أولاً</option></select>
+            </div>
+<div class="balance-card" id="revenueTotalCard">
                 <div class="balance-item"><span class="balance-label">إجمالي إيرادات المشروع</span><span class="balance-value accent-green" id="revenueGrandTotal">٠ ج.م</span></div>
                 <div class="balance-divider">|</div>
                 <div class="balance-item"><span class="balance-label">عدد الإيرادات</span><span class="balance-value accent-cyan" id="revenueCount">٠</span></div>
@@ -858,7 +869,7 @@
     <!-- Print Container -->
     <div id="printContainer" class="print-only"></div>
 
-    <script src="app.js?v=72506694"></script>
+    <script src="app.js?v=25692463"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://npmcdn.com/flatpickr/dist/l10n/ar.js"></script>
     <input type="file" id="importContractorsFile" accept=".xlsx, .xls" style="display:none;" onchange="importExcel(this, 'contractors')">
