@@ -1987,9 +1987,10 @@ window.importExcel=importExcel;
 
 function initFlatpickr() {
     if(typeof flatpickr !== 'undefined') {
-        flatpickr(".date-picker", {
+        flatpickr(".filter-date", {
             dateFormat: "Y-m-d",
-            disableMobile: "true"
+            disableMobile: "true",
+            allowInput: true
         });
     }
 }
