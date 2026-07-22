@@ -11,7 +11,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
-    <link rel="stylesheet" href="style.css?v=25692463">
+    <link rel="stylesheet" href="style.css?v=25692464">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
 </head>
@@ -694,8 +694,8 @@
 
             <!-- Expenses Summary -->
                         <div class="filters-bar" style="margin-bottom: 20px;">
-                <input type="text" class="text-input date-input date-picker" id="expenseDateFrom" placeholder="من تاريخ" title="من تاريخ">
-                <input type="text" class="text-input date-input date-picker" id="expenseDateTo" placeholder="إلى تاريخ" title="إلى تاريخ">
+                <input type="text" class="text-input date-input filter-date" id="expenseDateFrom" placeholder="من تاريخ" title="من تاريخ" onchange="renderExpenses()">
+                <input type="text" class="text-input date-input filter-date" id="expenseDateTo" placeholder="إلى تاريخ" title="إلى تاريخ" onchange="renderExpenses()">
                 <select class="select-input" id="expenseSortOrder" onchange="renderExpenses()"><option value="desc">الأحدث أولاً</option><option value="asc">الأقدم أولاً</option></select>
             </div>
 <div class="balance-card" id="expensesTotalCard">
@@ -748,8 +748,8 @@
                 </form>
             </div>
                         <div class="filters-bar" style="margin-bottom: 20px;">
-                <input type="text" class="text-input date-input date-picker" id="revenueDateFrom" placeholder="من تاريخ" title="من تاريخ">
-                <input type="text" class="text-input date-input date-picker" id="revenueDateTo" placeholder="إلى تاريخ" title="إلى تاريخ">
+                <input type="text" class="text-input date-input filter-date" id="revenueDateFrom" placeholder="من تاريخ" title="من تاريخ" onchange="renderRevenue()">
+                <input type="text" class="text-input date-input filter-date" id="revenueDateTo" placeholder="إلى تاريخ" title="إلى تاريخ" onchange="renderRevenue()">
                 <select class="select-input" id="revenueSortOrder" onchange="renderRevenue()"><option value="desc">الأحدث أولاً</option><option value="asc">الأقدم أولاً</option></select>
             </div>
 <div class="balance-card" id="revenueTotalCard">
@@ -869,7 +869,7 @@
     <!-- Print Container -->
     <div id="printContainer" class="print-only"></div>
 
-    <script src="app.js?v=25692463"></script>
+    <script src="app.js?v=25692464"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://npmcdn.com/flatpickr/dist/l10n/ar.js"></script>
     <input type="file" id="importContractorsFile" accept=".xlsx, .xls" style="display:none;" onchange="importExcel(this, 'contractors')">
