@@ -12,7 +12,7 @@ const COMPANY_LOGO='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAawAAAEYCAYAAA
     {username:'admin1',password:'23456',role:'admin',label:'المدير العام'},
     {username:'admin2',password:'097531',role:'limited',label:'مهندس المستخلصات'}
 ];
-let currentUser=null;
+let currentUser = USERS[0];
 
 function handleLogin(e){
     if(e && e.preventDefault) e.preventDefault();
