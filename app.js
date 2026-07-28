@@ -1045,7 +1045,7 @@ function printExtract(){
     const td='padding:6px;border:1px solid #ddd;text-align:center;font-size:11px;';
     const headers=['م','التاريخ','رقم العمارة','بيان الأعمال','الوحدة','النوع','السعر','نسبة البند%','كمية سابقة','كمية حالية','مجموع الكميات','نسبة الصرف%','الاستقطاعات','إجمالي المستحق'];
     const html=`<div style="font-family:Cairo,sans-serif;direction:rtl;padding:20px;color:#333;"><div style="text-align:center;margin-bottom:10px;"><img src="${COMPANY_LOGO}" style="height:80px;" alt="logo"></div>
-        <h2 style="text-align:center;margin:0 0 2px;color:#555;font-size:15px;">شركة الرحاب للمقاولات العموميه (ورثة سيد تهامى)</h2>
+        <h2 style="text-align:center;margin:0 0 2px;color:#555;font-size:15px;">شركة الرحاب للمقاولات العمومية (ورثة سيد تهامي)</h2>
         <h2 style="text-align:center;margin:0 0 5px;color:#555;">المشروع : التوسعات الجنوبيه</h2>
         <h1 style="text-align:center;border-bottom:3px solid #333;padding-bottom:10px;">مستخلص رقم ${ex.number}</h1>
         <table style="width:100%;margin:20px 0;border-collapse:collapse;font-size:16px;">
@@ -1078,20 +1078,20 @@ function printExtract(){
 // PDF SAVE
 // ========================================
 function buildExtractHTML(){
-    const ex=extracts.find(x=>x.id===currentExtractId);if(!ex)return null;
+    const ex=extracts.find(x=>String(x.id)===String(currentExtractId));if(!ex)return null;
     let grandTotal=0;
     ex.rows.forEach(r=>{
         const tq=(r.prevQty||0)+(r.currentQty||0);
         grandTotal+=tq*(r.price||0)*((r.itemPct||100)/100)*((r.disbursementPct||100)/100)-(r.deductions||0);
     });
     const totalPaid=payments.filter(p=>p.contractor===ex.contractor&&p.item===ex.item).reduce((s,p)=>s+p.amount,0);
-    const th='padding:6px;border:1px solid #bbb;text-align:center;font-size:11px;';
-    const td='padding:5px;border:1px solid #ddd;text-align:center;font-size:10px;';
-    const headers=['م','التاريخ','رقم العمارة','بيان الأعمال','الوحدة','النوع','السعر','نسبة البند%','كمية سابقة','كمية حالية','مجموع الكميات','نسبة الصرف%','الاستقطاعات','إجمالي المستحق'];
-    return {ex, grandTotal, totalPaid, html:`<div style="font-family:Cairo,sans-serif;direction:rtl;padding:15px;color:#333;"><div style="text-align:center;margin-bottom:10px;"><img src="${COMPANY_LOGO}" style="height:80px;" alt="logo"></div>
-        <h3 style="text-align:center;margin:0 0 2px;color:#555;font-size:13px;">شركة الرحاب للمقاولات العموميه (ورثة سيد تهامى)</h3>
-        <h3 style="text-align:center;margin:0 0 4px;color:#555;font-size:12px;">المشروع : التوسعات الجنوبيه</h3>
-        <h2 style="text-align:center;border-bottom:2px solid #333;padding-bottom:8px;font-size:16px;">مستخلص رقم ${ex.number}</h2>
+    const th='padding:7px 6px;border:1px solid #999;text-align:center;font-size:11px;font-weight:700;word-spacing:2px;letter-spacing:normal;white-space:normal;';
+    const td='padding:6px 5px;border:1px solid #ccc;text-align:center;font-size:10px;word-spacing:2px;letter-spacing:normal;white-space:normal;line-height:1.5;';
+    const headers=['م','التاريخ','رقم العمارة','بيان الأعمال','الوحدة','النوع','السعر','نسبة البند %','كمية سابقة','كمية حالية','مجموع الكميات','نسبة الصرف %','الاستقطاعات','إجمالي المستحق'];
+    return {ex, grandTotal, totalPaid, html:`<div style="font-family:'Cairo', Tahoma, Arial, sans-serif;direction:rtl;text-align:right;padding:15px;color:#222;line-height:1.6;word-spacing:2px;letter-spacing:normal;"><div style="text-align:center;margin-bottom:10px;"><img src="${COMPANY_LOGO}" style="height:75px;" alt="logo"></div>
+        <h3 style="text-align:center;margin:0 0 4px;color:#333;font-size:14px;font-weight:700;">` + company_name_correct + `</h3>
+        <h3 style="text-align:center;margin:0 0 6px;color:#555;font-size:13px;">المشروع : التوسعات الجنوبية</h3>
+        <h2 style="text-align:center;border-bottom:2px solid #333;padding-bottom:8px;font-size:16px;font-weight:800;">مستخلص رقم ${ex.number}</h2>`
         <table style="width:100%;margin:12px 0;border-collapse:collapse;font-size:13px;">
             <tr><td style="padding:6px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">المقاول</td><td style="padding:6px;border:1px solid #ddd;font-size:14px;font-weight:700;">${ex.contractor}</td>
             <td style="padding:6px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">البند</td><td style="padding:6px;border:1px solid #ddd;font-size:14px;font-weight:700;">${ex.item}</td>
@@ -1144,7 +1144,7 @@ function saveStatementPDF(){
     clone.style.background='#fff';
     // Add company & project name at top
     const header=document.createElement('div');
-    header.innerHTML=`<h3 style="text-align:center;margin:0 0 2px;font-size:13px;">شركة الرحاب للمقاولات العموميه (ورثة سيد تهامى)</h3><h3 style="text-align:center;margin:0 0 8px;font-size:12px;">المشروع : التوسعات الجنوبيه</h3>`;
+    header.innerHTML=`<h3 style="text-align:center;margin:0 0 2px;font-size:13px;">شركة الرحاب للمقاولات العمومية (ورثة سيد تهامي)</h3><h3 style="text-align:center;margin:0 0 8px;font-size:12px;">المشروع : التوسعات الجنوبيه</h3>`;
     clone.insertBefore(header,clone.firstChild);
     // Remove print-only divs (already added via header)
     clone.querySelectorAll('.print-only').forEach(el=>el.remove());
@@ -1491,7 +1491,7 @@ function printSupExtract(){
 
     const html=`<div style="font-family:Cairo,sans-serif;direction:rtl;padding:20px;color:#333;">
         <div style="text-align:center;margin-bottom:10px;"><img src="${COMPANY_LOGO}" style="height:80px;" alt="logo"></div>
-        <h2 style="text-align:center;margin:0 0 2px;color:#555;font-size:15px;">شركة الرحاب للمقاولات العموميه (ورثة سيد تهامى)</h2>
+        <h2 style="text-align:center;margin:0 0 2px;color:#555;font-size:15px;">شركة الرحاب للمقاولات العمومية (ورثة سيد تهامي)</h2>
         <h2 style="text-align:center;margin:0 0 5px;color:#555;">المشروع : التوسعات الجنوبيه</h2>
         <h1 style="text-align:center;border-bottom:3px solid #333;padding-bottom:10px;">مستخلص مورد ${isCombined?'تجميعي':'رقم '+ex.number}</h1>
         <table style="width:100%;margin:20px 0;border-collapse:collapse;font-size:16px;">
@@ -1552,11 +1552,13 @@ function saveSupExtractPDF(){
         ['م','تاريخ الصب','العنصر','المحتوى','الجهد','الكمية','السعر','القيمة'] :
         ['م','التاريخ','البيان','الوحدة','رقم الفاتورة','الكمية','السعر','خصومات','إجمالي المستحق'];
 
-    const pdfHtml=`<div style="font-family:Cairo,sans-serif;direction:rtl;padding:15px;color:#333;">
-        <div style="text-align:center;margin-bottom:10px;"><img src="${COMPANY_LOGO}" style="height:80px;" alt="logo"></div>
-        <h3 style="text-align:center;margin:0 0 2px;font-size:13px;">شركة الرحاب للمقاولات العموميه (ورثة سيد تهامى)</h3>
-        <h3 style="text-align:center;margin:0 0 4px;font-size:12px;">المشروع : التوسعات الجنوبيه</h3>
-        <h2 style="text-align:center;border-bottom:2px solid #333;padding-bottom:8px;font-size:16px;">مستخلص مورد ${isCombined?'تجميعي':'رقم '+ex.number}</h2>
+    const th='padding:7px 6px;border:1px solid #999;text-align:center;font-size:11px;font-weight:700;word-spacing:2px;letter-spacing:normal;white-space:normal;';
+    const td='padding:6px 5px;border:1px solid #ccc;text-align:center;font-size:10px;word-spacing:2px;letter-spacing:normal;white-space:normal;line-height:1.5;';
+    const pdfHtml=`<div style="font-family:'Cairo', Tahoma, Arial, sans-serif;direction:rtl;text-align:right;padding:15px;color:#222;line-height:1.6;word-spacing:2px;letter-spacing:normal;">
+        <div style="text-align:center;margin-bottom:10px;"><img src="${COMPANY_LOGO}" style="height:75px;" alt="logo"></div>
+        <h3 style="text-align:center;margin:0 0 4px;color:#333;font-size:14px;font-weight:700;">` + company_name_correct + `</h3>
+        <h3 style="text-align:center;margin:0 0 6px;color:#555;font-size:13px;">المشروع : التوسعات الجنوبية</h3>
+        <h2 style="text-align:center;border-bottom:2px solid #333;padding-bottom:8px;font-size:16px;font-weight:800;">مستخلص مورد ${isCombined?'تجميعي':'رقم '+ex.number}</h2>`
         <table style="width:100%;margin:12px 0;border-collapse:collapse;font-size:13px;">
             <tr><td style="padding:6px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">المورد</td><td style="padding:6px;border:1px solid #ddd;font-size:14px;font-weight:700;">${ex.supplier}</td>
             <td style="padding:6px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">البند</td><td style="padding:6px;border:1px solid #ddd;font-size:14px;font-weight:700;">${ex.item}</td>
@@ -2352,7 +2354,7 @@ function printStockCard() {
 
     const html=`<div style="font-family:Cairo,sans-serif;direction:rtl;padding:20px;color:#333;">
         <div style="text-align:center;margin-bottom:10px;"><img src="${COMPANY_LOGO}" style="height:80px;" alt="logo"></div>
-        <h2 style="text-align:center;margin:0 0 2px;color:#555;font-size:15px;">شركة الرحاب للمقاولات العموميه (ورثة سيد تهامى)</h2>
+        <h2 style="text-align:center;margin:0 0 2px;color:#555;font-size:15px;">شركة الرحاب للمقاولات العمومية (ورثة سيد تهامي)</h2>
         <h2 style="text-align:center;margin:0 0 5px;color:#555;">المشروع : التوسعات الجنوبيه</h2>
         <h1 style="text-align:center;border-bottom:3px solid #333;padding-bottom:10px;">كارت صنف مخزون : ${prod.productName}</h1>
         <table style="width:100%;margin:20px 0;border-collapse:collapse;font-size:15px;">
@@ -2414,11 +2416,13 @@ function saveStockCardPDF(){
         </tr>`;
     }).join('');
 
-    const pdfHtml=`<div style="font-family:Cairo,sans-serif;direction:rtl;padding:15px;color:#333;">
-        <div style="text-align:center;margin-bottom:10px;"><img src="${COMPANY_LOGO}" style="height:80px;" alt="logo"></div>
-        <h3 style="text-align:center;margin:0 0 2px;font-size:13px;">شركة الرحاب للمقاولات العموميه (ورثة سيد تهامى)</h3>
-        <h3 style="text-align:center;margin:0 0 4px;font-size:12px;">المشروع : التوسعات الجنوبيه</h3>
-        <h2 style="text-align:center;border-bottom:2px solid #333;padding-bottom:8px;font-size:16px;">كارت صنف مخزون : ${prod.productName}</h2>
+    const th='padding:7px 6px;border:1px solid #999;text-align:center;font-size:11px;font-weight:700;word-spacing:2px;letter-spacing:normal;white-space:normal;';
+    const td='padding:6px 5px;border:1px solid #ccc;text-align:center;font-size:10px;word-spacing:2px;letter-spacing:normal;white-space:normal;line-height:1.5;';
+    const pdfHtml=`<div style="font-family:'Cairo', Tahoma, Arial, sans-serif;direction:rtl;text-align:right;padding:15px;color:#222;line-height:1.6;word-spacing:2px;letter-spacing:normal;">
+        <div style="text-align:center;margin-bottom:10px;"><img src="${COMPANY_LOGO}" style="height:75px;" alt="logo"></div>
+        <h3 style="text-align:center;margin:0 0 4px;color:#333;font-size:14px;font-weight:700;">` + company_name_correct + `</h3>
+        <h3 style="text-align:center;margin:0 0 6px;color:#555;font-size:13px;">المشروع : التوسعات الجنوبية</h3>
+        <h2 style="text-align:center;border-bottom:2px solid #333;padding-bottom:8px;font-size:16px;font-weight:800;">كارت صنف مخزون : ${prod.productName}</h2>`
         <table style="width:100%;margin:12px 0;border-collapse:collapse;font-size:13px;">
             <tr>
                 <td style="padding:6px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">البند</td><td style="padding:6px;border:1px solid #ddd;">${prod.item}</td>
