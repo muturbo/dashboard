@@ -15,9 +15,9 @@ let currentUser=null;
 
 function handleLogin(e){
     e.preventDefault();
-    const user=document.getElementById('loginUser').value.trim();
-    const pass=document.getElementById('loginPass').value;
-    const found=USERS.find(u=>u.username===user&&u.password===pass);
+    const user=document.getElementById('loginUser').value.trim().toLowerCase();
+    const pass=document.getElementById('loginPass').value.trim();
+    const found=USERS.find(u=>u.username.toLowerCase()===user && u.password===pass);
     if(!found){
         document.getElementById('loginError').style.display='block';
         return;
