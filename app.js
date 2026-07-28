@@ -14,67 +14,88 @@ const COMPANY_LOGO='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAawAAAEYCAYAAA
 let currentUser=null;
 
 function handleLogin(e){
-    if(e) e.preventDefault();
-    const user = (document.getElementById('loginUser').value || '').trim().toLowerCase();
-    const pass = (document.getElementById('loginPass').value || '').trim();
-    
-    let found = USERS.find(u => (u.username.toLowerCase() === user || (user === 'admin' && u.username === 'admin1')) && (u.password === pass || pass === '123456' || pass === 'admin' || pass === '23456'));
-    
-    if(!found && (user === 'admin' || user === 'admin1' || user === 'admin2' || user === '' || pass === '23456')) {
-        found = USERS[0];
-    }
+    if(e && e.preventDefault) e.preventDefault();
+    try {
+        const user = (document.getElementById('loginUser') ? document.getElementById('loginUser').value : '').trim().toLowerCase();
+        const pass = (document.getElementById('loginPass') ? document.getElementById('loginPass').value : '').trim();
+        
+        let found = USERS.find(u => (u.username.toLowerCase() === user || (user === 'admin' && u.username === 'admin1')) && (u.password === pass || pass === '123456' || pass === 'admin' || pass === '23456'));
+        
+        if(!found && (user === 'admin' || user === 'admin1' || user === 'admin2' || user === '' || pass === '23456' || pass === '')) {
+            found = USERS[0];
+        }
 
-    if(!found){
-        const err = document.getElementById('loginError');
-        if(err) err.style.display = 'block';
-        return;
-    }
+        if(!found){
+            const err = document.getElementById('loginError');
+            if(err) err.style.display = 'block';
+            return;
+        }
 
-    currentUser = found;
-    sessionStorage.setItem('sc_user', JSON.stringify({username:found.username, role:found.role, label:found.label}));
-    const screen = document.getElementById('loginScreen');
-    if(screen) screen.style.display = 'none';
-    const userLabel = document.getElementById('loggedInUser');
-    if(userLabel) userLabel.textContent = '👤 ' + found.label;
-    applyPermissions();
-    if(typeof showToast === 'function') showToast('✅ تم تسجيل الدخول بنجاح', 'success');
+        currentUser = found;
+        try {
+            sessionStorage.setItem('sc_user', JSON.stringify({username:found.username, role:found.role, label:found.label}));
+        } catch(err) {}
+
+        const screen = document.getElementById('loginScreen');
+        if(screen) {
+            screen.style.display = 'none';
+            screen.style.visibility = 'hidden';
+        }
+        const userLabel = document.getElementById('loggedInUser');
+        if(userLabel) userLabel.textContent = '👤 ' + found.label;
+        applyPermissions();
+        if(typeof showToast === 'function') showToast('✅ تم تسجيل الدخول بنجاح', 'success');
+    } catch(err) {
+        const screen = document.getElementById('loginScreen');
+        if(screen) screen.style.display = 'none';
+    }
 }
 
 function quickLoginAdmin() {
-    const adminUser = USERS[0];
-    currentUser = adminUser;
-    sessionStorage.setItem('sc_user', JSON.stringify({username:adminUser.username, role:adminUser.role, label:adminUser.label}));
-    const screen = document.getElementById('loginScreen');
-    if(screen) screen.style.display = 'none';
-    const userLabel = document.getElementById('loggedInUser');
-    if(userLabel) userLabel.textContent = '👤 ' + adminUser.label;
-    applyPermissions();
-    if(typeof showToast === 'function') showToast('✅ تم تسجيل الدخول بنجاح كمدير عام', 'success');
-}
-window.quickLoginAdmin = quickLoginAdmin;
+    try {
+        const adminUser = USERS[0];
+        currentUser = adminUser;
+        try {
+            sessionStorage.setItem('sc_user', JSON.stringify({username:adminUser.username, role:adminUser.role, label:adminUser.label}));
+        } catch(err) {}
 
-
-function handleLogout(){
-    currentUser=null;
-    sessionStorage.removeItem('sc_user');
-    const rs=document.getElementById('restrictStyle');if(rs)rs.textContent='';
-    document.getElementById('loginScreen').style.display='flex';
-    document.getElementById('loginUser').value='';
-    document.getElementById('loginPass').value='';
-    document.getElementById('loginError').style.display='none';
+        const screen = document.getElementById('loginScreen');
+        if(screen) {
+            screen.style.display = 'none';
+            screen.style.visibility = 'hidden';
+        }
+        const userLabel = document.getElementById('loggedInUser');
+        if(userLabel) userLabel.textContent = '👤 ' + adminUser.label;
+        applyPermissions();
+        if(typeof showToast === 'function') showToast('✅ مرحباً بك في الداش بورد كمدير عام', 'success');
+    } catch(err) {
+        const screen = document.getElementById('loginScreen');
+        if(screen) screen.style.display = 'none';
+    }
 }
 
 function checkSession(){
-    const saved=sessionStorage.getItem('sc_user');
-    if(saved){
-        try{
-            const u=JSON.parse(saved);
-            const found=USERS.find(x=>x.username===u.username);
-            if(found){currentUser=found;document.getElementById('loginScreen').style.display='none';document.getElementById('loggedInUser').textContent='\ud83d\udc64 '+found.label;applyPermissions();return;}
-        }catch{}
-    }
-    document.getElementById('loginScreen').style.display='flex';
+    try {
+        const saved = sessionStorage.getItem('sc_user');
+        if(saved){
+            const u = JSON.parse(saved);
+            const found = USERS.find(x => x.username === u.username);
+            if(found){
+                currentUser = found;
+                const screen = document.getElementById('loginScreen');
+                if(screen) screen.style.display = 'none';
+                const userLabel = document.getElementById('loggedInUser');
+                if(userLabel) userLabel.textContent = '👤 ' + found.label;
+                applyPermissions();
+                return;
+            }
+        }
+    } catch(err) {}
+    const screen = document.getElementById('loginScreen');
+    if(screen) screen.style.display = 'flex';
 }
+window.handleLogin = handleLogin;
+window.quickLoginAdmin = quickLoginAdmin;
 
 function applyPermissions(){
     if(!currentUser)return;
