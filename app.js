@@ -707,7 +707,7 @@ function renderOverview(){
     const tp=ctrPayTotal+supPayTotal;
     gi('statTotalPaid').textContent=fmtCur(tp);
     // Recent 5
-    const recent=[...payments].sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,5);
+    const recent=[...payments].sort((a,b)=>parseDateValue(b.date)-parseDateValue(a.date)).slice(0,5);
     const tb=gi('recentBody'),em=gi('recentEmpty');
     if(!recent.length){tb.innerHTML='';show('recentEmpty');hide('recentTable');}
     else{hide('recentEmpty');show('recentTable');tb.innerHTML=recent.map((p,i)=>`<tr style="animation-delay:${i*0.05}s"><td>${p.contractor}</td><td>${itemBadge(p.item)}</td><td class="amount-cell">${fmtCur(p.amount)}</td><td class="date-cell">${fmtDate(p.date)}</td></tr>`).join('');}
@@ -800,7 +800,7 @@ function renderPayments(){
     let fil=payments.filter(p=>{
         return(!search||p.contractor.toLowerCase().includes(search)||p.item.toLowerCase().includes(search)||(p.notes&&p.notes.toLowerCase().includes(search))||(p.checkNo&&p.checkNo.toLowerCase().includes(search)))
         &&(!itemF||p.item===itemF)&&(!ctrF||p.contractor===ctrF)&&(!df||p.date>=df)&&(!dt||p.date<=dt);
-    }).sort((a,b)=>{const o=gv('paymentSortOrder')||'desc';return o==='desc'?new Date(b.date)-new Date(a.date):new Date(a.date)-new Date(b.date);});
+    }).sort((a,b)=>{const o=gv('paymentSortOrder')||'desc';return o==='desc'?parseDateValue(b.date)-parseDateValue(a.date):parseDateValue(a.date)-parseDateValue(b.date);});
     const totalAmount=fil.reduce((s,p)=>s+p.amount,0);
     gi('paymentsCount').textContent=toAr(fil.length)+' دفعة';
     const totalEl=gi('paymentsTotalAmount');if(totalEl)totalEl.textContent=fmtCur(totalAmount);
@@ -823,7 +823,7 @@ function onPaymentItemFilterChange(){
 
 function printPayments(){
     const itemF=gv('paymentItemFilter'),ctrF=gv('paymentContractorFilter')||'',df=gv('dateFrom'),dt=gv('dateTo');
-    let fil=payments.filter(p=>(!itemF||p.item===itemF)&&(!ctrF||p.contractor===ctrF)&&(!df||p.date>=df)&&(!dt||p.date<=dt)).sort((a,b)=>{const o=gv('paymentSortOrder')||'desc';return o==='desc'?new Date(b.date)-new Date(a.date):new Date(a.date)-new Date(b.date);});
+    let fil=payments.filter(p=>(!itemF||p.item===itemF)&&(!ctrF||p.contractor===ctrF)&&(!df||p.date>=df)&&(!dt||p.date<=dt)).sort((a,b)=>{const o=gv('paymentSortOrder')||'desc';return o==='desc'?parseDateValue(b.date)-parseDateValue(a.date):parseDateValue(a.date)-parseDateValue(b.date);});
     const total=fil.reduce((s,p)=>s+p.amount,0);
     const th='padding:8px;border:1px solid #bbb;text-align:center;font-size:12px;';
     const td='padding:6px;border:1px solid #ddd;text-align:center;font-size:11px;';
@@ -844,7 +844,7 @@ function printPayments(){
 
 function savePaymentsPDF(){
     const itemF=gv('paymentItemFilter'),ctrF=gv('paymentContractorFilter')||'',df=gv('dateFrom'),dt=gv('dateTo');
-    let fil=payments.filter(p=>(!itemF||p.item===itemF)&&(!ctrF||p.contractor===ctrF)&&(!df||p.date>=df)&&(!dt||p.date<=dt)).sort((a,b)=>{const o=gv('paymentSortOrder')||'desc';return o==='desc'?new Date(b.date)-new Date(a.date):new Date(a.date)-new Date(b.date);});
+    let fil=payments.filter(p=>(!itemF||p.item===itemF)&&(!ctrF||p.contractor===ctrF)&&(!df||p.date>=df)&&(!dt||p.date<=dt)).sort((a,b)=>{const o=gv('paymentSortOrder')||'desc';return o==='desc'?parseDateValue(b.date)-parseDateValue(a.date):parseDateValue(a.date)-parseDateValue(b.date);});
     const total=fil.reduce((s,p)=>s+p.amount,0);
     const th='padding:6px;border:1px solid #bbb;text-align:center;font-size:11px;';
     const td='padding:5px;border:1px solid #ddd;text-align:center;font-size:10px;';
@@ -873,7 +873,7 @@ function renderStatement(){
     const df=gv('statementDateFrom'), dt=gv('statementDateTo'), so=gv('statementSortOrder')||'desc';
     
     let cp=payments.filter(p=>p.contractor===ctr&&p.item===item&&(!df||p.date>=df)&&(!dt||p.date<=dt));
-    cp.sort((a,b)=> so==='desc' ? new Date(b.date)-new Date(a.date) : new Date(a.date)-new Date(b.date));
+    cp.sort((a,b)=> so==='desc' ? parseDateValue(b.date)-parseDateValue(a.date) : parseDateValue(a.date)-parseDateValue(b.date));
     
     const total=cp.reduce((s,p)=>s+p.amount,0);
     gi('statementTotal').textContent=fmtCur(total);gi('statementPayCount').textContent=toAr(cp.length);
@@ -1614,7 +1614,7 @@ function submitAddExpense(e){
 function renderExpenses(){
     const df=gv('expenseDateFrom'), dt=gv('expenseDateTo'), so=gv('expenseSortOrder')||'desc';
     let fil = expenses.filter(e=>(!df||e.date>=df)&&(!dt||e.date<=dt));
-    fil.sort((a,b)=> so==='desc' ? new Date(b.date)-new Date(a.date) : new Date(a.date)-new Date(b.date));
+    fil.sort((a,b)=> so==='desc' ? parseDateValue(b.date)-parseDateValue(a.date) : parseDateValue(a.date)-parseDateValue(b.date));
     const total=fil.reduce((s,e)=>s+e.amount,0);
     const totalEl=gi('expensesGrandTotal');if(totalEl)totalEl.textContent=fmtCur(total);
     const countEl=gi('expensesCount');if(countEl)countEl.textContent=toAr(fil.length)+' مصروف';
@@ -1674,7 +1674,7 @@ function submitAddRevenue(e){
 function renderRevenue(){
     const df=gv('revenueDateFrom'), dt=gv('revenueDateTo'), so=gv('revenueSortOrder')||'desc';
     let fil = revenue.filter(r=>(!df||r.date>=df)&&(!dt||r.date<=dt));
-    fil.sort((a,b)=> so==='desc' ? new Date(b.date)-new Date(a.date) : new Date(a.date)-new Date(b.date));
+    fil.sort((a,b)=> so==='desc' ? parseDateValue(b.date)-parseDateValue(a.date) : parseDateValue(a.date)-parseDateValue(b.date));
     const total=fil.reduce((s,r)=>s+r.amount,0);
     const totalEl=gi('revenueGrandTotal');if(totalEl)totalEl.textContent=fmtCur(total);
     const countEl=gi('revenueCount');if(countEl)countEl.textContent=toAr(fil.length)+' إيراد';
@@ -2733,7 +2733,7 @@ function exportOverviewToExcel() {
     const data = [
         ['مسلسل', 'المقاول / المورد', 'البند', 'المبلغ (ج.م)', 'التاريخ']
     ];
-    const recent = [...payments].sort((a,b)=>new Date(b.date)-new Date(a.date));
+    const recent = [...payments].sort((a,b)=>parseDateValue(b.date)-parseDateValue(a.date));
     recent.forEach((p, i) => {
         data.push([i + 1, p.contractor, p.item, p.amount, (p.date || '').replace(/-/g, '/')]);
     });
@@ -2790,7 +2790,7 @@ function exportPaymentsToExcel() {
     let fil = payments.filter(p => {
         return (!search || p.contractor.toLowerCase().includes(search) || p.item.toLowerCase().includes(search) || (p.notes && p.notes.toLowerCase().includes(search)) || (p.checkNo && p.checkNo.toLowerCase().includes(search)))
         && (!itemF || p.item === itemF) && (!ctrF || p.contractor === ctrF) && (!df || p.date >= df) && (!dt || p.date <= dt);
-    }).sort((a,b) => new Date(b.date) - new Date(a.date));
+    }).sort((a,b) => parseDateValue(b.date) - parseDateValue(a.date));
 
     const data = [
         ['مسلسل', 'المقاول / المورد', 'البند', 'المبلغ (ج.م)', 'التاريخ', 'رقم الشيك / المرجع', 'ملاحظات']
@@ -2814,7 +2814,7 @@ function exportExpensesToExcel() {
     let fil = expenses.filter(e => {
         return (!search || e.description.toLowerCase().includes(search) || (e.beneficiary && e.beneficiary.toLowerCase().includes(search)))
         && (!typeF || e.type === typeF) && (!df || e.date >= df) && (!dt || e.date <= dt);
-    }).sort((a,b) => new Date(b.date) - new Date(a.date));
+    }).sort((a,b) => parseDateValue(b.date) - parseDateValue(a.date));
 
     const data = [
         ['مسلسل', 'التاريخ', 'البيان', 'النوع', 'جهة الصرف / الإضافة', 'المبلغ (ج.م)']
@@ -2838,7 +2838,7 @@ function exportRevenueToExcel() {
     let fil = revenue.filter(r => {
         return (!search || (r.tender && r.tender.toLowerCase().includes(search)) || (r.extractNo && r.extractNo.toLowerCase().includes(search)) || (r.ref && r.ref.toLowerCase().includes(search)))
         && (!typeF || r.flowType === typeF) && (!df || r.date >= df) && (!dt || r.date <= dt);
-    }).sort((a,b) => new Date(b.date) - new Date(a.date));
+    }).sort((a,b) => parseDateValue(b.date) - parseDateValue(a.date));
 
     const data = [
         ['مسلسل', 'التاريخ', 'نوع التدفق', 'المناقصة / المشروع', 'رقم المستخلص', 'المرجع', 'المبلغ (ج.م)']
