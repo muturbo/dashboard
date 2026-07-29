@@ -379,7 +379,6 @@ async function autoSync(){
     window.payments = payments;
     window.items = items;
     renderAll();
-    showSyncStatus('synced');
             showSyncStatus('synced');
             showToast('🔄 تم تحديث البيانات من جهاز آخر','info');
         }
@@ -466,6 +465,30 @@ try {
 } catch(err) {
     console.error('Immediate init error:', err);
 }
+
+// Load fresh data from Firebase server on page load
+(async function() {
+    try {
+        const serverLoaded = await loadFromServer();
+        if (serverLoaded) {
+            console.log('Server data loaded successfully - synced with Firebase');
+            sanitizeRows();
+            initDefaults();
+            window.contractors = contractors;
+            window.payments = payments;
+            window.items = items;
+            renderAll();
+            if(typeof populateDropdowns === 'function') populateDropdowns();
+        } else {
+            console.log('Using cached/local data');
+        }
+        // Start auto-sync interval
+        setInterval(autoSync, 30000);
+    } catch(e) {
+        console.warn('Initial server load failed, using local data:', e);
+        setInterval(autoSync, 30000);
+    }
+})();
 // ========================================
 // SAVE ALL (manual button)
 // ========================================
@@ -806,6 +829,25 @@ function initModals(){
                 hide('supExtractContent');
                 show('supExtractEmpty');
                 showToast('🗑️ تم حذف المستخلص', 'info');
+            }
+            else if(deleteType === 'inventoryProduct') {
+                if(typeof inventory !== 'undefined') inventory = inventory.filter(p => String(p.id) !== targetStr);
+                save();
+                hide('inventoryCardContent');
+                show('noInventorySelected');
+                const prodSel = gi('inventoryProductSelect');
+                if(prodSel) { prodSel.innerHTML = '<option value="">اختر الصنف...</option>'; }
+                showToast('🗑️ تم حذف كارت الصنف', 'info');
+            }
+            else if(deleteType === 'inventoryMovement') {
+                if(typeof inventory !== 'undefined') {
+                    const prod = inventory.find(p => p.id === deleteTarget.prodId || String(p.id) === String(deleteTarget.prodId));
+                    if(prod && prod.transactions) {
+                        prod.transactions = prod.transactions.filter(t => String(t.id) !== String(deleteTarget.txId));
+                        save();
+                        showToast('🗑️ تم حذف الحركة', 'info');
+                    }
+                }
             }
 
             window.contractors = contractors;
@@ -3071,3 +3113,41 @@ window.removeSupExtractRow = removeSupExtractRow;
 
 function saveExtractPDF() { window.print(); }
 window.saveExtractPDF = saveExtractPDF;
+
+// ========================================
+// FIX: MISSING FUNCTIONS ADDED BY AUDIT
+// ========================================
+function addSupExtractRow() {
+    const ex = supplierExtracts.find(x => String(x.id) === String(currentSupExtractId));
+    if(!ex) return;
+    ex.rows.push({
+        rowDate: '',
+        element: '',
+        content: '',
+        strength: '',
+        unit: 'م²',
+        invoiceNo: '',
+        qty: 0,
+        price: 0,
+        discounts: 0
+    });
+    renderSupExtractBuilder();
+}
+
+function removeSupExtractRow(idx) {
+    const ex = supplierExtracts.find(x => String(x.id) === String(currentSupExtractId));
+    if(!ex) return;
+    ex.rows.splice(idx, 1);
+    renderSupExtractBuilder();
+}
+
+function updateSupExtractRow(idx, field, value) {
+    const ex = supplierExtracts.find(x => String(x.id) === String(currentSupExtractId));
+    if(!ex) return;
+    ex.rows[idx][field] = value;
+    renderSupExtractBuilder();
+}
+
+function saveStatementPDF() {
+    window.print();
+}
