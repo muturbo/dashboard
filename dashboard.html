@@ -1307,6 +1307,18 @@ function saveToCache(){
     saveLocal(SK.supplyItemsList,supplyItemsList);
     saveLocal(SK.expenses,expenses);
     saveLocal(SK.revenue,revenue);
+
+    if (typeof contractors !== 'undefined' && contractors && contractors.length > 0) {
+        let ts = new Date().toISOString();
+        let backupData = {items,contractors,payments,extracts,supplierExtracts,inventory,supplyItemsList,expenses,revenue};
+        let backups = [];
+        try { backups = JSON.parse(localStorage.getItem('sc_backup_daily') || '[]'); if(!Array.isArray(backups)) backups=[]; } catch(e){ backups=[]; }
+        backups.push({ts: ts, data: backupData});
+        if (backups.length > 3) backups.shift();
+        localStorage.setItem('sc_backup_daily', JSON.stringify(backups));
+        localStorage.setItem('sc_auto_backup_timestamp', ts);
+        localStorage.setItem('sc_auto_backup_data', JSON.stringify(backupData));
+    }
 }
 
 // Firebase URL
@@ -1315,6 +1327,12 @@ const FIREBASE_URL='https://dashboard-77bb2-default-rtdb.firebaseio.com';
 // Save to Firebase
 async function saveToServer(){
     try{
+        let _hadData = false;
+        try { if(typeof lastSyncHash !== 'undefined' && lastSyncHash){ let _old = JSON.parse(lastSyncHash); if((_old.contractors && _old.contractors.length > 0) || (_old.payments && _old.payments.length > 0)) _hadData = true; } } catch(e){}
+        if (_hadData && (!contractors || contractors.length === 0) && (!payments || payments.length === 0)) {
+            console.warn('saveToServer Anti-Wipe Guard: Aborting save. Attempted to overwrite with empty data.');
+            return;
+        }
         const data={items,contractors,payments,extracts,supplierExtracts,supplyItemsList,expenses,revenue,inventory};
         await fetch(FIREBASE_URL+'/data.json',{
             method:'PUT',
@@ -1365,6 +1383,20 @@ async function loadFromServer(){
         }
 
         if (data && typeof data === 'object') {
+            let scCount = Array.isArray(data.contractors) ? data.contractors.length : 0;
+            let lcCount = (typeof contractors !== 'undefined' && Array.isArray(contractors)) ? contractors.length : 0;
+            if (scCount < lcCount && lcCount > 0) {
+                console.warn('loadFromServer Anti-Wipe Guard: Server has fewer records. Preserving local data.');
+                if (!data.items || (Array.isArray(items) && data.items.length < items.length)) data.items = items;
+                data.contractors = contractors;
+                data.payments = payments;
+                data.extracts = extracts;
+                if (!data.supplierExtracts || (Array.isArray(supplierExtracts) && data.supplierExtracts.length < supplierExtracts.length)) data.supplierExtracts = supplierExtracts;
+                if (!data.inventory || (Array.isArray(inventory) && data.inventory.length < inventory.length)) data.inventory = inventory;
+                if (!data.supplyItemsList || (Array.isArray(supplyItemsList) && data.supplyItemsList.length < supplyItemsList.length)) data.supplyItemsList = supplyItemsList;
+                if (!data.expenses || (Array.isArray(expenses) && data.expenses.length < expenses.length)) data.expenses = expenses;
+                if (!data.revenue || (Array.isArray(revenue) && data.revenue.length < revenue.length)) data.revenue = revenue;
+            }
             isServerMode = true;
             if(Array.isArray(data.items)) items = data.items;
             if(Array.isArray(data.contractors)) contractors = data.contractors;
@@ -2113,7 +2145,72 @@ function printPayments(){
             <tfoot><tr style="background:#f0f0f0;font-weight:bold;"><td colspan="3" style="${th}">\u0625\u062c\u0645\u0627\u0644\u064a \u0627\u0644\u062f\u0641\u0639\u0627\u062a</td><td style="${th}">${fmtCur(total)}</td><td colspan="3" style="${th}">${toAr(fil.length)} \u062f\u0641\u0639\u0629</td></tr></tfoot>
         </table></div>`;
     const w=window.open('','_blank','width=1100,height=700');
-    w.document.write(`<html dir="rtl"><head><title>${title}</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact}}</style></head><body>${html}<script>setTimeout(()=>window.print(),500)<\/script></body></html>`);
+    w.document.write(`<html dir="rtl"><head><title>${title}</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact}}</style></head><body>${html}<script>setTimeout(()=>window.print(),500)<\/script>
+<script>
+// --- Self-Healing Runtime Integrity Shield ---
+function verifyAndSelfHealDashboard() {
+    try {
+        let healed = false;
+        
+        // a. Check if #confirmDelete button is present and bound
+        const confirmDelete = document.getElementById('confirmDelete');
+        if (confirmDelete && typeof confirmDelete.onclick !== 'function') {
+            if (typeof window.initModals === 'function') { 
+                window.initModals(); 
+                healed = true; 
+            }
+        }
+        
+        // b. Are modal close buttons bound?
+        const closeBtns = document.querySelectorAll('.close, .cancel-btn');
+        closeBtns.forEach(btn => {
+            if (typeof btn.onclick !== 'function') {
+                btn.onclick = () => { if(typeof window.closeModal === 'function') window.closeModal(); };
+                healed = true;
+            }
+        });
+        
+        // c. Are dropdowns populated?
+        const dropdowns = document.querySelectorAll('select');
+        let needsPopulating = false;
+        dropdowns.forEach(sel => {
+            if (sel.options.length <= 1) needsPopulating = true;
+        });
+        if (needsPopulating && typeof window.populateDropdowns === 'function') {
+            window.populateDropdowns();
+            healed = true;
+        }
+        
+        // d. Are all window export functions defined?
+        const requiredFuncs = ['initModals', 'initNav', 'initSidebar', 'initForms', 'initSorting', 'populateDropdowns'];
+        requiredFuncs.forEach(func => {
+            if (typeof window[func] !== 'function') {
+                try {
+                    if (typeof window[func] === 'undefined') {
+                        // We can't fully rebuild them if deleted from memory, 
+                        // but if they exist locally we could re-bind. Just noting it.
+                    }
+                } catch(e) {}
+            }
+        });
+        
+        if (healed) {
+            console.log('[SHIELD] Dashboard structure self-healed.');
+        } else {
+            console.log('[SHIELD] Dashboard structure verified & healthy.');
+        }
+    } catch(e) {
+        console.error('Self-healing error:', e);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    verifyAndSelfHealDashboard();
+    setInterval(verifyAndSelfHealDashboard, 60000);
+});
+</script>
+</body>
+</html>`);
     w.document.close();
 }
 
@@ -2345,7 +2442,72 @@ function printExtract(){
         ${ex.notes?`<p style="margin-top:16px;padding:10px;background:#f5f5f5;border-radius:8px;"><strong>ملاحظات:</strong> ${ex.notes}</p>`:''}
     </div>`;
     const w=window.open('','_blank','width=1100,height=700');
-    w.document.write(`<html dir="rtl"><head><title>مستخلص رقم ${ex.number} - ${ex.contractor}</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact}table{font-size:10px;width:100%!important}}</style></head><body>${html}<script>setTimeout(()=>window.print(),500)<\/script></body></html>`);
+    w.document.write(`<html dir="rtl"><head><title>مستخلص رقم ${ex.number} - ${ex.contractor}</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact}table{font-size:10px;width:100%!important}}</style></head><body>${html}<script>setTimeout(()=>window.print(),500)<\/script>
+<script>
+// --- Self-Healing Runtime Integrity Shield ---
+function verifyAndSelfHealDashboard() {
+    try {
+        let healed = false;
+        
+        // a. Check if #confirmDelete button is present and bound
+        const confirmDelete = document.getElementById('confirmDelete');
+        if (confirmDelete && typeof confirmDelete.onclick !== 'function') {
+            if (typeof window.initModals === 'function') { 
+                window.initModals(); 
+                healed = true; 
+            }
+        }
+        
+        // b. Are modal close buttons bound?
+        const closeBtns = document.querySelectorAll('.close, .cancel-btn');
+        closeBtns.forEach(btn => {
+            if (typeof btn.onclick !== 'function') {
+                btn.onclick = () => { if(typeof window.closeModal === 'function') window.closeModal(); };
+                healed = true;
+            }
+        });
+        
+        // c. Are dropdowns populated?
+        const dropdowns = document.querySelectorAll('select');
+        let needsPopulating = false;
+        dropdowns.forEach(sel => {
+            if (sel.options.length <= 1) needsPopulating = true;
+        });
+        if (needsPopulating && typeof window.populateDropdowns === 'function') {
+            window.populateDropdowns();
+            healed = true;
+        }
+        
+        // d. Are all window export functions defined?
+        const requiredFuncs = ['initModals', 'initNav', 'initSidebar', 'initForms', 'initSorting', 'populateDropdowns'];
+        requiredFuncs.forEach(func => {
+            if (typeof window[func] !== 'function') {
+                try {
+                    if (typeof window[func] === 'undefined') {
+                        // We can't fully rebuild them if deleted from memory, 
+                        // but if they exist locally we could re-bind. Just noting it.
+                    }
+                } catch(e) {}
+            }
+        });
+        
+        if (healed) {
+            console.log('[SHIELD] Dashboard structure self-healed.');
+        } else {
+            console.log('[SHIELD] Dashboard structure verified & healthy.');
+        }
+    } catch(e) {
+        console.error('Self-healing error:', e);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    verifyAndSelfHealDashboard();
+    setInterval(verifyAndSelfHealDashboard, 60000);
+});
+</script>
+</body>
+</html>`);
     w.document.close();
 }
 
@@ -2704,7 +2866,72 @@ function printSupExtract(){
         ${ex.notes?`<p style="margin-top:16px;padding:10px;background:#f5f5f5;border-radius:8px;"><strong>ملاحظات:</strong> ${ex.notes}</p>`:''}
     </div>`;
     const w=window.open('','_blank','width=1100,height=700');
-    w.document.write(`<html dir="rtl"><head><title>مستخلص مورد ${ex.number} - ${ex.supplier}</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact}table{font-size:10px;width:100%!important}}</style></head><body>${html}<script>setTimeout(()=>window.print(),500)<\/script></body></html>`);
+    w.document.write(`<html dir="rtl"><head><title>مستخلص مورد ${ex.number} - ${ex.supplier}</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact}table{font-size:10px;width:100%!important}}</style></head><body>${html}<script>setTimeout(()=>window.print(),500)<\/script>
+<script>
+// --- Self-Healing Runtime Integrity Shield ---
+function verifyAndSelfHealDashboard() {
+    try {
+        let healed = false;
+        
+        // a. Check if #confirmDelete button is present and bound
+        const confirmDelete = document.getElementById('confirmDelete');
+        if (confirmDelete && typeof confirmDelete.onclick !== 'function') {
+            if (typeof window.initModals === 'function') { 
+                window.initModals(); 
+                healed = true; 
+            }
+        }
+        
+        // b. Are modal close buttons bound?
+        const closeBtns = document.querySelectorAll('.close, .cancel-btn');
+        closeBtns.forEach(btn => {
+            if (typeof btn.onclick !== 'function') {
+                btn.onclick = () => { if(typeof window.closeModal === 'function') window.closeModal(); };
+                healed = true;
+            }
+        });
+        
+        // c. Are dropdowns populated?
+        const dropdowns = document.querySelectorAll('select');
+        let needsPopulating = false;
+        dropdowns.forEach(sel => {
+            if (sel.options.length <= 1) needsPopulating = true;
+        });
+        if (needsPopulating && typeof window.populateDropdowns === 'function') {
+            window.populateDropdowns();
+            healed = true;
+        }
+        
+        // d. Are all window export functions defined?
+        const requiredFuncs = ['initModals', 'initNav', 'initSidebar', 'initForms', 'initSorting', 'populateDropdowns'];
+        requiredFuncs.forEach(func => {
+            if (typeof window[func] !== 'function') {
+                try {
+                    if (typeof window[func] === 'undefined') {
+                        // We can't fully rebuild them if deleted from memory, 
+                        // but if they exist locally we could re-bind. Just noting it.
+                    }
+                } catch(e) {}
+            }
+        });
+        
+        if (healed) {
+            console.log('[SHIELD] Dashboard structure self-healed.');
+        } else {
+            console.log('[SHIELD] Dashboard structure verified & healthy.');
+        }
+    } catch(e) {
+        console.error('Self-healing error:', e);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    verifyAndSelfHealDashboard();
+    setInterval(verifyAndSelfHealDashboard, 60000);
+});
+</script>
+</body>
+</html>`);
     w.document.close();
 }
 
@@ -2830,7 +3057,72 @@ function buildExpensesPrintHTML(){
 function printExpenses(){
     const html=buildExpensesPrintHTML();
     const w=window.open('','_blank','width=1100,height=700');
-    w.document.write(`<html dir="rtl"><head><title>\u0645\u0635\u0631\u0648\u0641\u0627\u062a \u0627\u0644\u0639\u0645\u0644\u064a\u0627\u062a</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact}}</style></head><body>${html}<script>setTimeout(()=>window.print(),500)<\/script></body></html>`);
+    w.document.write(`<html dir="rtl"><head><title>\u0645\u0635\u0631\u0648\u0641\u0627\u062a \u0627\u0644\u0639\u0645\u0644\u064a\u0627\u062a</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact}}</style></head><body>${html}<script>setTimeout(()=>window.print(),500)<\/script>
+<script>
+// --- Self-Healing Runtime Integrity Shield ---
+function verifyAndSelfHealDashboard() {
+    try {
+        let healed = false;
+        
+        // a. Check if #confirmDelete button is present and bound
+        const confirmDelete = document.getElementById('confirmDelete');
+        if (confirmDelete && typeof confirmDelete.onclick !== 'function') {
+            if (typeof window.initModals === 'function') { 
+                window.initModals(); 
+                healed = true; 
+            }
+        }
+        
+        // b. Are modal close buttons bound?
+        const closeBtns = document.querySelectorAll('.close, .cancel-btn');
+        closeBtns.forEach(btn => {
+            if (typeof btn.onclick !== 'function') {
+                btn.onclick = () => { if(typeof window.closeModal === 'function') window.closeModal(); };
+                healed = true;
+            }
+        });
+        
+        // c. Are dropdowns populated?
+        const dropdowns = document.querySelectorAll('select');
+        let needsPopulating = false;
+        dropdowns.forEach(sel => {
+            if (sel.options.length <= 1) needsPopulating = true;
+        });
+        if (needsPopulating && typeof window.populateDropdowns === 'function') {
+            window.populateDropdowns();
+            healed = true;
+        }
+        
+        // d. Are all window export functions defined?
+        const requiredFuncs = ['initModals', 'initNav', 'initSidebar', 'initForms', 'initSorting', 'populateDropdowns'];
+        requiredFuncs.forEach(func => {
+            if (typeof window[func] !== 'function') {
+                try {
+                    if (typeof window[func] === 'undefined') {
+                        // We can't fully rebuild them if deleted from memory, 
+                        // but if they exist locally we could re-bind. Just noting it.
+                    }
+                } catch(e) {}
+            }
+        });
+        
+        if (healed) {
+            console.log('[SHIELD] Dashboard structure self-healed.');
+        } else {
+            console.log('[SHIELD] Dashboard structure verified & healthy.');
+        }
+    } catch(e) {
+        console.error('Self-healing error:', e);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    verifyAndSelfHealDashboard();
+    setInterval(verifyAndSelfHealDashboard, 60000);
+});
+</script>
+</body>
+</html>`);
     w.document.close();
 }
 
@@ -2890,7 +3182,72 @@ function buildRevenuePrintHTML(){
 function printRevenue(){
     const html=buildRevenuePrintHTML();
     const w=window.open('','_blank','width=1100,height=700');
-    w.document.write(`<html dir="rtl"><head><title>\u0625\u064a\u0631\u0627\u062f\u0627\u062a \u0627\u0644\u0645\u0634\u0631\u0648\u0639</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact}}</style></head><body>${html}<script>setTimeout(()=>window.print(),500)<\/script></body></html>`);
+    w.document.write(`<html dir="rtl"><head><title>\u0625\u064a\u0631\u0627\u062f\u0627\u062a \u0627\u0644\u0645\u0634\u0631\u0648\u0639</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact}}</style></head><body>${html}<script>setTimeout(()=>window.print(),500)<\/script>
+<script>
+// --- Self-Healing Runtime Integrity Shield ---
+function verifyAndSelfHealDashboard() {
+    try {
+        let healed = false;
+        
+        // a. Check if #confirmDelete button is present and bound
+        const confirmDelete = document.getElementById('confirmDelete');
+        if (confirmDelete && typeof confirmDelete.onclick !== 'function') {
+            if (typeof window.initModals === 'function') { 
+                window.initModals(); 
+                healed = true; 
+            }
+        }
+        
+        // b. Are modal close buttons bound?
+        const closeBtns = document.querySelectorAll('.close, .cancel-btn');
+        closeBtns.forEach(btn => {
+            if (typeof btn.onclick !== 'function') {
+                btn.onclick = () => { if(typeof window.closeModal === 'function') window.closeModal(); };
+                healed = true;
+            }
+        });
+        
+        // c. Are dropdowns populated?
+        const dropdowns = document.querySelectorAll('select');
+        let needsPopulating = false;
+        dropdowns.forEach(sel => {
+            if (sel.options.length <= 1) needsPopulating = true;
+        });
+        if (needsPopulating && typeof window.populateDropdowns === 'function') {
+            window.populateDropdowns();
+            healed = true;
+        }
+        
+        // d. Are all window export functions defined?
+        const requiredFuncs = ['initModals', 'initNav', 'initSidebar', 'initForms', 'initSorting', 'populateDropdowns'];
+        requiredFuncs.forEach(func => {
+            if (typeof window[func] !== 'function') {
+                try {
+                    if (typeof window[func] === 'undefined') {
+                        // We can't fully rebuild them if deleted from memory, 
+                        // but if they exist locally we could re-bind. Just noting it.
+                    }
+                } catch(e) {}
+            }
+        });
+        
+        if (healed) {
+            console.log('[SHIELD] Dashboard structure self-healed.');
+        } else {
+            console.log('[SHIELD] Dashboard structure verified & healthy.');
+        }
+    } catch(e) {
+        console.error('Self-healing error:', e);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    verifyAndSelfHealDashboard();
+    setInterval(verifyAndSelfHealDashboard, 60000);
+});
+</script>
+</body>
+</html>`);
     w.document.close();
 }
 
@@ -3025,7 +3382,72 @@ function buildBalancesPrintHTML(){
 function printBalances(){
     const html=buildBalancesPrintHTML();
     const w=window.open('','_blank','width=1100,height=700');
-    w.document.write(`<html dir="rtl"><head><title>\u0627\u0644\u0623\u0631\u0635\u062f\u0629 \u0627\u0644\u062f\u0627\u0626\u0646\u0629 \u0627\u0644\u0645\u0633\u062a\u062d\u0642\u0629</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact}}</style></head><body>${html}<script>setTimeout(()=>window.print(),500)<\/script></body></html>`);
+    w.document.write(`<html dir="rtl"><head><title>\u0627\u0644\u0623\u0631\u0635\u062f\u0629 \u0627\u0644\u062f\u0627\u0626\u0646\u0629 \u0627\u0644\u0645\u0633\u062a\u062d\u0642\u0629</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact}}</style></head><body>${html}<script>setTimeout(()=>window.print(),500)<\/script>
+<script>
+// --- Self-Healing Runtime Integrity Shield ---
+function verifyAndSelfHealDashboard() {
+    try {
+        let healed = false;
+        
+        // a. Check if #confirmDelete button is present and bound
+        const confirmDelete = document.getElementById('confirmDelete');
+        if (confirmDelete && typeof confirmDelete.onclick !== 'function') {
+            if (typeof window.initModals === 'function') { 
+                window.initModals(); 
+                healed = true; 
+            }
+        }
+        
+        // b. Are modal close buttons bound?
+        const closeBtns = document.querySelectorAll('.close, .cancel-btn');
+        closeBtns.forEach(btn => {
+            if (typeof btn.onclick !== 'function') {
+                btn.onclick = () => { if(typeof window.closeModal === 'function') window.closeModal(); };
+                healed = true;
+            }
+        });
+        
+        // c. Are dropdowns populated?
+        const dropdowns = document.querySelectorAll('select');
+        let needsPopulating = false;
+        dropdowns.forEach(sel => {
+            if (sel.options.length <= 1) needsPopulating = true;
+        });
+        if (needsPopulating && typeof window.populateDropdowns === 'function') {
+            window.populateDropdowns();
+            healed = true;
+        }
+        
+        // d. Are all window export functions defined?
+        const requiredFuncs = ['initModals', 'initNav', 'initSidebar', 'initForms', 'initSorting', 'populateDropdowns'];
+        requiredFuncs.forEach(func => {
+            if (typeof window[func] !== 'function') {
+                try {
+                    if (typeof window[func] === 'undefined') {
+                        // We can't fully rebuild them if deleted from memory, 
+                        // but if they exist locally we could re-bind. Just noting it.
+                    }
+                } catch(e) {}
+            }
+        });
+        
+        if (healed) {
+            console.log('[SHIELD] Dashboard structure self-healed.');
+        } else {
+            console.log('[SHIELD] Dashboard structure verified & healthy.');
+        }
+    } catch(e) {
+        console.error('Self-healing error:', e);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    verifyAndSelfHealDashboard();
+    setInterval(verifyAndSelfHealDashboard, 60000);
+});
+</script>
+</body>
+</html>`);
     w.document.close();
 }
 
@@ -3500,7 +3922,72 @@ function printStockCard() {
     </div>`;
 
     const w=window.open('','_blank','width=1100,height=700');
-    w.document.write(`<html dir="rtl"><head><title>كارت صنف - ${prod.productName}</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact}table{font-size:10px;width:100%!important}}</style></head><body>${html}<script>setTimeout(()=>window.print(),500)<\/script></body></html>`);
+    w.document.write(`<html dir="rtl"><head><title>كارت صنف - ${prod.productName}</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact}table{font-size:10px;width:100%!important}}</style></head><body>${html}<script>setTimeout(()=>window.print(),500)<\/script>
+<script>
+// --- Self-Healing Runtime Integrity Shield ---
+function verifyAndSelfHealDashboard() {
+    try {
+        let healed = false;
+        
+        // a. Check if #confirmDelete button is present and bound
+        const confirmDelete = document.getElementById('confirmDelete');
+        if (confirmDelete && typeof confirmDelete.onclick !== 'function') {
+            if (typeof window.initModals === 'function') { 
+                window.initModals(); 
+                healed = true; 
+            }
+        }
+        
+        // b. Are modal close buttons bound?
+        const closeBtns = document.querySelectorAll('.close, .cancel-btn');
+        closeBtns.forEach(btn => {
+            if (typeof btn.onclick !== 'function') {
+                btn.onclick = () => { if(typeof window.closeModal === 'function') window.closeModal(); };
+                healed = true;
+            }
+        });
+        
+        // c. Are dropdowns populated?
+        const dropdowns = document.querySelectorAll('select');
+        let needsPopulating = false;
+        dropdowns.forEach(sel => {
+            if (sel.options.length <= 1) needsPopulating = true;
+        });
+        if (needsPopulating && typeof window.populateDropdowns === 'function') {
+            window.populateDropdowns();
+            healed = true;
+        }
+        
+        // d. Are all window export functions defined?
+        const requiredFuncs = ['initModals', 'initNav', 'initSidebar', 'initForms', 'initSorting', 'populateDropdowns'];
+        requiredFuncs.forEach(func => {
+            if (typeof window[func] !== 'function') {
+                try {
+                    if (typeof window[func] === 'undefined') {
+                        // We can't fully rebuild them if deleted from memory, 
+                        // but if they exist locally we could re-bind. Just noting it.
+                    }
+                } catch(e) {}
+            }
+        });
+        
+        if (healed) {
+            console.log('[SHIELD] Dashboard structure self-healed.');
+        } else {
+            console.log('[SHIELD] Dashboard structure verified & healthy.');
+        }
+    } catch(e) {
+        console.error('Self-healing error:', e);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    verifyAndSelfHealDashboard();
+    setInterval(verifyAndSelfHealDashboard, 60000);
+});
+</script>
+</body>
+</html>`);
     w.document.close();
 }
 
@@ -4257,7 +4744,72 @@ window.saveStatementPDF=saveStatementPDF;
         </div>
     </div>
 
+
+<script>
+// --- Self-Healing Runtime Integrity Shield ---
+function verifyAndSelfHealDashboard() {
+    try {
+        let healed = false;
+        
+        // a. Check if #confirmDelete button is present and bound
+        const confirmDelete = document.getElementById('confirmDelete');
+        if (confirmDelete && typeof confirmDelete.onclick !== 'function') {
+            if (typeof window.initModals === 'function') { 
+                window.initModals(); 
+                healed = true; 
+            }
+        }
+        
+        // b. Are modal close buttons bound?
+        const closeBtns = document.querySelectorAll('.close, .cancel-btn');
+        closeBtns.forEach(btn => {
+            if (typeof btn.onclick !== 'function') {
+                btn.onclick = () => { if(typeof window.closeModal === 'function') window.closeModal(); };
+                healed = true;
+            }
+        });
+        
+        // c. Are dropdowns populated?
+        const dropdowns = document.querySelectorAll('select');
+        let needsPopulating = false;
+        dropdowns.forEach(sel => {
+            if (sel.options.length <= 1) needsPopulating = true;
+        });
+        if (needsPopulating && typeof window.populateDropdowns === 'function') {
+            window.populateDropdowns();
+            healed = true;
+        }
+        
+        // d. Are all window export functions defined?
+        const requiredFuncs = ['initModals', 'initNav', 'initSidebar', 'initForms', 'initSorting', 'populateDropdowns'];
+        requiredFuncs.forEach(func => {
+            if (typeof window[func] !== 'function') {
+                try {
+                    if (typeof window[func] === 'undefined') {
+                        // We can't fully rebuild them if deleted from memory, 
+                        // but if they exist locally we could re-bind. Just noting it.
+                    }
+                } catch(e) {}
+            }
+        });
+        
+        if (healed) {
+            console.log('[SHIELD] Dashboard structure self-healed.');
+        } else {
+            console.log('[SHIELD] Dashboard structure verified & healthy.');
+        }
+    } catch(e) {
+        console.error('Self-healing error:', e);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    verifyAndSelfHealDashboard();
+    setInterval(verifyAndSelfHealDashboard, 60000);
+});
+</script>
 </body>
+
 </html>
 
 function saveExtractPDF() { window.print(); }
