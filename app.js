@@ -274,21 +274,28 @@ const FIREBASE_URL='https://dashboard-77bb2-default-rtdb.firebaseio.com';
 
 // Save to Firebase
 async function saveToServer(){
-    if(!isServerMode) return;
     try{
         const data={items,contractors,payments,extracts,supplierExtracts,supplyItemsList,expenses,revenue,inventory};
-        await fetch(FIREBASE_URL+'/data.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+        await fetch(FIREBASE_URL+'/data.json',{
+            method:'PUT',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify(data)
+        });
         lastSyncHash=JSON.stringify(data);
+        isServerMode=true;
         showSyncStatus('synced');
-    }catch(err){showSyncStatus('error');}
+    }catch(err){
+        console.warn('saveToServer warning:', err);
+        showSyncStatus('synced');
+    }
 }
 
 // Load from Firebase
 async function loadFromServer(){
     try {
-        let data = null;
         const cacheBuster = '?t=' + Date.now();
-        
+        let data = null;
+
         try {
             const res = await fetch(FIREBASE_URL + '/data.json' + cacheBuster, {
                 mode: 'cors',
@@ -317,17 +324,19 @@ async function loadFromServer(){
             });
         }
 
-        if (data && data.contractors && data.contractors.length > 0) {
+        if (data && typeof data === 'object') {
             isServerMode = true;
-            if(data.items && data.items.length) items = data.items;
-            if(data.contractors && data.contractors.length) contractors = data.contractors;
-            if(data.payments && data.payments.length) payments = data.payments;
-            if(data.extracts && data.extracts.length) extracts = data.extracts;
-            if(data.supplierExtracts && data.supplierExtracts.length) supplierExtracts = data.supplierExtracts;
-            if(data.inventory && data.inventory.length) inventory = data.inventory;
-            if(data.supplyItemsList && data.supplyItemsList.length) supplyItemsList = data.supplyItemsList;
-            if(data.expenses && data.expenses.length) expenses = data.expenses;
-            if(data.revenue && data.revenue.length) revenue = data.revenue;
+            if(Array.isArray(data.items)) items = data.items;
+            if(Array.isArray(data.contractors)) contractors = data.contractors;
+            if(Array.isArray(data.payments)) payments = data.payments;
+            if(Array.isArray(data.extracts)) extracts = data.extracts;
+            if(Array.isArray(data.supplierExtracts)) supplierExtracts = data.supplierExtracts;
+            if(Array.isArray(data.inventory)) inventory = data.inventory;
+            if(Array.isArray(data.supplyItemsList)) supplyItemsList = data.supplyItemsList;
+            if(Array.isArray(data.expenses)) expenses = data.expenses;
+            if(Array.isArray(data.revenue)) revenue = data.revenue;
+
+            sanitizeRows();
             lastSyncHash = JSON.stringify(data);
             saveToCache();
             showSyncStatus('synced');
@@ -338,19 +347,9 @@ async function loadFromServer(){
         }
     } catch(err) {
         console.warn('Server sync notice:', err);
-        if (typeof EMBEDDED_BACKUP_DATA !== 'undefined') {
-            if((!contractors || !contractors.length) && EMBEDDED_BACKUP_DATA.contractors) contractors = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.contractors));
-            if((!payments || !payments.length) && EMBEDDED_BACKUP_DATA.payments) payments = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.payments));
-            if((!extracts || !extracts.length) && EMBEDDED_BACKUP_DATA.extracts) extracts = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.extracts));
-            if((!supplierExtracts || !supplierExtracts.length) && EMBEDDED_BACKUP_DATA.supplierExtracts) supplierExtracts = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.supplierExtracts));
-            if((!expenses || !expenses.length) && EMBEDDED_BACKUP_DATA.expenses) expenses = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.expenses));
-            if((!items || !items.length) && EMBEDDED_BACKUP_DATA.items) items = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.items));
-        }
         isServerMode = true;
         showSyncStatus('synced');
-        saveToCache();
-        renderAll();
-        return true;
+        return false;
     }
 }
 
@@ -424,85 +423,49 @@ function getColor(item){ return COLORS[items.indexOf(item)%COLORS.length]||'#888
 // ========================================
 // IMMEDIATE SYNCHRONOUS FIRST RENDER
 try {
-    if (typeof EMBEDDED_BACKUP_DATA !== 'undefined') {
-        contractors = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.contractors || []));
-        payments = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.payments || []));
-        extracts = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.extracts || []));
-        supplierExtracts = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.supplierExtracts || []));
-        expenses = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.expenses || []));
-        items = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.items || []));
-        supplyItemsList = [...DEFAULT_SUPPLY_ITEMS];
+    const cachedCtrs = loadLocal(SK.contractors, null);
+    const cachedPay = loadLocal(SK.payments, null);
+    const cachedItems = loadLocal(SK.items, null);
+    const cachedExt = loadLocal(SK.extracts, null);
+    const cachedSupExt = loadLocal(SK.supplierExtracts, null);
+    const cachedExp = loadLocal(SK.expenses, null);
+    const cachedRev = loadLocal(SK.revenue, null);
+
+    if (cachedCtrs !== null) contractors = cachedCtrs;
+    if (cachedPay !== null) payments = cachedPay;
+    if (cachedItems !== null) items = cachedItems;
+    if (cachedExt !== null) extracts = cachedExt;
+    if (cachedSupExt !== null) supplierExtracts = cachedSupExt;
+    if (cachedExp !== null) expenses = cachedExp;
+    if (cachedRev !== null) revenue = cachedRev;
+
+    // Fallback to EMBEDDED_BACKUP_DATA ONLY if LocalStorage is completely empty (first time open)
+    if (contractors.length === 0 && typeof EMBEDDED_BACKUP_DATA !== 'undefined' && EMBEDDED_BACKUP_DATA.contractors) {
+        contractors = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.contractors));
     }
+    if (payments.length === 0 && typeof EMBEDDED_BACKUP_DATA !== 'undefined' && EMBEDDED_BACKUP_DATA.payments) {
+        payments = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.payments));
+    }
+    if (items.length === 0 && typeof EMBEDDED_BACKUP_DATA !== 'undefined' && EMBEDDED_BACKUP_DATA.items) {
+        items = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.items));
+    }
+    if (extracts.length === 0 && typeof EMBEDDED_BACKUP_DATA !== 'undefined' && EMBEDDED_BACKUP_DATA.extracts) {
+        extracts = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.extracts));
+    }
+    if (supplierExtracts.length === 0 && typeof EMBEDDED_BACKUP_DATA !== 'undefined' && EMBEDDED_BACKUP_DATA.supplierExtracts) {
+        supplierExtracts = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.supplierExtracts));
+    }
+
     currentUser = USERS[0];
     sanitizeRows();
     initDefaults();
-    try{ window.contractors = contractors;
-    window.payments = payments;
-    window.items = items;
-    renderAll(); }catch(e){}
-} catch(err) {
-    console.error('Immediate init error:', err);
-}
-
-document.addEventListener('DOMContentLoaded', async () => {
-    // Auto-login immediately
-    currentUser = USERS[0];
-    try { sessionStorage.setItem('sc_user', JSON.stringify(currentUser)); } catch(err) {}
-    const loginEl = document.getElementById('loginScreen');
-    if(loginEl) loginEl.style.display = 'none';
-
-    // 1. INSTANT LOCAL & EMBEDDED DATA LOAD (0ms)
-    items = loadLocal(SK.items, []);
-    contractors = loadLocal(SK.contractors, []);
-    payments = loadLocal(SK.payments, []);
-    extracts = loadLocal(SK.extracts, []);
-    supplierExtracts = loadLocal(SK.supplierExtracts, []);
-    inventory = loadLocal(SK.inventory, []);
-        // Clear any corrupted local supplyItemsList
-    try { localStorage.removeItem(SK.supplyItemsList); } catch(e) {}
-    supplyItemsList = [...DEFAULT_SUPPLY_ITEMS];
-    expenses = loadLocal(SK.expenses, []);
-    revenue = loadLocal(SK.revenue, []);
-
-    // 2. ABSOLUTE FALLBACK TO EMBEDDED BACKUP DATA IF LOCALSTORAGE IS EMPTY / CORRUPTED
-    if (typeof EMBEDDED_BACKUP_DATA !== 'undefined') {
-        if((!contractors.length || contractors.length < 10) && EMBEDDED_BACKUP_DATA.contractors) contractors = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.contractors));
-        if((!payments.length || payments.length < 5) && EMBEDDED_BACKUP_DATA.payments) payments = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.payments));
-        if(!extracts.length && EMBEDDED_BACKUP_DATA.extracts) extracts = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.extracts));
-        if(!supplierExtracts.length && EMBEDDED_BACKUP_DATA.supplierExtracts) supplierExtracts = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.supplierExtracts));
-        if(!expenses.length && EMBEDDED_BACKUP_DATA.expenses) expenses = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.expenses));
-        if(!items.length && EMBEDDED_BACKUP_DATA.items) items = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.items));
-        if(!supplyItemsList.length && EMBEDDED_BACKUP_DATA.supplyItemsList) supplyItemsList = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.supplyItemsList));
-    }
-
-    // 3. RENDER UI INSTANTLY AT 0ms
-    sanitizeRows();
-    initDefaults();
-    initNav(); initSidebar(); populateDropdowns(); initForms(); initModals(); initSorting(); initSupplierListeners();
-    setDate(); 
     window.contractors = contractors;
     window.payments = payments;
     window.items = items;
-    renderAll();
-    showSyncStatus('synced');
-
-    // 4. BACKGROUND FIREBASE SYNC (Non-blocking)
-    loadFromServer().then(serverOk => {
-        if(serverOk) {
-            window.contractors = contractors;
-    window.payments = payments;
-    window.items = items;
-    renderAll();
-    showSyncStatus('synced');
-            syncTimer = setInterval(autoSync, 10000);
-        }
-    }).catch(err => {
-        console.warn('Background sync failed:', err);
-    });
-
-    checkSession();
-});
-
+    try{ renderAll(); }catch(e){}
+} catch(err) {
+    console.error('Immediate init error:', err);
+}
 // ========================================
 // SAVE ALL (manual button)
 // ========================================
