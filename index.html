@@ -1589,7 +1589,51 @@ function closeSidebar(){document.getElementById('sidebar').classList.remove('ope
 // ========================================
 // DROPDOWNS
 // ========================================
+
+
+function populateSupplyDropdowns() {
+    let supplyList = items.filter(i => isSupplyItem(i));
+    if (supplyList.length === 0 && typeof DEFAULT_SUPPLY_ITEMS !== 'undefined') {
+        supplyList = [...DEFAULT_SUPPLY_ITEMS];
+        DEFAULT_SUPPLY_ITEMS.forEach(si => {
+            if (!items.includes(si)) items.push(si);
+        });
+    }
+
+    const supDropdownIds = ['addSupplierItem', 'supplierItemFilter', 'supExtractItemSelect'];
+    supDropdownIds.forEach(id => {
+        const s = document.getElementById(id);
+        if (!s) return;
+        const firstOpt = s.options[0] ? s.options[0].textContent : 'اختر البند...';
+        s.innerHTML = `<option value="">${firstOpt}</option>`;
+        supplyList.forEach(it => {
+            const o = document.createElement('option');
+            o.value = it;
+            o.textContent = it;
+            s.appendChild(o);
+        });
+    });
+}
+);
+    }
+
+    const supDropdownIds = ['addSupplierItem', 'supplierItemFilter', 'supExtractItemSelect'];
+    supDropdownIds.forEach(id => {
+        const s = document.getElementById(id);
+        if (!s) return;
+        const firstOpt = s.options[0] ? s.options[0].textContent : 'اختر البند...';
+        s.innerHTML = `<option value="">${firstOpt}</option>`;
+        supplyList.forEach(it => {
+            const o = document.createElement('option');
+            o.value = it;
+            o.textContent = it;
+            s.appendChild(o);
+        });
+    });
+}
+
 function populateDropdowns(){
+    populateSupplyDropdowns();
     // All items (contractors + suppliers) for payment & statement
     const allSels=['paymentItem','paymentItemFilter','statementItem'];
     allSels.forEach(id=>{
@@ -1799,55 +1843,85 @@ function confirmDeleteItem(name){
 // MODALS
 // ========================================
 function initModals(){
-    gi('confirmDelete').addEventListener('click',()=>{
-        if(deleteType==='payment'){payments=payments.filter(p=>p.id!==deleteTarget);save();showToast('🗑️ تم حذف الدفعة','info');}
-        else if(deleteType==='contractor'){
-            const c=contractors.find(x=>x.id===deleteTarget);
-            if(c){payments=payments.filter(p=>!(p.contractor===c.name&&p.item===c.item));extracts=extracts.filter(ex=>!(ex.contractor===c.name&&ex.item===c.item));contractors=contractors.filter(x=>x.id!==deleteTarget);save();populateDropdowns();showToast('🗑️ تم حذف المقاول','info');}
-        }
-        else if(deleteType==='item'){
-            contractors=contractors.filter(c=>c.item!==deleteTarget);payments=payments.filter(p=>p.item!==deleteTarget);extracts=extracts.filter(ex=>ex.item!==deleteTarget);items=items.filter(i=>i!==deleteTarget);
-            save();populateDropdowns();showToast('🗑️ تم حذف البند','info');
-        }
-        else if(deleteType==='supExtract'){
-            supplierExtracts=supplierExtracts.filter(ex=>ex.id!==deleteTarget);
-            save();currentSupExtractId=null;
-            hide('supExtractContent');show('supExtractEmpty');
-            const si=gv('supExtractItemSelect'),ss=gv('supExtractSupplierSelect');
-            if(si&&ss)onSupExtractSupplierChange();
-            showToast('🗑️ تم حذف المستخلص','info');
-        }
-        else if(deleteType==='extract'){
-            extracts=extracts.filter(ex=>ex.id!==deleteTarget);
-            save();currentExtractId=null;
-            hide('extractContent');show('extractEmpty');
-            const ci=gv('extractItemSelect'),cc=gv('extractContractorSelect');
-            if(ci&&cc)onExtractContractorChange();
-            showToast('🗑️ تم حذف المستخلص','info');
-        }
-        else if(deleteType==='expense'){
-            expenses=expenses.filter(e=>e.id!==deleteTarget);save();showToast('🗑️ تم حذف المصروف','info');
-        }
-        else if(deleteType==='inventoryProduct'){
-            const prod=inventory.find(p=>String(p.id)===String(deleteTarget));
-            inventory=inventory.filter(p=>String(p.id)!==String(deleteTarget));
-            save();
-            hide('inventoryCardContent');
-            show('noInventorySelected');
-            hide('btnDeleteSelectedProduct');
-            onInventorySupplierChange();
-            onInventorySupplierChange();
-            showToast(`تم حذف كارت صنف "${prod?prod.productName:''}" بالكامل`,'info');
-        }
-        else if(deleteType==='revenue'){
-            revenue=revenue.filter(r=>r.id!==deleteTarget);save();showToast('🗑️ تم حذف الإيراد','info');
-        }
-        window.contractors = contractors;
-    window.payments = payments;
-    window.items = items;
-    renderAll();
-    showSyncStatus('synced');closeModal('deleteModal');deleteTarget=null;deleteType='';
-    });
+    
+    const btnConfirm = gi('confirmDelete');
+    if(btnConfirm) {
+        btnConfirm.onclick = function() {
+            if(!deleteTarget) { closeModal('deleteModal'); return; }
+            const targetStr = String(deleteTarget);
+            
+            if(deleteType === 'payment') {
+                payments = payments.filter(p => String(p.id) !== targetStr);
+                save();
+                showToast('🗑️ تم حذف الدفعة بنجاح', 'info');
+            }
+            else if(deleteType === 'contractor' || deleteType === 'supplier') {
+                const c = contractors.find(x => String(x.id) === targetStr);
+                if(c) {
+                    payments = payments.filter(p => !(p.contractor === c.name && p.item === c.item));
+                    extracts = extracts.filter(ex => !(ex.contractor === c.name && ex.item === c.item));
+                    if(typeof supplierExtracts !== 'undefined') {
+                        supplierExtracts = supplierExtracts.filter(ex => !(ex.contractor === c.name && ex.item === c.item));
+                    }
+                    contractors = contractors.filter(x => String(x.id) !== targetStr);
+                    save();
+                    populateDropdowns();
+                    showToast(`🗑️ تم حذف ${c.name}`, 'info');
+                } else {
+                    contractors = contractors.filter(x => String(x.id) !== targetStr);
+                    save();
+                    populateDropdowns();
+                    showToast('🗑️ تم الحذف بنجاح', 'info');
+                }
+            }
+            else if(deleteType === 'item') {
+                contractors = contractors.filter(c => c.item !== deleteTarget);
+                payments = payments.filter(p => p.item !== deleteTarget);
+                extracts = extracts.filter(ex => ex.item !== deleteTarget);
+                if(typeof supplierExtracts !== 'undefined') supplierExtracts = supplierExtracts.filter(ex => ex.item !== deleteTarget);
+                items = items.filter(i => i !== deleteTarget);
+                save();
+                populateDropdowns();
+                showToast(`🗑️ تم حذف البند "${deleteTarget}"`, 'info');
+            }
+            else if(deleteType === 'expense') {
+                expenses = expenses.filter(e => String(e.id) !== targetStr);
+                save();
+                showToast('🗑️ تم حذف المصروف', 'info');
+            }
+            else if(deleteType === 'revenue') {
+                revenue = revenue.filter(r => String(r.id) !== targetStr);
+                save();
+                showToast('🗑️ تم حذف الإيراد', 'info');
+            }
+            else if(deleteType === 'extract') {
+                extracts = extracts.filter(ex => String(ex.id) !== targetStr);
+                save();
+                currentExtractId = null;
+                hide('extractContent');
+                show('extractEmpty');
+                showToast('🗑️ تم حذف المستخلص', 'info');
+            }
+            else if(deleteType === 'supExtract') {
+                if(typeof supplierExtracts !== 'undefined') supplierExtracts = supplierExtracts.filter(ex => String(ex.id) !== targetStr);
+                save();
+                currentSupExtractId = null;
+                hide('supExtractContent');
+                show('supExtractEmpty');
+                showToast('🗑️ تم حذف المستخلص', 'info');
+            }
+
+            window.contractors = contractors;
+            window.payments = payments;
+            window.items = items;
+            renderAll();
+            showSyncStatus('synced');
+            closeModal('deleteModal');
+            deleteTarget = null;
+            deleteType = '';
+        };
+    }
+
     gi('cancelDelete').addEventListener('click',()=>closeModal('deleteModal'));
     document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeModal(o.id);}));
     document.querySelectorAll('[data-close-modal]').forEach(b=>b.addEventListener('click',()=>closeModal(b.dataset.closeModal)));
