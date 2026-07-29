@@ -861,7 +861,7 @@
     <div class="modal-overlay" id="deleteModal">
         <div class="modal"><div class="modal-icon">⚠️</div><h3>تأكيد الحذف</h3>
             <p id="deleteModalText">هل أنت متأكد؟</p>
-            <div class="modal-actions"><button class="btn btn-danger" id="confirmDelete">حذف</button><button class="btn btn-ghost" id="cancelDelete">إلغاء</button></div>
+            <div class="modal-actions"><button class="btn btn-danger" id="confirmDelete">حذف</button><button class="btn btn-ghost" id="cancelDelete" onclick="closeModal('deleteModal')" onclick="closeModal('deleteModal')">إلغاء</button></div>
         </div>
     </div>
 
@@ -871,7 +871,7 @@
             <form id="addContractorForm">
                 <div class="form-group"><label>اسم المقاول <span class="required">*</span></label><input type="text" class="text-input" id="addContractorName" required placeholder="الاسم الحقيقي للمقاول"></div>
                 <div class="form-group"><label>البند <span class="required">*</span></label><select class="select-input" id="addContractorItem" required><option value="">اختر البند...</option></select></div>
-                <div class="modal-actions"><button type="submit" class="btn btn-primary">➕ إضافة</button><button type="button" class="btn btn-ghost" data-close-modal="addContractorModal">إلغاء</button></div>
+                <div class="modal-actions"><button type="submit" class="btn btn-primary">➕ إضافة</button><button type="button" class="btn btn-ghost" onclick="closeModal('addContractorModal')" data-close-modal="addContractorModal">إلغاء</button></div>
             </form>
         </div>
     </div>
@@ -882,7 +882,7 @@
             <form id="editContractorForm">
                 <div class="form-group"><label>البند</label><div class="readonly-field" id="editContractorCurrentItem">—</div></div>
                 <div class="form-group"><label>الاسم <span class="required">*</span></label><input type="text" class="text-input" id="editContractorName" required></div>
-                <div class="modal-actions"><button type="submit" class="btn btn-primary">💾 حفظ</button><button type="button" class="btn btn-ghost" data-close-modal="editContractorModal">إلغاء</button></div>
+                <div class="modal-actions"><button type="submit" class="btn btn-primary">💾 حفظ</button><button type="button" class="btn btn-ghost" data-close-modal="editContractorModal" onclick="closeModal('editContractorModal')">إلغاء</button></div>
             </form>
         </div>
     </div>
@@ -893,7 +893,7 @@
         <div class="modal modal-form">
             <div class="modal-header">
                 <h3>تعديل بيانات الدفعة</h3>
-                <button class="modal-close" data-close-modal="editPaymentModal">&times;</button>
+                <button class="modal-close" data-close-modal="editPaymentModal" onclick="closeModal('editPaymentModal')">&times;</button>
             </div>
             <form id="editPaymentForm" onsubmit="submitEditPayment(event)">
                 <div class="form-group">
@@ -921,7 +921,7 @@
                     <input type="text" class="text-input" id="editPaymentNotes" placeholder="أية ملاحظات إضافية">
                 </div>
                 <div class="modal-actions">
-                    <button type="button" class="btn btn-ghost" data-close-modal="editPaymentModal">إلغاء</button>
+                    <button type="button" class="btn btn-ghost" data-close-modal="editPaymentModal" onclick="closeModal('editPaymentModal')">إلغاء</button>
                     <button type="submit" class="btn btn-primary">حفظ التعديلات</button>
                 </div>
             </form>
@@ -933,7 +933,7 @@
         <div class="modal modal-form"><div class="modal-icon">📦</div><h3>إضافة بند جديد</h3>
             <form id="addItemForm">
                 <div class="form-group"><label>اسم البند <span class="required">*</span></label><input type="text" class="text-input" id="addItemName" required placeholder="مثال: ألوميتال"></div>
-                <div class="modal-actions"><button type="submit" class="btn btn-primary">➕ إضافة</button><button type="button" class="btn btn-ghost" data-close-modal="addItemModal">إلغاء</button></div>
+                <div class="modal-actions"><button type="submit" class="btn btn-primary">➕ إضافة</button><button type="button" class="btn btn-ghost" data-close-modal="addItemModal" onclick="closeModal('addItemModal')">إلغاء</button></div>
             </form>
         </div>
     </div>
@@ -944,7 +944,7 @@
             <form id="editItemForm">
                 <div class="form-group"><label>الاسم الحالي</label><div class="readonly-field" id="editItemOldName">—</div></div>
                 <div class="form-group"><label>الاسم الجديد <span class="required">*</span></label><input type="text" class="text-input" id="editItemNewName" required></div>
-                <div class="modal-actions"><button type="submit" class="btn btn-primary">💾 حفظ</button><button type="button" class="btn btn-ghost" data-close-modal="editItemModal">إلغاء</button></div>
+                <div class="modal-actions"><button type="submit" class="btn btn-primary">💾 حفظ</button><button type="button" class="btn btn-ghost" data-close-modal="editItemModal" onclick="closeModal('editItemModal')">إلغاء</button></div>
             </form>
         </div>
     </div>
@@ -955,7 +955,7 @@
             <form id="newExtractForm">
                 <div class="form-group"><label>تاريخ المستخلص <span class="required">*</span></label><input type="text" class="text-input date-picker" id="newExtractDate" required></div>
                 <div class="form-group"><label>ملاحظات</label><textarea class="text-input" id="newExtractNotes" rows="2" placeholder="اختياري..."></textarea></div>
-                <div class="modal-actions"><button type="submit" class="btn btn-primary">➕ إنشاء</button><button type="button" class="btn btn-ghost" data-close-modal="newExtractModal">إلغاء</button></div>
+                <div class="modal-actions"><button type="submit" class="btn btn-primary">➕ إنشاء</button><button type="button" class="btn btn-ghost" data-close-modal="newExtractModal" onclick="closeModal('newExtractModal')">إلغاء</button></div>
             </form>
         </div>
     </div>
@@ -966,7 +966,7 @@
             <form id="addSupplierForm">
                 <div class="form-group"><label>اسم المورد <span class="required">*</span></label><input type="text" class="text-input" id="addSupplierName" required placeholder="الاسم الحقيقي للمورد"></div>
                 <div class="form-group"><label>بند التوريد <span class="required">*</span></label><select class="select-input" id="addSupplierItem" required><option value="">اختر البند...</option></select></div>
-                <div class="modal-actions"><button type="submit" class="btn btn-primary">➕ إضافة</button><button type="button" class="btn btn-ghost" data-close-modal="addSupplierModal">إلغاء</button></div>
+                <div class="modal-actions"><button type="submit" class="btn btn-primary">➕ إضافة</button><button type="button" class="btn btn-ghost" data-close-modal="addSupplierModal" onclick="closeModal('addSupplierModal')">إلغاء</button></div>
             </form>
         </div>
     </div>
@@ -976,7 +976,7 @@
         <div class="modal modal-form"><div class="modal-icon">📦</div><h3>إضافة بند توريد جديد</h3>
             <form id="addSupplyItemForm">
                 <div class="form-group"><label>اسم بند التوريد <span class="required">*</span></label><input type="text" class="text-input" id="addSupplyItemName" required placeholder="مثال: توريد رخام"></div>
-                <div class="modal-actions"><button type="submit" class="btn btn-primary">➕ إضافة</button><button type="button" class="btn btn-ghost" data-close-modal="addSupplyItemModal">إلغاء</button></div>
+                <div class="modal-actions"><button type="submit" class="btn btn-primary">➕ إضافة</button><button type="button" class="btn btn-ghost" data-close-modal="addSupplyItemModal" onclick="closeModal('addSupplyItemModal')">إلغاء</button></div>
             </form>
         </div>
     </div>
@@ -987,7 +987,7 @@
             <form id="newSupExtractForm">
                 <div class="form-group"><label>تاريخ المستخلص <span class="required">*</span></label><input type="text" class="text-input date-picker" id="newSupExtractDate" required></div>
                 <div class="form-group"><label>ملاحظات</label><textarea class="text-input" id="newSupExtractNotes" rows="2" placeholder="اختياري..."></textarea></div>
-                <div class="modal-actions"><button type="submit" class="btn btn-primary">➕ إنشاء</button><button type="button" class="btn btn-ghost" data-close-modal="newSupExtractModal">إلغاء</button></div>
+                <div class="modal-actions"><button type="submit" class="btn btn-primary">➕ إنشاء</button><button type="button" class="btn btn-ghost" data-close-modal="newSupExtractModal" onclick="closeModal('newSupExtractModal')">إلغاء</button></div>
             </form>
         </div>
     </div>
