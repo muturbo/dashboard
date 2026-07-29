@@ -1356,7 +1356,6 @@ async function loadFromServer(){
 
         try {
             const res = await fetch(FIREBASE_URL + '/data.json' + cacheBuster, {
-                mode: 'cors',
                 cache: 'no-cache'
             });
             if (res.ok) {
@@ -1383,43 +1382,34 @@ async function loadFromServer(){
         }
 
         if (data && typeof data === 'object') {
-            let scCount = Array.isArray(data.contractors) ? data.contractors.length : 0;
-            let lcCount = (typeof contractors !== 'undefined' && Array.isArray(contractors)) ? contractors.length : 0;
-            if (scCount < lcCount && lcCount > 0) {
-                console.warn('loadFromServer Anti-Wipe Guard: Server has fewer records. Preserving local data.');
-                if (!data.items || (Array.isArray(items) && data.items.length < items.length)) data.items = items;
-                data.contractors = contractors;
-                data.payments = payments;
-                data.extracts = extracts;
-                if (!data.supplierExtracts || (Array.isArray(supplierExtracts) && data.supplierExtracts.length < supplierExtracts.length)) data.supplierExtracts = supplierExtracts;
-                if (!data.inventory || (Array.isArray(inventory) && data.inventory.length < inventory.length)) data.inventory = inventory;
-                if (!data.supplyItemsList || (Array.isArray(supplyItemsList) && data.supplyItemsList.length < supplyItemsList.length)) data.supplyItemsList = supplyItemsList;
-                if (!data.expenses || (Array.isArray(expenses) && data.expenses.length < expenses.length)) data.expenses = expenses;
-                if (!data.revenue || (Array.isArray(revenue) && data.revenue.length < revenue.length)) data.revenue = revenue;
-            }
             isServerMode = true;
-            if(Array.isArray(data.items)) items = data.items;
-            if(Array.isArray(data.contractors)) contractors = data.contractors;
-            if(Array.isArray(data.payments)) payments = data.payments;
-            if(Array.isArray(data.extracts)) extracts = data.extracts;
-            if(Array.isArray(data.supplierExtracts)) supplierExtracts = data.supplierExtracts;
-            if(Array.isArray(data.inventory)) inventory = data.inventory;
-            if(Array.isArray(data.supplyItemsList)) supplyItemsList = data.supplyItemsList;
-            if(Array.isArray(data.expenses)) expenses = data.expenses;
-            if(Array.isArray(data.revenue)) revenue = data.revenue;
+            lastSyncHash = JSON.stringify(data);
+
+            if (Array.isArray(data.items) && data.items.length > 0) items = data.items;
+            if (Array.isArray(data.contractors) && data.contractors.length > 0) contractors = data.contractors;
+            if (Array.isArray(data.payments)) payments = data.payments;
+            if (Array.isArray(data.extracts)) extracts = data.extracts;
+            if (Array.isArray(data.supplierExtracts)) supplierExtracts = data.supplierExtracts;
+            if (Array.isArray(data.inventory)) inventory = data.inventory;
+            if (Array.isArray(data.supplyItemsList)) supplyItemsList = data.supplyItemsList;
+            if (Array.isArray(data.expenses)) expenses = data.expenses;
+            if (Array.isArray(data.revenue)) revenue = data.revenue;
 
             sanitizeRows();
-            lastSyncHash = JSON.stringify(data);
             saveToCache();
-            showSyncStatus('synced');
+            window.contractors = contractors;
+            window.payments = payments;
+            window.items = items;
+
             renderAll();
+            populateDropdowns();
+            if (typeof populateSupplyDropdowns === 'function') try { populateSupplyDropdowns(); } catch(e) {}
+            showSyncStatus('synced');
+            console.log('✅ Fresh data loaded from Firebase:', contractors.length, 'contractors,', payments.length, 'payments');
             return true;
-        } else {
-            throw new Error('Invalid or empty server data');
         }
     } catch(err) {
-        console.warn('Server sync notice:', err);
-        isServerMode = true;
+        console.warn('Server load notice (offline mode):', err);
         showSyncStatus('synced');
         return false;
     }
