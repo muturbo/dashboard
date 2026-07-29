@@ -14,43 +14,7 @@ const COMPANY_LOGO='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAawAAAEYCAYAAA
 ];
 let currentUser = USERS[0];
 
-function handleLogin(e){
-    if(e && e.preventDefault) e.preventDefault();
-    try {
-        const user = (document.getElementById('loginUser') ? document.getElementById('loginUser').value : '').trim().toLowerCase();
-        const pass = (document.getElementById('loginPass') ? document.getElementById('loginPass').value : '').trim();
-        
-        let found = USERS.find(u => (u.username.toLowerCase() === user || (user === 'admin' && u.username === 'admin1')) && (u.password === pass || pass === '123456' || pass === 'admin' || pass === '23456'));
-        
-        if(!found && (user === 'admin' || user === 'admin1' || user === 'admin2' || user === '' || pass === '23456' || pass === '')) {
-            found = USERS[0];
-        }
 
-        if(!found){
-            const err = document.getElementById('loginError');
-            if(err) err.style.display = 'block';
-            return;
-        }
-
-        currentUser = found;
-        try {
-            sessionStorage.setItem('sc_user', JSON.stringify({username:found.username, role:found.role, label:found.label}));
-        } catch(err) {}
-
-        const screen = document.getElementById('loginScreen');
-        if(screen) {
-            screen.style.display = 'none';
-            screen.style.visibility = 'hidden';
-        }
-        const userLabel = document.getElementById('loggedInUser');
-        if(userLabel) userLabel.textContent = '👤 ' + found.label;
-        applyPermissions();
-        if(typeof showToast === 'function') showToast('✅ تم تسجيل الدخول بنجاح', 'success');
-    } catch(err) {
-        const screen = document.getElementById('loginScreen');
-        if(screen) screen.style.display = 'none';
-    }
-}
 
 function quickLoginAdmin() {
     try {
@@ -387,26 +351,6 @@ async function loadFromServer(){
         saveToCache();
         renderAll();
         return true;
-    }
-}
-        if(data.items&&data.items.length)items=data.items;
-        if(data.contractors&&data.contractors.length)contractors=data.contractors;
-        if(data.payments&&data.payments.length)payments=data.payments;
-        if(data.extracts&&data.extracts.length)extracts=data.extracts;
-        if(data.supplierExtracts&&data.supplierExtracts.length)supplierExtracts=data.supplierExtracts;
-        if(data.inventory&&data.inventory.length)inventory=data.inventory;
-        if(data.supplyItemsList&&data.supplyItemsList.length)supplyItemsList=data.supplyItemsList;
-        if(data.expenses&&data.expenses.length)expenses=data.expenses;
-        if(data.revenue&&data.revenue.length)revenue=data.revenue;
-        sanitizeRows();
-        lastSyncHash=JSON.stringify(data);
-        saveToCache();
-        showSyncStatus('synced');
-        return true;
-    }catch(err){
-        isServerMode=false;
-        showSyncStatus('offline');
-        return false;
     }
 }
 
@@ -2336,38 +2280,9 @@ function populateInventoryDropdowns() {
     });
 }
 
-function onInventoryItemChange() {
-    const item = gv('inventoryItemSelect');
-    fillSupplierDD('inventorySupplierSelect', item);
-    hide('inventoryCardContent');
-    show('noInventorySelected');
-    const prodSel = gi('inventoryProductSelect');
-    if(prodSel) { prodSel.innerHTML = '<option value="">اختر الصنف أولاً...</option>'; prodSel.disabled = true; }
-}
 
-function onInventorySupplierChange() {
-    const item = gv('inventoryItemSelect'), sup = gv('inventorySupplierSelect');
-    const prodSel = gi('inventoryProductSelect');
-    if(!prodSel) return;
-    prodSel.innerHTML = '<option value="">اختر الصنف...</option>';
-    if(!item || !sup) { prodSel.disabled = true; hide('inventoryCardContent'); show('noInventorySelected'); return; }
-    
-    const prods = inventory.filter(p => p.item === item && p.supplier === sup);
-    prods.forEach(p => {
-        const o = document.createElement('option');
-        o.value = p.id;
-        o.textContent = p.productName + ' (' + p.unit + ')';
-        prodSel.appendChild(o);
-    });
-    prodSel.disabled = false;
-    if(prods.length > 0) {
-        prodSel.value = prods[prods.length - 1].id;
-        onInventoryProductChange();
-    } else {
-        hide('inventoryCardContent');
-        show('noInventorySelected');
-    }
-}
+
+
 
 function onInventoryProductChange() {
     const prodId = gv('inventoryProductSelect');
@@ -2434,48 +2349,9 @@ function renderStockCard() {
     }
 }
 
-function openAddProductModal() {
-    const itemSel = gi('addProductItem');
-    if(itemSel) {
-        itemSel.innerHTML = '<option value="">اختر البند...</option>';
-        items.filter(i=>isSupplyItem(i)).forEach(it=>{
-            const o = document.createElement('option');
-            o.value = it; o.textContent = it; itemSel.appendChild(o);
-        });
-    }
-    const currentItem = gv('inventoryItemSelect');
-    if(currentItem) {
-        itemSel.value = currentItem;
-        fillSupplierDD('addProductSupplier', currentItem);
-        const currentSup = gv('inventorySupplierSelect');
-        if(currentSup) gi('addProductSupplier').value = currentSup;
-    }
-    openModal('addProductModal');
-}
 
-function submitAddProduct(e) {
-    e.preventDefault();
-    const item = gv('addProductItem'), sup = gv('addProductSupplier');
-    const name = gv('addProductName').trim(), unit = gv('addProductUnit').trim();
-    if(!item || !sup || !name || !unit) { showToast('يرجى ملء كافة البيانات المطلوبة', 'error'); return; }
-    
-    const exists = inventory.find(p => p.item === item && p.supplier === sup && p.productName === name);
-    if(exists) { showToast('⚠️ هذا الصنف موجود بالفعل لهذا المورد', 'error'); return; }
 
-    const newProd = { id: uid(), item, supplier: sup, productName: name, unit, transactions: [] };
-    inventory.push(newProd);
-    save();
-    closeModal('addProductModal');
-    e.target.reset();
-    showToast(`✅ تم إضافة صنف "${name}" بالمخزون`, 'success');
 
-    if(gi('inventoryItemSelect')) gi('inventoryItemSelect').value = item;
-    onInventoryItemChange();
-    if(gi('inventorySupplierSelect')) gi('inventorySupplierSelect').value = sup;
-    onInventorySupplierChange();
-    if(gi('inventoryProductSelect')) gi('inventoryProductSelect').value = newProd.id;
-    onInventoryProductChange();
-}
 
 function openAddMovementModal() {
     const prodId = gv('inventoryProductSelect');

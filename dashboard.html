@@ -861,7 +861,7 @@
     <div class="modal-overlay" id="deleteModal">
         <div class="modal"><div class="modal-icon">⚠️</div><h3>تأكيد الحذف</h3>
             <p id="deleteModalText">هل أنت متأكد؟</p>
-            <div class="modal-actions"><button class="btn btn-danger" id="confirmDelete">حذف</button><button class="btn btn-ghost" id="cancelDelete" onclick="closeModal('deleteModal')" onclick="closeModal('deleteModal')">إلغاء</button></div>
+            <div class="modal-actions"><button class="btn btn-danger" id="confirmDelete">حذف</button><button class="btn btn-ghost" id="cancelDelete" onclick="closeModal('deleteModal')">إلغاء</button></div>
         </div>
     </div>
 
@@ -1157,12 +1157,7 @@ function applyPermissions(){
     `;
 }
 window.handleLogin=handleLogin;
-function handleLogin(){
-    currentUser = USERS[0];
-    try { sessionStorage.setItem('sc_user', JSON.stringify(currentUser)); } catch(e) {}
-    const loginEl = document.getElementById('loginScreen');
-    if(loginEl) loginEl.style.display = 'none';
-}
+
 function handleLogout(){
     try { sessionStorage.removeItem('sc_user'); } catch(e) {}
     location.reload();
@@ -1197,10 +1192,7 @@ const DEFAULT_SUPPLY_ITEMS = [
     'توريد بلدوره','توريد انترلوك','توريدات سباكه','توريدات كهربائيه',
     'توريد دهانات خارجيه','توريدات سيراميك','توريدات عزل','توريد فوم','توريدات اوكر','توريد رخام'
 ];
-function isSupplyItem(item) {
-    if (!item) return false;
-    return DEFAULT_SUPPLY_ITEMS.includes(item) || (typeof supplyItemsList !== 'undefined' && supplyItemsList.includes(item));
-}
+
 
 const SUPPLY_UNITS = ['م²','م³','م.ط','عدد','طن','متر','كجم','لتر','كيس','شكارة','الف طوبة','م.م','رحلة'];
 
@@ -1591,37 +1583,26 @@ function closeSidebar(){document.getElementById('sidebar').classList.remove('ope
 // ========================================
 
 
+function isSupplyItem(item) {
+    if (!item) return false;
+    if (item.startsWith('توريد') || item.startsWith('توريدات') || item.includes('مورد')) return true;
+    return (typeof DEFAULT_SUPPLY_ITEMS !== 'undefined' && DEFAULT_SUPPLY_ITEMS.includes(item)) || (typeof supplyItemsList !== 'undefined' && supplyItemsList.includes(item));
+}
+
 function populateSupplyDropdowns() {
     let supplyList = items.filter(i => isSupplyItem(i));
-    if (supplyList.length === 0 && typeof DEFAULT_SUPPLY_ITEMS !== 'undefined') {
-        supplyList = [...DEFAULT_SUPPLY_ITEMS];
+    if (typeof DEFAULT_SUPPLY_ITEMS !== 'undefined') {
         DEFAULT_SUPPLY_ITEMS.forEach(si => {
+            if (!supplyList.includes(si)) supplyList.push(si);
             if (!items.includes(si)) items.push(si);
         });
     }
 
-    const supDropdownIds = ['addSupplierItem', 'supplierItemFilter', 'supExtractItemSelect'];
+    const supDropdownIds = ['addSupplierItem', 'supplierItemFilter', 'supExtractItemSelect', 'addProductItem', 'inventoryItemSelect'];
     supDropdownIds.forEach(id => {
         const s = document.getElementById(id);
         if (!s) return;
-        const firstOpt = s.options[0] ? s.options[0].textContent : 'اختر البند...';
-        s.innerHTML = `<option value="">${firstOpt}</option>`;
-        supplyList.forEach(it => {
-            const o = document.createElement('option');
-            o.value = it;
-            o.textContent = it;
-            s.appendChild(o);
-        });
-    });
-}
-);
-    }
-
-    const supDropdownIds = ['addSupplierItem', 'supplierItemFilter', 'supExtractItemSelect'];
-    supDropdownIds.forEach(id => {
-        const s = document.getElementById(id);
-        if (!s) return;
-        const firstOpt = s.options[0] ? s.options[0].textContent : 'اختر البند...';
+        const firstOpt = (s.options && s.options[0]) ? s.options[0].textContent : 'اختر البند...';
         s.innerHTML = `<option value="">${firstOpt}</option>`;
         supplyList.forEach(it => {
             const o = document.createElement('option');
@@ -3333,38 +3314,9 @@ function populateInventoryDropdowns() {
     });
 }
 
-function onInventoryItemChange() {
-    const item = gv('inventoryItemSelect');
-    fillSupplierDD('inventorySupplierSelect', item);
-    hide('inventoryCardContent');
-    show('noInventorySelected');
-    const prodSel = gi('inventoryProductSelect');
-    if(prodSel) { prodSel.innerHTML = '<option value="">اختر الصنف أولاً...</option>'; prodSel.disabled = true; }
-}
 
-function onInventorySupplierChange() {
-    const item = gv('inventoryItemSelect'), sup = gv('inventorySupplierSelect');
-    const prodSel = gi('inventoryProductSelect');
-    if(!prodSel) return;
-    prodSel.innerHTML = '<option value="">اختر الصنف...</option>';
-    if(!item || !sup) { prodSel.disabled = true; hide('inventoryCardContent'); show('noInventorySelected'); return; }
-    
-    const prods = inventory.filter(p => p.item === item && p.supplier === sup);
-    prods.forEach(p => {
-        const o = document.createElement('option');
-        o.value = p.id;
-        o.textContent = p.productName + ' (' + p.unit + ')';
-        prodSel.appendChild(o);
-    });
-    prodSel.disabled = false;
-    if(prods.length > 0) {
-        prodSel.value = prods[prods.length - 1].id;
-        onInventoryProductChange();
-    } else {
-        hide('inventoryCardContent');
-        show('noInventorySelected');
-    }
-}
+
+
 
 function onInventoryProductChange() {
     const prodId = gv('inventoryProductSelect');
@@ -3431,48 +3383,9 @@ function renderStockCard() {
     }
 }
 
-function openAddProductModal() {
-    const itemSel = gi('addProductItem');
-    if(itemSel) {
-        itemSel.innerHTML = '<option value="">اختر البند...</option>';
-        items.filter(i=>isSupplyItem(i)).forEach(it=>{
-            const o = document.createElement('option');
-            o.value = it; o.textContent = it; itemSel.appendChild(o);
-        });
-    }
-    const currentItem = gv('inventoryItemSelect');
-    if(currentItem) {
-        itemSel.value = currentItem;
-        fillSupplierDD('addProductSupplier', currentItem);
-        const currentSup = gv('inventorySupplierSelect');
-        if(currentSup) gi('addProductSupplier').value = currentSup;
-    }
-    openModal('addProductModal');
-}
 
-function submitAddProduct(e) {
-    e.preventDefault();
-    const item = gv('addProductItem'), sup = gv('addProductSupplier');
-    const name = gv('addProductName').trim(), unit = gv('addProductUnit').trim();
-    if(!item || !sup || !name || !unit) { showToast('يرجى ملء كافة البيانات المطلوبة', 'error'); return; }
-    
-    const exists = inventory.find(p => p.item === item && p.supplier === sup && p.productName === name);
-    if(exists) { showToast('⚠️ هذا الصنف موجود بالفعل لهذا المورد', 'error'); return; }
 
-    const newProd = { id: uid(), item, supplier: sup, productName: name, unit, transactions: [] };
-    inventory.push(newProd);
-    save();
-    closeModal('addProductModal');
-    e.target.reset();
-    showToast(`✅ تم إضافة صنف "${name}" بالمخزون`, 'success');
 
-    if(gi('inventoryItemSelect')) gi('inventoryItemSelect').value = item;
-    onInventoryItemChange();
-    if(gi('inventorySupplierSelect')) gi('inventorySupplierSelect').value = sup;
-    onInventorySupplierChange();
-    if(gi('inventoryProductSelect')) gi('inventoryProductSelect').value = newProd.id;
-    onInventoryProductChange();
-}
 
 function openAddMovementModal() {
     const prodId = gv('inventoryProductSelect');
