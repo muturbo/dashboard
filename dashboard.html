@@ -1502,6 +1502,14 @@ try {
     window.payments = payments;
     window.items = items;
     try{ renderAll(); }catch(e){}
+    // Initialize all UI components
+    try { initNav(); } catch(e) { console.error('initNav error:', e); }
+    try { initSidebar(); } catch(e) { console.error('initSidebar error:', e); }
+    try { initForms(); } catch(e) { console.error('initForms error:', e); }
+    try { initModals(); } catch(e) { console.error('initModals error:', e); }
+    try { initSorting(); } catch(e) { console.error('initSorting error:', e); }
+    try { populateDropdowns(); } catch(e) { console.error('populateDropdowns error:', e); }
+    try { if(typeof initSupplierListeners === 'function') initSupplierListeners(); } catch(e) {}
 } catch(err) {
     console.error('Immediate init error:', err);
 }
