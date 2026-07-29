@@ -291,7 +291,7 @@
             <div class="section-header"><div><h1 class="section-title">تسجيل دفعة جديدة</h1><span class="project-badge">المشروع : التوسعات الجنوبيه</span><span class="company-badge">شركة الرحاب للمقاولات العموميه (ورثة سيد تهامى)</span></div><div class="header-actions"><button class="btn btn-ghost btn-sm" onclick="document.getElementById('importPaymentsFile').click()">📥 get data from excel</button>
                     <button class="btn btn-ghost btn-sm" onclick="exportPaymentsToExcel()">📊 Save As Excel</button></div></div>
             <div class="card form-card">
-                <form id="paymentForm" novalidate>
+                <form id="paymentForm" onsubmit="event.preventDefault(); submitPayment(event);" novalidate>
                     <div class="form-row">
                         <div class="form-group">
                             <label for="paymentItem">البند <span class="required">*</span></label>
@@ -868,7 +868,7 @@
     <!-- Add Contractor Modal -->
     <div class="modal-overlay" id="addContractorModal">
         <div class="modal modal-form"><div class="modal-icon">👷</div><h3>إضافة مقاول جديد</h3>
-            <form id="addContractorForm">
+            <form id="addContractorForm" onsubmit="event.preventDefault(); submitAddContractor(event);">
                 <div class="form-group"><label>اسم المقاول <span class="required">*</span></label><input type="text" class="text-input" id="addContractorName" required placeholder="الاسم الحقيقي للمقاول"></div>
                 <div class="form-group"><label>البند <span class="required">*</span></label><select class="select-input" id="addContractorItem" required><option value="">اختر البند...</option></select></div>
                 <div class="modal-actions"><button type="submit" class="btn btn-primary">➕ إضافة</button><button type="button" class="btn btn-ghost" onclick="closeModal('addContractorModal')" data-close-modal="addContractorModal">إلغاء</button></div>
@@ -879,7 +879,7 @@
     <!-- Edit Contractor Modal -->
     <div class="modal-overlay" id="editContractorModal">
         <div class="modal modal-form"><div class="modal-icon">✏️</div><h3>تعديل المقاول/المورد</h3>
-            <form id="editContractorForm">
+            <form id="editContractorForm" onsubmit="event.preventDefault(); submitEditContractor(event);">
                 <div class="form-group"><label>البند</label><div class="readonly-field" id="editContractorCurrentItem">—</div></div>
                 <div class="form-group"><label>الاسم <span class="required">*</span></label><input type="text" class="text-input" id="editContractorName" required></div>
                 <div class="modal-actions"><button type="submit" class="btn btn-primary">💾 حفظ</button><button type="button" class="btn btn-ghost" data-close-modal="editContractorModal" onclick="closeModal('editContractorModal')">إلغاء</button></div>
@@ -931,7 +931,7 @@
     <!-- Add Item Modal -->
     <div class="modal-overlay" id="addItemModal">
         <div class="modal modal-form"><div class="modal-icon">📦</div><h3>إضافة بند جديد</h3>
-            <form id="addItemForm">
+            <form id="addItemForm" onsubmit="event.preventDefault(); submitAddItem(event);">
                 <div class="form-group"><label>اسم البند <span class="required">*</span></label><input type="text" class="text-input" id="addItemName" required placeholder="مثال: ألوميتال"></div>
                 <div class="modal-actions"><button type="submit" class="btn btn-primary">➕ إضافة</button><button type="button" class="btn btn-ghost" data-close-modal="addItemModal" onclick="closeModal('addItemModal')">إلغاء</button></div>
             </form>
@@ -941,7 +941,7 @@
     <!-- Edit Item Modal -->
     <div class="modal-overlay" id="editItemModal">
         <div class="modal modal-form"><div class="modal-icon">✏️</div><h3>تعديل اسم البند</h3>
-            <form id="editItemForm">
+            <form id="editItemForm" onsubmit="event.preventDefault(); submitEditItem(event);">
                 <div class="form-group"><label>الاسم الحالي</label><div class="readonly-field" id="editItemOldName">—</div></div>
                 <div class="form-group"><label>الاسم الجديد <span class="required">*</span></label><input type="text" class="text-input" id="editItemNewName" required></div>
                 <div class="modal-actions"><button type="submit" class="btn btn-primary">💾 حفظ</button><button type="button" class="btn btn-ghost" data-close-modal="editItemModal" onclick="closeModal('editItemModal')">إلغاء</button></div>
@@ -952,7 +952,7 @@
     <!-- New Extract Modal -->
     <div class="modal-overlay" id="newExtractModal">
         <div class="modal modal-form"><div class="modal-icon">📋</div><h3>مستخلص مقاول جديد</h3>
-            <form id="newExtractForm">
+            <form id="newExtractForm" onsubmit="event.preventDefault(); submitNewExtract(event);">
                 <div class="form-group"><label>تاريخ المستخلص <span class="required">*</span></label><input type="text" class="text-input date-picker" id="newExtractDate" required></div>
                 <div class="form-group"><label>ملاحظات</label><textarea class="text-input" id="newExtractNotes" rows="2" placeholder="اختياري..."></textarea></div>
                 <div class="modal-actions"><button type="submit" class="btn btn-primary">➕ إنشاء</button><button type="button" class="btn btn-ghost" data-close-modal="newExtractModal" onclick="closeModal('newExtractModal')">إلغاء</button></div>
@@ -963,7 +963,7 @@
     <!-- Add Supplier Modal -->
     <div class="modal-overlay" id="addSupplierModal">
         <div class="modal modal-form"><div class="modal-icon">🚚</div><h3>إضافة مورد جديد</h3>
-            <form id="addSupplierForm">
+            <form id="addSupplierForm" onsubmit="event.preventDefault(); submitAddSupplier(event);">
                 <div class="form-group"><label>اسم المورد <span class="required">*</span></label><input type="text" class="text-input" id="addSupplierName" required placeholder="الاسم الحقيقي للمورد"></div>
                 <div class="form-group"><label>بند التوريد <span class="required">*</span></label><select class="select-input" id="addSupplierItem" required><option value="">اختر البند...</option></select></div>
                 <div class="modal-actions"><button type="submit" class="btn btn-primary">➕ إضافة</button><button type="button" class="btn btn-ghost" data-close-modal="addSupplierModal" onclick="closeModal('addSupplierModal')">إلغاء</button></div>
@@ -974,7 +974,7 @@
     <!-- Add Supply Item Modal -->
     <div class="modal-overlay" id="addSupplyItemModal">
         <div class="modal modal-form"><div class="modal-icon">📦</div><h3>إضافة بند توريد جديد</h3>
-            <form id="addSupplyItemForm">
+            <form id="addSupplyItemForm" onsubmit="event.preventDefault(); submitAddSupplyItem(event);">
                 <div class="form-group"><label>اسم بند التوريد <span class="required">*</span></label><input type="text" class="text-input" id="addSupplyItemName" required placeholder="مثال: توريد رخام"></div>
                 <div class="modal-actions"><button type="submit" class="btn btn-primary">➕ إضافة</button><button type="button" class="btn btn-ghost" data-close-modal="addSupplyItemModal" onclick="closeModal('addSupplyItemModal')">إلغاء</button></div>
             </form>
@@ -984,7 +984,7 @@
     <!-- New Supplier Extract Modal -->
     <div class="modal-overlay" id="newSupExtractModal">
         <div class="modal modal-form"><div class="modal-icon">📑</div><h3>مستخلص مورد جديد</h3>
-            <form id="newSupExtractForm">
+            <form id="newSupExtractForm" onsubmit="event.preventDefault(); submitNewSupExtract(event);">
                 <div class="form-group"><label>تاريخ المستخلص <span class="required">*</span></label><input type="text" class="text-input date-picker" id="newSupExtractDate" required></div>
                 <div class="form-group"><label>ملاحظات</label><textarea class="text-input" id="newSupExtractNotes" rows="2" placeholder="اختياري..."></textarea></div>
                 <div class="modal-actions"><button type="submit" class="btn btn-primary">➕ إنشاء</button><button type="button" class="btn btn-ghost" data-close-modal="newSupExtractModal" onclick="closeModal('newSupExtractModal')">إلغاء</button></div>
@@ -1187,6 +1187,15 @@ const COLORS = [
 const UNITS = ['م²','م³','م.ط','عدد','طن','مقطوعية','متر','كجم'];
 const WORK_TYPES = ['تنفيذ','توريد','توريد وتنفيذ'];
 const DEFAULT_SUPPLY_ITEMS = [
+
+function isSupplyItem(item) {
+    if (!item) return false;
+    if (typeof DEFAULT_SUPPLY_ITEMS !== 'undefined' && Array.isArray(DEFAULT_SUPPLY_ITEMS)) {
+        if (DEFAULT_SUPPLY_ITEMS.includes(item)) return true;
+    }
+    return String(item).includes('توريد') || String(item).includes('توريدات');
+}
+
     'توريد رمل','توريد مياه','توريد خرسانه جاهزه','توريد حديد تسليح',
     'توريد اسمنت','توريد طوب اسمنتى','توريد طوب طفلى','توريد بلاط مازيكو',
     'توريد بلدوره','توريد انترلوك','توريدات سباكه','توريدات كهربائيه',
@@ -1289,7 +1298,7 @@ let deleteTarget=null, deleteType='', editTarget=null, editItemTarget=null;
 let currentExtractId=null;
 let currentSupExtractId=null;
 let sortState={field:'id',dir:'asc'};
-let isServerMode=false;
+let isServerMode=true;
 let syncTimer=null;
 let lastSyncHash='';
 
@@ -1351,33 +1360,49 @@ async function saveToServer(){
 // Load from Firebase
 async function loadFromServer(){
     try {
-        const cacheBuster = '?t=' + Date.now();
+        const cacheBuster = 't=' + Date.now();
         let data = null;
 
+        // Method 1: Fetch (works on HTTP/HTTPS)
         try {
-            const res = await fetch(FIREBASE_URL + '/data.json' + cacheBuster, {
-                cache: 'no-cache'
-            });
+            const res = await fetch(FIREBASE_URL + '/data.json?' + cacheBuster, { cache: 'no-cache' });
             if (res.ok) {
                 data = await res.json();
             }
         } catch(fetchErr) {
-            console.warn('Fetch failed, trying XHR fallback:', fetchErr);
+            console.warn('Fetch failed (likely file:// protocol CORS limit), trying JSONP script injection...');
         }
 
+        // Method 2: JSONP Script Tag Injection (Bypasses ALL Chrome file:// CORS restrictions!)
         if (!data) {
-            data = await new Promise((resolve, reject) => {
-                const xhr = new XMLHttpRequest();
-                xhr.open('GET', FIREBASE_URL + '/data.json' + cacheBuster, true);
-                xhr.onload = function() {
-                    if (xhr.status >= 200 && xhr.status < 300) {
-                        try { resolve(JSON.parse(xhr.responseText)); } catch(e) { reject(e); }
-                    } else {
-                        reject(new Error('XHR status ' + xhr.status));
-                    }
+            data = await new Promise((resolve) => {
+                const cbName = '__fbCB_' + Date.now() + '_' + Math.floor(Math.random()*1000);
+                const script = document.createElement('script');
+                let timeoutId = null;
+
+                window[cbName] = function(respData) {
+                    if (timeoutId) clearTimeout(timeoutId);
+                    try { delete window[cbName]; } catch(e) { window[cbName] = undefined; }
+                    if (script.parentNode) script.parentNode.removeChild(script);
+                    resolve(respData);
                 };
-                xhr.onerror = function() { reject(new Error('XHR network error')); };
-                xhr.send();
+
+                script.src = FIREBASE_URL + '/data.json?callback=' + cbName + '&' + cacheBuster;
+                script.onerror = function() {
+                    if (timeoutId) clearTimeout(timeoutId);
+                    try { delete window[cbName]; } catch(e) { window[cbName] = undefined; }
+                    if (script.parentNode) script.parentNode.removeChild(script);
+                    resolve(null);
+                };
+
+                // 5 second safety timeout
+                timeoutId = setTimeout(() => {
+                    try { delete window[cbName]; } catch(e) { window[cbName] = undefined; }
+                    if (script.parentNode) script.parentNode.removeChild(script);
+                    resolve(null);
+                }, 5000);
+
+                document.head.appendChild(script);
             });
         }
 
@@ -1405,11 +1430,15 @@ async function loadFromServer(){
             populateDropdowns();
             if (typeof populateSupplyDropdowns === 'function') try { populateSupplyDropdowns(); } catch(e) {}
             showSyncStatus('synced');
-            console.log('✅ Fresh data loaded from Firebase:', contractors.length, 'contractors,', payments.length, 'payments');
+            console.log('✅ Firebase JSONP data loaded successfully:', contractors.length, 'contractors,', payments.length, 'payments');
             return true;
+        } else {
+            console.warn('No data returned from Firebase, using cached data');
+            showSyncStatus('synced');
+            return false;
         }
     } catch(err) {
-        console.warn('Server load notice (offline mode):', err);
+        console.warn('Server load notice (using local data):', err);
         showSyncStatus('synced');
         return false;
     }
@@ -1492,29 +1521,23 @@ try {
     const cachedExp = loadLocal(SK.expenses, null);
     const cachedRev = loadLocal(SK.revenue, null);
 
-    if (cachedCtrs !== null) contractors = cachedCtrs;
-    if (cachedPay !== null) payments = cachedPay;
-    if (cachedItems !== null) items = cachedItems;
-    if (cachedExt !== null) extracts = cachedExt;
-    if (cachedSupExt !== null) supplierExtracts = cachedSupExt;
-    if (cachedExp !== null) expenses = cachedExp;
-    if (cachedRev !== null) revenue = cachedRev;
+    if (cachedCtrs !== null && Array.isArray(cachedCtrs) && cachedCtrs.length > 0) contractors = cachedCtrs;
+    if (cachedPay !== null && Array.isArray(cachedPay) && cachedPay.length > 0) payments = cachedPay;
+    if (cachedItems !== null && Array.isArray(cachedItems) && cachedItems.length > 0) items = cachedItems;
+    if (cachedExt !== null && Array.isArray(cachedExt) && cachedExt.length > 0) extracts = cachedExt;
+    if (cachedSupExt !== null && Array.isArray(cachedSupExt) && cachedSupExt.length > 0) supplierExtracts = cachedSupExt;
+    if (cachedExp !== null && Array.isArray(cachedExp) && cachedExp.length > 0) expenses = cachedExp;
+    if (cachedRev !== null && Array.isArray(cachedRev) && cachedRev.length > 0) revenue = cachedRev;
 
-    // Fallback to EMBEDDED_BACKUP_DATA ONLY if LocalStorage is completely empty (first time open)
-    if (contractors.length === 0 && typeof EMBEDDED_BACKUP_DATA !== 'undefined' && EMBEDDED_BACKUP_DATA.contractors) {
-        contractors = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.contractors));
-    }
-    if (payments.length === 0 && typeof EMBEDDED_BACKUP_DATA !== 'undefined' && EMBEDDED_BACKUP_DATA.payments) {
-        payments = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.payments));
-    }
-    if (items.length === 0 && typeof EMBEDDED_BACKUP_DATA !== 'undefined' && EMBEDDED_BACKUP_DATA.items) {
-        items = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.items));
-    }
-    if (extracts.length === 0 && typeof EMBEDDED_BACKUP_DATA !== 'undefined' && EMBEDDED_BACKUP_DATA.extracts) {
-        extracts = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.extracts));
-    }
-    if (supplierExtracts.length === 0 && typeof EMBEDDED_BACKUP_DATA !== 'undefined' && EMBEDDED_BACKUP_DATA.supplierExtracts) {
-        supplierExtracts = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.supplierExtracts));
+    // Guaranteed initial fallback to EMBEDDED_BACKUP_DATA if any key array is empty
+    if (typeof EMBEDDED_BACKUP_DATA !== 'undefined') {
+        if (!Array.isArray(contractors) || contractors.length === 0) contractors = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.contractors || []));
+        if (!Array.isArray(payments) || payments.length === 0) payments = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.payments || []));
+        if (!Array.isArray(items) || items.length === 0) items = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.items || []));
+        if (!Array.isArray(extracts) || extracts.length === 0) extracts = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.extracts || []));
+        if (!Array.isArray(supplierExtracts) || supplierExtracts.length === 0) supplierExtracts = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.supplierExtracts || []));
+        if (!Array.isArray(expenses) || expenses.length === 0) expenses = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.expenses || []));
+        if (!Array.isArray(revenue) || revenue.length === 0) revenue = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.revenue || []));
     }
 
     currentUser = USERS[0];
@@ -2136,71 +2159,7 @@ function printPayments(){
         </table></div>`;
     const w=window.open('','_blank','width=1100,height=700');
     w.document.write(`<html dir="rtl"><head><title>${title}</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact}}</style></head><body>${html}<script>setTimeout(()=>window.print(),500)<\/script>
-<script>
-// --- Self-Healing Runtime Integrity Shield ---
-function verifyAndSelfHealDashboard() {
-    try {
-        let healed = false;
-        
-        // a. Check if #confirmDelete button is present and bound
-        const confirmDelete = document.getElementById('confirmDelete');
-        if (confirmDelete && typeof confirmDelete.onclick !== 'function') {
-            if (typeof window.initModals === 'function') { 
-                window.initModals(); 
-                healed = true; 
-            }
-        }
-        
-        // b. Are modal close buttons bound?
-        const closeBtns = document.querySelectorAll('.close, .cancel-btn');
-        closeBtns.forEach(btn => {
-            if (typeof btn.onclick !== 'function') {
-                btn.onclick = () => { if(typeof window.closeModal === 'function') window.closeModal(); };
-                healed = true;
-            }
-        });
-        
-        // c. Are dropdowns populated?
-        const dropdowns = document.querySelectorAll('select');
-        let needsPopulating = false;
-        dropdowns.forEach(sel => {
-            if (sel.options.length <= 1) needsPopulating = true;
-        });
-        if (needsPopulating && typeof window.populateDropdowns === 'function') {
-            window.populateDropdowns();
-            healed = true;
-        }
-        
-        // d. Are all window export functions defined?
-        const requiredFuncs = ['initModals', 'initNav', 'initSidebar', 'initForms', 'initSorting', 'populateDropdowns'];
-        requiredFuncs.forEach(func => {
-            if (typeof window[func] !== 'function') {
-                try {
-                    if (typeof window[func] === 'undefined') {
-                        // We can't fully rebuild them if deleted from memory, 
-                        // but if they exist locally we could re-bind. Just noting it.
-                    }
-                } catch(e) {}
-            }
-        });
-        
-        if (healed) {
-            console.log('[SHIELD] Dashboard structure self-healed.');
-        } else {
-            console.log('[SHIELD] Dashboard structure verified & healthy.');
-        }
-    } catch(e) {
-        console.error('Self-healing error:', e);
-    }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    verifyAndSelfHealDashboard();
-    setInterval(verifyAndSelfHealDashboard, 60000);
-});
-</script>
-</body>
-</html>`);
+<script>setTimeout(()=>window.print(),500)<\/script></body></html>`);
     w.document.close();
 }
 
@@ -2433,71 +2392,7 @@ function printExtract(){
     </div>`;
     const w=window.open('','_blank','width=1100,height=700');
     w.document.write(`<html dir="rtl"><head><title>مستخلص رقم ${ex.number} - ${ex.contractor}</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact}table{font-size:10px;width:100%!important}}</style></head><body>${html}<script>setTimeout(()=>window.print(),500)<\/script>
-<script>
-// --- Self-Healing Runtime Integrity Shield ---
-function verifyAndSelfHealDashboard() {
-    try {
-        let healed = false;
-        
-        // a. Check if #confirmDelete button is present and bound
-        const confirmDelete = document.getElementById('confirmDelete');
-        if (confirmDelete && typeof confirmDelete.onclick !== 'function') {
-            if (typeof window.initModals === 'function') { 
-                window.initModals(); 
-                healed = true; 
-            }
-        }
-        
-        // b. Are modal close buttons bound?
-        const closeBtns = document.querySelectorAll('.close, .cancel-btn');
-        closeBtns.forEach(btn => {
-            if (typeof btn.onclick !== 'function') {
-                btn.onclick = () => { if(typeof window.closeModal === 'function') window.closeModal(); };
-                healed = true;
-            }
-        });
-        
-        // c. Are dropdowns populated?
-        const dropdowns = document.querySelectorAll('select');
-        let needsPopulating = false;
-        dropdowns.forEach(sel => {
-            if (sel.options.length <= 1) needsPopulating = true;
-        });
-        if (needsPopulating && typeof window.populateDropdowns === 'function') {
-            window.populateDropdowns();
-            healed = true;
-        }
-        
-        // d. Are all window export functions defined?
-        const requiredFuncs = ['initModals', 'initNav', 'initSidebar', 'initForms', 'initSorting', 'populateDropdowns'];
-        requiredFuncs.forEach(func => {
-            if (typeof window[func] !== 'function') {
-                try {
-                    if (typeof window[func] === 'undefined') {
-                        // We can't fully rebuild them if deleted from memory, 
-                        // but if they exist locally we could re-bind. Just noting it.
-                    }
-                } catch(e) {}
-            }
-        });
-        
-        if (healed) {
-            console.log('[SHIELD] Dashboard structure self-healed.');
-        } else {
-            console.log('[SHIELD] Dashboard structure verified & healthy.');
-        }
-    } catch(e) {
-        console.error('Self-healing error:', e);
-    }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    verifyAndSelfHealDashboard();
-    setInterval(verifyAndSelfHealDashboard, 60000);
-});
-</script>
-</body>
-</html>`);
+<script>setTimeout(()=>window.print(),500)<\/script></body></html>`);
     w.document.close();
 }
 
@@ -2857,71 +2752,7 @@ function printSupExtract(){
     </div>`;
     const w=window.open('','_blank','width=1100,height=700');
     w.document.write(`<html dir="rtl"><head><title>مستخلص مورد ${ex.number} - ${ex.supplier}</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact}table{font-size:10px;width:100%!important}}</style></head><body>${html}<script>setTimeout(()=>window.print(),500)<\/script>
-<script>
-// --- Self-Healing Runtime Integrity Shield ---
-function verifyAndSelfHealDashboard() {
-    try {
-        let healed = false;
-        
-        // a. Check if #confirmDelete button is present and bound
-        const confirmDelete = document.getElementById('confirmDelete');
-        if (confirmDelete && typeof confirmDelete.onclick !== 'function') {
-            if (typeof window.initModals === 'function') { 
-                window.initModals(); 
-                healed = true; 
-            }
-        }
-        
-        // b. Are modal close buttons bound?
-        const closeBtns = document.querySelectorAll('.close, .cancel-btn');
-        closeBtns.forEach(btn => {
-            if (typeof btn.onclick !== 'function') {
-                btn.onclick = () => { if(typeof window.closeModal === 'function') window.closeModal(); };
-                healed = true;
-            }
-        });
-        
-        // c. Are dropdowns populated?
-        const dropdowns = document.querySelectorAll('select');
-        let needsPopulating = false;
-        dropdowns.forEach(sel => {
-            if (sel.options.length <= 1) needsPopulating = true;
-        });
-        if (needsPopulating && typeof window.populateDropdowns === 'function') {
-            window.populateDropdowns();
-            healed = true;
-        }
-        
-        // d. Are all window export functions defined?
-        const requiredFuncs = ['initModals', 'initNav', 'initSidebar', 'initForms', 'initSorting', 'populateDropdowns'];
-        requiredFuncs.forEach(func => {
-            if (typeof window[func] !== 'function') {
-                try {
-                    if (typeof window[func] === 'undefined') {
-                        // We can't fully rebuild them if deleted from memory, 
-                        // but if they exist locally we could re-bind. Just noting it.
-                    }
-                } catch(e) {}
-            }
-        });
-        
-        if (healed) {
-            console.log('[SHIELD] Dashboard structure self-healed.');
-        } else {
-            console.log('[SHIELD] Dashboard structure verified & healthy.');
-        }
-    } catch(e) {
-        console.error('Self-healing error:', e);
-    }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    verifyAndSelfHealDashboard();
-    setInterval(verifyAndSelfHealDashboard, 60000);
-});
-</script>
-</body>
-</html>`);
+<script>setTimeout(()=>window.print(),500)<\/script></body></html>`);
     w.document.close();
 }
 
@@ -3048,71 +2879,7 @@ function printExpenses(){
     const html=buildExpensesPrintHTML();
     const w=window.open('','_blank','width=1100,height=700');
     w.document.write(`<html dir="rtl"><head><title>\u0645\u0635\u0631\u0648\u0641\u0627\u062a \u0627\u0644\u0639\u0645\u0644\u064a\u0627\u062a</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact}}</style></head><body>${html}<script>setTimeout(()=>window.print(),500)<\/script>
-<script>
-// --- Self-Healing Runtime Integrity Shield ---
-function verifyAndSelfHealDashboard() {
-    try {
-        let healed = false;
-        
-        // a. Check if #confirmDelete button is present and bound
-        const confirmDelete = document.getElementById('confirmDelete');
-        if (confirmDelete && typeof confirmDelete.onclick !== 'function') {
-            if (typeof window.initModals === 'function') { 
-                window.initModals(); 
-                healed = true; 
-            }
-        }
-        
-        // b. Are modal close buttons bound?
-        const closeBtns = document.querySelectorAll('.close, .cancel-btn');
-        closeBtns.forEach(btn => {
-            if (typeof btn.onclick !== 'function') {
-                btn.onclick = () => { if(typeof window.closeModal === 'function') window.closeModal(); };
-                healed = true;
-            }
-        });
-        
-        // c. Are dropdowns populated?
-        const dropdowns = document.querySelectorAll('select');
-        let needsPopulating = false;
-        dropdowns.forEach(sel => {
-            if (sel.options.length <= 1) needsPopulating = true;
-        });
-        if (needsPopulating && typeof window.populateDropdowns === 'function') {
-            window.populateDropdowns();
-            healed = true;
-        }
-        
-        // d. Are all window export functions defined?
-        const requiredFuncs = ['initModals', 'initNav', 'initSidebar', 'initForms', 'initSorting', 'populateDropdowns'];
-        requiredFuncs.forEach(func => {
-            if (typeof window[func] !== 'function') {
-                try {
-                    if (typeof window[func] === 'undefined') {
-                        // We can't fully rebuild them if deleted from memory, 
-                        // but if they exist locally we could re-bind. Just noting it.
-                    }
-                } catch(e) {}
-            }
-        });
-        
-        if (healed) {
-            console.log('[SHIELD] Dashboard structure self-healed.');
-        } else {
-            console.log('[SHIELD] Dashboard structure verified & healthy.');
-        }
-    } catch(e) {
-        console.error('Self-healing error:', e);
-    }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    verifyAndSelfHealDashboard();
-    setInterval(verifyAndSelfHealDashboard, 60000);
-});
-</script>
-</body>
-</html>`);
+<script>setTimeout(()=>window.print(),500)<\/script></body></html>`);
     w.document.close();
 }
 
@@ -3173,71 +2940,7 @@ function printRevenue(){
     const html=buildRevenuePrintHTML();
     const w=window.open('','_blank','width=1100,height=700');
     w.document.write(`<html dir="rtl"><head><title>\u0625\u064a\u0631\u0627\u062f\u0627\u062a \u0627\u0644\u0645\u0634\u0631\u0648\u0639</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact}}</style></head><body>${html}<script>setTimeout(()=>window.print(),500)<\/script>
-<script>
-// --- Self-Healing Runtime Integrity Shield ---
-function verifyAndSelfHealDashboard() {
-    try {
-        let healed = false;
-        
-        // a. Check if #confirmDelete button is present and bound
-        const confirmDelete = document.getElementById('confirmDelete');
-        if (confirmDelete && typeof confirmDelete.onclick !== 'function') {
-            if (typeof window.initModals === 'function') { 
-                window.initModals(); 
-                healed = true; 
-            }
-        }
-        
-        // b. Are modal close buttons bound?
-        const closeBtns = document.querySelectorAll('.close, .cancel-btn');
-        closeBtns.forEach(btn => {
-            if (typeof btn.onclick !== 'function') {
-                btn.onclick = () => { if(typeof window.closeModal === 'function') window.closeModal(); };
-                healed = true;
-            }
-        });
-        
-        // c. Are dropdowns populated?
-        const dropdowns = document.querySelectorAll('select');
-        let needsPopulating = false;
-        dropdowns.forEach(sel => {
-            if (sel.options.length <= 1) needsPopulating = true;
-        });
-        if (needsPopulating && typeof window.populateDropdowns === 'function') {
-            window.populateDropdowns();
-            healed = true;
-        }
-        
-        // d. Are all window export functions defined?
-        const requiredFuncs = ['initModals', 'initNav', 'initSidebar', 'initForms', 'initSorting', 'populateDropdowns'];
-        requiredFuncs.forEach(func => {
-            if (typeof window[func] !== 'function') {
-                try {
-                    if (typeof window[func] === 'undefined') {
-                        // We can't fully rebuild them if deleted from memory, 
-                        // but if they exist locally we could re-bind. Just noting it.
-                    }
-                } catch(e) {}
-            }
-        });
-        
-        if (healed) {
-            console.log('[SHIELD] Dashboard structure self-healed.');
-        } else {
-            console.log('[SHIELD] Dashboard structure verified & healthy.');
-        }
-    } catch(e) {
-        console.error('Self-healing error:', e);
-    }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    verifyAndSelfHealDashboard();
-    setInterval(verifyAndSelfHealDashboard, 60000);
-});
-</script>
-</body>
-</html>`);
+<script>setTimeout(()=>window.print(),500)<\/script></body></html>`);
     w.document.close();
 }
 
@@ -3373,71 +3076,7 @@ function printBalances(){
     const html=buildBalancesPrintHTML();
     const w=window.open('','_blank','width=1100,height=700');
     w.document.write(`<html dir="rtl"><head><title>\u0627\u0644\u0623\u0631\u0635\u062f\u0629 \u0627\u0644\u062f\u0627\u0626\u0646\u0629 \u0627\u0644\u0645\u0633\u062a\u062d\u0642\u0629</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact}}</style></head><body>${html}<script>setTimeout(()=>window.print(),500)<\/script>
-<script>
-// --- Self-Healing Runtime Integrity Shield ---
-function verifyAndSelfHealDashboard() {
-    try {
-        let healed = false;
-        
-        // a. Check if #confirmDelete button is present and bound
-        const confirmDelete = document.getElementById('confirmDelete');
-        if (confirmDelete && typeof confirmDelete.onclick !== 'function') {
-            if (typeof window.initModals === 'function') { 
-                window.initModals(); 
-                healed = true; 
-            }
-        }
-        
-        // b. Are modal close buttons bound?
-        const closeBtns = document.querySelectorAll('.close, .cancel-btn');
-        closeBtns.forEach(btn => {
-            if (typeof btn.onclick !== 'function') {
-                btn.onclick = () => { if(typeof window.closeModal === 'function') window.closeModal(); };
-                healed = true;
-            }
-        });
-        
-        // c. Are dropdowns populated?
-        const dropdowns = document.querySelectorAll('select');
-        let needsPopulating = false;
-        dropdowns.forEach(sel => {
-            if (sel.options.length <= 1) needsPopulating = true;
-        });
-        if (needsPopulating && typeof window.populateDropdowns === 'function') {
-            window.populateDropdowns();
-            healed = true;
-        }
-        
-        // d. Are all window export functions defined?
-        const requiredFuncs = ['initModals', 'initNav', 'initSidebar', 'initForms', 'initSorting', 'populateDropdowns'];
-        requiredFuncs.forEach(func => {
-            if (typeof window[func] !== 'function') {
-                try {
-                    if (typeof window[func] === 'undefined') {
-                        // We can't fully rebuild them if deleted from memory, 
-                        // but if they exist locally we could re-bind. Just noting it.
-                    }
-                } catch(e) {}
-            }
-        });
-        
-        if (healed) {
-            console.log('[SHIELD] Dashboard structure self-healed.');
-        } else {
-            console.log('[SHIELD] Dashboard structure verified & healthy.');
-        }
-    } catch(e) {
-        console.error('Self-healing error:', e);
-    }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    verifyAndSelfHealDashboard();
-    setInterval(verifyAndSelfHealDashboard, 60000);
-});
-</script>
-</body>
-</html>`);
+<script>setTimeout(()=>window.print(),500)<\/script></body></html>`);
     w.document.close();
 }
 
@@ -3532,10 +3171,7 @@ function itemBadge(item){return `<span class="item-badge"><span class="item-dot"
 function setDate(){const el=gi('currentDate');if(!el)return;const n=new Date(),days=['\u0627\u0644\u0623\u062d\u062f','\u0627\u0644\u0627\u062b\u0646\u064a\u0646','\u0627\u0644\u062b\u0644\u0627\u062b\u0627\u0621','\u0627\u0644\u0623\u0631\u0628\u0639\u0627\u0621','\u0627\u0644\u062e\u0645\u064a\u0633','\u0627\u0644\u062c\u0645\u0639\u0629','\u0627\u0644\u0633\u0628\u062a'];el.textContent=days[n.getDay()]+' '+toAr(n.getDate()+'/'+( n.getMonth()+1)+'/'+n.getFullYear());}
 function animCount(id,target){
     const el=gi(id);if(!el)return;
-    el.textContent=toAr(target.toLocaleString('en'));
-    const s=0,dur=600,st=performance.now();
-    function u(t){const p=Math.min((t-st)/dur,1);el.textContent=toAr(Math.round(s+(target-s)*(1-Math.pow(1-p,3))).toLocaleString('en'));if(p<1)requestAnimationFrame(u);}
-    requestAnimationFrame(u);
+    el.textContent=toAr((target||0).toLocaleString('en'));
 }
 function showToast(msg,type='info'){const c=gi('toastContainer'),t=document.createElement('div');t.className=`toast ${type}`;t.textContent=msg;c.appendChild(t);setTimeout(()=>{t.classList.add('removing');setTimeout(()=>t.remove(),300);},3500);}
 
@@ -3913,71 +3549,7 @@ function printStockCard() {
 
     const w=window.open('','_blank','width=1100,height=700');
     w.document.write(`<html dir="rtl"><head><title>كارت صنف - ${prod.productName}</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact}table{font-size:10px;width:100%!important}}</style></head><body>${html}<script>setTimeout(()=>window.print(),500)<\/script>
-<script>
-// --- Self-Healing Runtime Integrity Shield ---
-function verifyAndSelfHealDashboard() {
-    try {
-        let healed = false;
-        
-        // a. Check if #confirmDelete button is present and bound
-        const confirmDelete = document.getElementById('confirmDelete');
-        if (confirmDelete && typeof confirmDelete.onclick !== 'function') {
-            if (typeof window.initModals === 'function') { 
-                window.initModals(); 
-                healed = true; 
-            }
-        }
-        
-        // b. Are modal close buttons bound?
-        const closeBtns = document.querySelectorAll('.close, .cancel-btn');
-        closeBtns.forEach(btn => {
-            if (typeof btn.onclick !== 'function') {
-                btn.onclick = () => { if(typeof window.closeModal === 'function') window.closeModal(); };
-                healed = true;
-            }
-        });
-        
-        // c. Are dropdowns populated?
-        const dropdowns = document.querySelectorAll('select');
-        let needsPopulating = false;
-        dropdowns.forEach(sel => {
-            if (sel.options.length <= 1) needsPopulating = true;
-        });
-        if (needsPopulating && typeof window.populateDropdowns === 'function') {
-            window.populateDropdowns();
-            healed = true;
-        }
-        
-        // d. Are all window export functions defined?
-        const requiredFuncs = ['initModals', 'initNav', 'initSidebar', 'initForms', 'initSorting', 'populateDropdowns'];
-        requiredFuncs.forEach(func => {
-            if (typeof window[func] !== 'function') {
-                try {
-                    if (typeof window[func] === 'undefined') {
-                        // We can't fully rebuild them if deleted from memory, 
-                        // but if they exist locally we could re-bind. Just noting it.
-                    }
-                } catch(e) {}
-            }
-        });
-        
-        if (healed) {
-            console.log('[SHIELD] Dashboard structure self-healed.');
-        } else {
-            console.log('[SHIELD] Dashboard structure verified & healthy.');
-        }
-    } catch(e) {
-        console.error('Self-healing error:', e);
-    }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    verifyAndSelfHealDashboard();
-    setInterval(verifyAndSelfHealDashboard, 60000);
-});
-</script>
-</body>
-</html>`);
+<script>setTimeout(()=>window.print(),500)<\/script></body></html>`);
     w.document.close();
 }
 
@@ -4797,6 +4369,66 @@ document.addEventListener('DOMContentLoaded', () => {
     verifyAndSelfHealDashboard();
     setInterval(verifyAndSelfHealDashboard, 60000);
 });
+
+// ========================================
+// SELF-HEALING RUNTIME INTEGRITY SHIELD
+// ========================================
+function verifyAndSelfHealDashboard() {
+    try {
+        let healed = false;
+        
+        // 1. Check if #confirmDelete button is present and bound
+        const confirmDelete = document.getElementById('confirmDelete');
+        if (confirmDelete && typeof confirmDelete.onclick !== 'function') {
+            if (typeof window.initModals === 'function') { 
+                window.initModals(); 
+                healed = true; 
+            }
+        }
+        
+        // 2. Are modal close buttons bound?
+        const closeBtns = document.querySelectorAll('.close, [data-close-modal]');
+        closeBtns.forEach(btn => {
+            if (typeof btn.onclick !== 'function') {
+                btn.onclick = () => {
+                    const mId = btn.dataset.closeModal || (btn.closest('.modal-overlay') ? btn.closest('.modal-overlay').id : '');
+                    if (mId && typeof window.closeModal === 'function') window.closeModal(mId);
+                };
+                healed = true;
+            }
+        });
+        
+        // 3. Are dynamic dropdowns populated?
+        const dropdowns = document.querySelectorAll('select');
+        let emptyDD = false;
+        dropdowns.forEach(sel => {
+            if (sel.id && sel.options.length <= 1) emptyDD = true;
+        });
+        if (emptyDD && typeof window.populateDropdowns === 'function') {
+            window.populateDropdowns();
+            healed = true;
+        }
+
+        if (healed) {
+            console.log('[SHIELD] Dashboard structure self-healed.');
+        } else {
+            console.log('[SHIELD] Dashboard structure verified & healthy.');
+        }
+    } catch(e) {
+        console.error('Self-healing error:', e);
+    }
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        verifyAndSelfHealDashboard();
+        setInterval(verifyAndSelfHealDashboard, 60000);
+    });
+} else {
+    verifyAndSelfHealDashboard();
+    setInterval(verifyAndSelfHealDashboard, 60000);
+}
+
 </script>
 </body>
 
