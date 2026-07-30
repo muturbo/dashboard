@@ -2864,7 +2864,56 @@ function renderSupExtract(){
 function calcSupExtractTotals(ex){
     let grandTotal=0;
     if (isReadyMixItem(ex.item)) {
-        ex.rows.forEach(r=>{grandTotal+=(r.qty||0)*(r.price||0);});
+        ex.rows.forEach(r=>{grandTotal+=(r.qty||0)*(r.price||0);}
+
+
+// ========================================
+// SUPPLIER EXTRACT ROW ACTIONS
+// ========================================
+function addSupExtractRow(){
+    const ex = supplierExtracts.find(x => String(x.id) === String(currentSupExtractId));
+    if(!ex) {
+        showToast('⚠️ يرجى اختيار المستخلص أولاً', 'warning');
+        return;
+    }
+    if(!ex.rows) ex.rows = [];
+    const isReadyMix = isReadyMixItem(ex.item);
+    if(isReadyMix) {
+        ex.rows.push({ rowDate: today(), element: '', content: '', strength: '', qty: 0, price: 0 });
+    } else {
+        ex.rows.push({ rowDate: today(), description: '', unit: 'م³', invoiceNo: '', qty: 0, price: 0, discounts: 0 });
+    }
+    save();
+    renderSupExtract();
+    if(typeof renderSupBalance === 'function') renderSupBalance(ex.item, ex.supplier);
+    showToast('➕ تم إضافة بند جديد للمستخلص', 'success');
+}
+
+function updateSupExtractRow(idx, field, val){
+    const ex = supplierExtracts.find(x => String(x.id) === String(currentSupExtractId));
+    if(!ex || !ex.rows || !ex.rows[idx]) return;
+    ex.rows[idx][field] = val;
+    save();
+    calcSupExtractTotals(ex);
+    if(typeof renderSupBalance === 'function') renderSupBalance(ex.item, ex.supplier);
+}
+
+function removeSupExtractRow(idx){
+    const ex = supplierExtracts.find(x => String(x.id) === String(currentSupExtractId));
+    if(!ex || !ex.rows) return;
+    ex.rows.splice(idx, 1);
+    save();
+    renderSupExtract();
+    if(typeof renderSupBalance === 'function') renderSupBalance(ex.item, ex.supplier);
+    showToast('🗑️ تم حذف البند من المستخلص', 'info');
+}
+
+window.addSupExtractRow = addSupExtractRow;
+window.updateSupExtractRow = updateSupExtractRow;
+window.removeSupExtractRow = removeSupExtractRow;
+
+
+);
     } else {
         ex.rows.forEach(r=>{grandTotal+=(r.qty||0)*(r.price||0)-(r.discounts||0);});
     }
