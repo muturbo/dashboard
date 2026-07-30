@@ -491,9 +491,9 @@ if (typeof saveStockCardPDF !== 'undefined') window.saveStockCardPDF = saveStock
                 </div>
             </div>
             <div class="filters-bar">
-                <select class="select-input" id="supExtractItemSelect"><option value="">اختر بند التوريد...</option></select>
-                <select class="select-input" id="supExtractSupplierSelect" disabled><option value="">اختر البند أولاً...</option></select>
-                <select class="select-input" id="supExtractNumberSelect" disabled style="display:none;"><option value="">اختر المستخلص...</option></select>
+                <select class="select-input" id="supExtractItemSelect" onchange="fillSupplierDD('supExtractSupplierSelect', this.value); hide('supBalanceCard'); hide('supExtractContent'); show('supExtractEmpty'); hide('btnNewSupExtract'); hide('supExtractNumberSelect');"><option value="">اختر بند التوريد...</option></select>
+                <select class="select-input" id="supExtractSupplierSelect" disabled onchange="onSupExtractSupplierChange()"><option value="">اختر البند أولاً...</option></select>
+                <select class="select-input" id="supExtractNumberSelect" disabled style="display:none;" onchange="onSupExtractNumberChange()"><option value="">اختر المستخلص...</option></select>
             </div>
 
             <div class="balance-card" id="supBalanceCard" style="display:none;">
@@ -1774,13 +1774,17 @@ function initDropdownListeners(){
     bind('paymentItemFilter','change',renderPayments);
     bind('dateFrom','change',renderPayments);
     bind('dateTo','change',renderPayments);
+    bind('supExtractItemSelect','change',e=>{fillSupplierDD('supExtractSupplierSelect',e.target.value);hide('supBalanceCard');hide('supExtractContent');show('supExtractEmpty');hide('btnNewSupExtract');hide('supExtractNumberSelect');});
+    bind('supExtractSupplierSelect','change',onSupExtractSupplierChange);
+    bind('supExtractNumberSelect','change',onSupExtractNumberChange);
     bind('extractItemSelect','change',e=>{fillContractorDD('extractContractorSelect',e.target.value);hide('balanceCard');hide('extractContent');show('extractEmpty');hide('btnNewExtract');hide('extractNumberSelect');});
     bind('extractContractorSelect','change',onExtractContractorChange);
     bind('extractNumberSelect','change',onExtractNumberChange);
 }
 function fillContractorDD(selId,item){
     const label=isSupplyItem(item)?'المورد':'المقاول';
-    const s=document.getElementById(selId);s.innerHTML=`<option value="">اختر ${label}...</option>`;
+    const s=document.getElementById(selId);if(!s)return;
+    s.innerHTML=`<option value="">اختر ${label}...</option>`;
     if(!item){s.disabled=true;return;}
     contractors.filter(c=>c.item===item).forEach(c=>{const o=document.createElement('option');o.value=c.name;o.textContent=c.name;s.appendChild(o);});
     s.disabled=false;
@@ -2381,7 +2385,7 @@ function renderExtract(){
         <td><input type="number" class="extract-input num" value="${r.disbursementPct||100}" min="0" max="100" step="1" onchange="updateExtractRow(${origIdx},'disbursementPct',parseFloat(this.value)||100)"></td>
         <td><input type="number" class="extract-input num" value="${r.deductions||0}" min="0" step="0.01" onchange="updateExtractRow(${origIdx},'deductions',parseFloat(this.value)||0)"></td>
         <td class="amount-cell calculated">${fmtNum(rowTotal)}</td>
-        <td><button class="btn btn-icon-only btn-delete" onclick="removeExtractRow(${origIdx})">🗑️</button></td>
+        <td class="action-buttons"><button class="btn btn-reorder" onclick="moveExtractRow(${origIdx},-1)" ${origIdx===0?'disabled':''}>▲</button><button class="btn btn-reorder" onclick="moveExtractRow(${origIdx},1)" ${origIdx===ex.rows.length-1?'disabled':''}>▼</button><button class="btn btn-icon-only btn-delete" onclick="removeExtractRow(${origIdx})">🗑️</button></td>
     </tr>`;
     }).join('');
     calcExtractTotals(ex);
@@ -2631,9 +2635,20 @@ function fillSupplierDD(selId,item){
     const s=gi(selId);if(!s)return;
     s.innerHTML='<option value="">اختر المورد...</option>';
     if(!item){s.disabled=true;return;}
-    contractors.filter(c=>c.item===item).forEach(c=>{const o=document.createElement('option');o.value=c.name;o.textContent=c.name;s.appendChild(o);});
+    const trimmedItem = String(item).trim();
+    const set = new Set();
+    contractors.filter(c=>c.item===trimmedItem || c.item===item).forEach(c=>set.add(c.name));
+    supplierExtracts.filter(ex=>ex.item===trimmedItem || ex.item===item).forEach(ex=>set.add(ex.supplier));
+    payments.filter(p=>p.item===trimmedItem || p.item===item).forEach(p=>set.add(p.contractor));
+    if(set.size === 0) {
+        contractors.filter(c=>isSupplyItem(c.item)).forEach(c=>set.add(c.name));
+    }
+    Array.from(set).filter(Boolean).sort().forEach(name=>{
+        const o=document.createElement('option');o.value=name;o.textContent=name;s.appendChild(o);
+    });
     s.disabled=false;
 }
+
 
 function renderSuppliers(){
     const search=(gi('supplierSearch')?gv('supplierSearch'):'').trim().toLowerCase();
@@ -2650,19 +2665,25 @@ function renderSuppliers(){
         if(!sups.length&&search)return '';
         totalShown+=sups.length;
         const color=getColor(item);
+        const isFirst=ii===0, isLast=ii===supItems.length-1;
         return `<div class="item-group">
             <div class="item-group-header" style="--item-color:${color}">
                 <div class="item-group-title"><span class="item-dot" style="background:${color}"></span><h3>${item}</h3><span class="badge">${sups.length} مورد</span></div>
                 <div class="action-buttons">
+                    <button class="btn btn-reorder" onclick="moveItem('${esc(item)}',-1)" title="تعديل الترتيب للأعلى" ${isFirst?'disabled':''}>▲</button>
+                    <button class="btn btn-reorder" onclick="moveItem('${esc(item)}',1)" title="تعديل الترتيب للأسفل" ${isLast?'disabled':''}>▼</button>
                     <button class="btn btn-icon-only btn-view" onclick="openEditItem('${esc(item)}')" title="تعديل البند">✏️</button>
+                    <button class="btn btn-icon-only btn-delete" onclick="confirmDeleteItem('${esc(item)}')" title="حذف البند">🗑️</button>
                 </div>
             </div>
             <div class="item-group-body">
-                <table class="data-table"><thead><tr><th style="width:40px">م</th><th>اسم المورد</th><th>إجمالي المدفوع</th><th style="width:140px">إجراء</th></tr></thead>
+                <table class="data-table"><thead><tr><th style="width:40px">م</th><th>اسم المورد</th><th>إجمالي المدفوع</th><th style="width:180px">إجراء</th></tr></thead>
                 <tbody>${sups.map((c,ci)=>{
                     const t=totals[c.name+'|'+c.item]||0;
                     return `<tr style="animation-delay:${ci*0.02}s"><td>${toAr(ci+1)}</td><td><strong>${c.name}</strong></td><td class="amount-cell">${fmtCur(t)}</td>
                     <td class="action-buttons">
+                        <button class="btn btn-reorder" onclick="moveContractor(${c.id},-1)" ${ci===0?'disabled':''}>▲</button>
+                        <button class="btn btn-reorder" onclick="moveContractor(${c.id},1)" ${ci===sups.length-1?'disabled':''}>▼</button>
                         <button class="btn btn-icon-only btn-view" onclick="openEditContractor(${c.id})" title="تعديل">✏️</button>
                         <button class="btn btn-icon-only btn-view" onclick="viewStatement('${esc(c.item)}','${esc(c.name)}')" title="كشف حساب">🧾</button>
                         <button class="btn btn-icon-only btn-delete" onclick="confirmDeleteContractor(${c.id})" title="حذف">🗑️</button>
@@ -2819,7 +2840,7 @@ function renderSupExtract(){
                 <td><input type="number" class="extract-input num qty-cell" value="${r.qty||0}" min="0" step="0.01" onchange="updateSupExtractRow(${origIdx},'qty',parseFloat(this.value)||0)"></td>
                 <td><input type="number" class="extract-input num price-cell" value="${r.price||0}" min="0" step="0.01" onchange="updateSupExtractRow(${origIdx},'price',parseFloat(this.value)||0)"></td>
                 <td class="amount-cell calculated">${fmtNum(rowTotal)}</td>
-                <td><button class="btn btn-icon-only btn-delete" onclick="removeSupExtractRow(${origIdx})">🗑️</button></td>
+                <td class="action-buttons"><button class="btn btn-reorder" onclick="moveSupExtractRow(${origIdx},-1)" ${origIdx===0?'disabled':''}>▲</button><button class="btn btn-reorder" onclick="moveSupExtractRow(${origIdx},1)" ${origIdx===ex.rows.length-1?'disabled':''}>▼</button><button class="btn btn-icon-only btn-delete" onclick="removeSupExtractRow(${origIdx})">🗑️</button></td>
             </tr>`;
         } else {
             const rowTotal = (r.qty||0)*(r.price||0)-(r.discounts||0);
@@ -2833,7 +2854,7 @@ function renderSupExtract(){
                 <td><input type="number" class="extract-input num price-cell" value="${r.price||0}" min="0" step="0.01" onchange="updateSupExtractRow(${origIdx},'price',parseFloat(this.value)||0)"></td>
                 <td><input type="number" class="extract-input num" value="${r.discounts||0}" min="0" step="0.01" onchange="updateSupExtractRow(${origIdx},'discounts',parseFloat(this.value)||0)"></td>
                 <td class="amount-cell calculated">${fmtNum(rowTotal)}</td>
-                <td><button class="btn btn-icon-only btn-delete" onclick="removeSupExtractRow(${origIdx})">🗑️</button></td>
+                <td class="action-buttons"><button class="btn btn-reorder" onclick="moveSupExtractRow(${origIdx},-1)" ${origIdx===0?'disabled':''}>▲</button><button class="btn btn-reorder" onclick="moveSupExtractRow(${origIdx},1)" ${origIdx===ex.rows.length-1?'disabled':''}>▼</button><button class="btn btn-icon-only btn-delete" onclick="removeSupExtractRow(${origIdx})">🗑️</button></td>
             </tr>`;
         }
     }).join('');
