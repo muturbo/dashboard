@@ -1715,11 +1715,11 @@ function populateSupplyDropdowns() {
 
     const supplyList = Array.from(allSup).filter(Boolean).sort();
 
-    const supDropdownIds = ['addSupplierItem', 'supplierItemFilter', 'supExtractItemSelect', 'addProductItem', 'inventoryItemSelect'];
+    const supDropdownIds = ['addSupplierItem', 'supplyItemFilter', 'supplierItemFilter', 'supExtractItemSelect', 'addProductItem', 'inventoryItemSelect'];
     supDropdownIds.forEach(id => {
         const s = document.getElementById(id);
         if (!s) return;
-        const defaultLabel = (id === 'supplierItemFilter') ? 'كل بنود التوريد' : 'اختر البند...';
+        const defaultLabel = (id === 'supplyItemFilter' || id === 'supplierItemFilter') ? 'كل بنود التوريد' : 'اختر البند...';
         const currentVal = s.value;
         s.innerHTML = `<option value="">${defaultLabel}</option>`;
         supplyList.forEach(it => {
