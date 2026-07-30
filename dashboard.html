@@ -292,7 +292,7 @@ if (typeof saveStockCardPDF !== 'undefined') window.saveStockCardPDF = saveStock
                     <span class="search-icon">🔍</span>
                     <input type="text" id="supplierSearch" placeholder="بحث بالاسم..." autocomplete="off" oninput="renderSuppliers()">
                 </div>
-                <select class="select-input" id="supplyItemFilter" onchange="renderSuppliers()"><option value="">كل بنود التوريد</option></select>
+                <select class="select-input" id="supplyItemFilter" onfocus="populateSupplyDropdowns()" onchange="renderSuppliers()"><option value="">كل بنود التوريد</option></select>
             </div>
             <div id="suppliersGrouped"></div>
         </section>
@@ -1675,6 +1675,11 @@ function navigateTo(s){
     document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));
     const sec=document.getElementById(`section-${s}`); if(sec)sec.classList.add('active');
     closeSidebar(); window.scrollTo({top:0,behavior:'smooth'});
+
+    if (s === 'suppliers') {
+        if (typeof populateSupplyDropdowns === 'function') populateSupplyDropdowns();
+        if (typeof renderSuppliers === 'function') renderSuppliers();
+    }
 }
 
 // ========================================
@@ -2856,6 +2861,10 @@ function fillSupplierDD(selId,item){
 
 
 function renderSuppliers(){
+    const filterEl = gi('supplyItemFilter');
+    if (filterEl && filterEl.options.length <= 1 && typeof populateSupplyDropdowns === 'function') {
+        populateSupplyDropdowns();
+    }
     const search=(gi('supplierSearch')?gv('supplierSearch'):'').trim().toLowerCase();
     const itemF=gi('supplyItemFilter')?gv('supplyItemFilter'):'';
     const totals={};
