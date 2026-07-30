@@ -290,9 +290,9 @@ if (typeof saveStockCardPDF !== 'undefined') window.saveStockCardPDF = saveStock
             <div class="filters-bar">
                 <div class="search-box">
                     <span class="search-icon">🔍</span>
-                    <input type="text" id="supplierSearch" placeholder="بحث بالاسم..." autocomplete="off">
+                    <input type="text" id="supplierSearch" placeholder="بحث بالاسم..." autocomplete="off" oninput="renderSuppliers()">
                 </div>
-                <select class="select-input" id="supplyItemFilter"><option value="">كل بنود التوريد</option></select>
+                <select class="select-input" id="supplyItemFilter" onchange="renderSuppliers()"><option value="">كل بنود التوريد</option></select>
             </div>
             <div id="suppliersGrouped"></div>
         </section>
@@ -1665,6 +1665,8 @@ function saveAllData(){
 // NAVIGATION
 // ========================================
 function initNav(){
+    bind('supplierSearch','input',renderSuppliers);
+    bind('supplyItemFilter','change',renderSuppliers);
     document.querySelectorAll('.nav-link').forEach(l=>l.addEventListener('click',e=>{e.preventDefault();navigateTo(l.dataset.section);}));
 }
 function navigateTo(s){
@@ -1692,24 +1694,34 @@ function closeSidebar(){document.getElementById('sidebar').classList.remove('ope
 
 
 function populateSupplyDropdowns() {
-    let supplyList = items.filter(i => isSupplyItem(i));
-    if (typeof DEFAULT_SUPPLY_ITEMS !== 'undefined') {
-        DEFAULT_SUPPLY_ITEMS.forEach(si => {
-            if (!supplyList.includes(si)) supplyList.push(si);
-            if (!items.includes(si)) items.push(si);
-        });
+    const allSup = new Set();
+    if (typeof DEFAULT_SUPPLY_ITEMS !== 'undefined' && Array.isArray(DEFAULT_SUPPLY_ITEMS)) {
+        DEFAULT_SUPPLY_ITEMS.forEach(i => allSup.add(i));
     }
+    if (Array.isArray(items)) {
+        items.filter(i => isSupplyItem(i)).forEach(i => allSup.add(i));
+    }
+    if (Array.isArray(contractors)) {
+        contractors.filter(c => c && isSupplyItem(c.item)).forEach(c => allSup.add(c.item));
+    }
+    if (typeof supplierExtracts !== 'undefined' && Array.isArray(supplierExtracts)) {
+        supplierExtracts.forEach(ex => { if(ex && isSupplyItem(ex.item)) allSup.add(ex.item); });
+    }
+
+    const supplyList = Array.from(allSup).filter(Boolean).sort();
 
     const supDropdownIds = ['addSupplierItem', 'supplierItemFilter', 'supExtractItemSelect', 'addProductItem', 'inventoryItemSelect'];
     supDropdownIds.forEach(id => {
         const s = document.getElementById(id);
         if (!s) return;
-        const firstOpt = (s.options && s.options[0]) ? s.options[0].textContent : 'اختر البند...';
-        s.innerHTML = `<option value="">${firstOpt}</option>`;
+        const defaultLabel = (id === 'supplierItemFilter') ? 'كل بنود التوريد' : 'اختر البند...';
+        const currentVal = s.value;
+        s.innerHTML = `<option value="">${defaultLabel}</option>`;
         supplyList.forEach(it => {
             const o = document.createElement('option');
             o.value = it;
             o.textContent = it;
+            if (it === currentVal) o.selected = true;
             s.appendChild(o);
         });
     });
