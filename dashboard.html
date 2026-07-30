@@ -2597,6 +2597,44 @@ function submitNewExtract(e){
     showToast(`✅ تم إنشاء مستخلص رقم ${num}`,'success');
 }
 
+
+function printHTMLContent(html, documentTitle) {
+    // Remove any existing print iframe
+    let oldFrame = document.getElementById('seamlessPrintIframe');
+    if (oldFrame && oldFrame.parentNode) oldFrame.parentNode.removeChild(oldFrame);
+
+    const iframe = document.createElement('iframe');
+    iframe.id = 'seamlessPrintIframe';
+    iframe.style.position = 'fixed';
+    iframe.style.right = '0';
+    iframe.style.bottom = '0';
+    iframe.style.width = '0px';
+    iframe.style.height = '0px';
+    iframe.style.border = 'none';
+    iframe.style.opacity = '0';
+    iframe.style.zIndex = '-9999';
+
+    document.body.appendChild(iframe);
+
+    const doc = iframe.contentWindow.document;
+    doc.open();
+    doc.write(`<!DOCTYPE html><html dir="rtl"><head><title>${documentTitle || 'طباعة'}</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact;font-family:'Cairo',sans-serif;}table{font-size:10px;width:100%!important;border-collapse:collapse;}}</style></head><body>${html}</body></html>`);
+    doc.close();
+
+    setTimeout(() => {
+        try {
+            iframe.contentWindow.focus();
+            iframe.contentWindow.print();
+        } catch(e) {
+            console.error('Print iframe error:', e);
+        }
+        setTimeout(() => {
+            if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
+        }, 3000);
+    }, 400);
+}
+
+
 function printExtract(){
     let ex = null;
     if (currentExtractId === 'combined') {
@@ -2643,18 +2681,7 @@ function printExtract(){
         </table>
         ${ex.notes?`<p style="margin-top:16px;padding:10px;background:#f5f5f5;border-radius:8px;"><strong>ملاحظات:</strong> ${ex.notes}</p>`:''}
     </div>`;
-    const w=window.open('','_blank','width=1100,height=700');
-    w.document.write(`<html dir="rtl"><head><title>مستخلص رقم ${ex.number} - ${ex.contractor}</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact}table{font-size:10px;width:100%!important}}</style></head><body>${html}<script>
-    window.onload = function() {
-        window.focus();
-        setTimeout(function() {
-            window.focus();
-            window.print();
-        }, 300);
-    };
-    <\/script></body></html>`);
-    w.document.close();
-    w.focus();
+    printHTMLContent(html, `مستخلص رقم ${ex.number} - ${ex.contractor}`);
 }
 
 // ========================================
@@ -3191,18 +3218,7 @@ function printSupExtract(){
         </table>
         ${ex.notes?`<p style="margin-top:16px;padding:10px;background:#f5f5f5;border-radius:8px;"><strong>ملاحظات:</strong> ${ex.notes}</p>`:''}
     </div>`;
-    const w=window.open('','_blank','width=1100,height=700');
-    w.document.write(`<html dir="rtl"><head><title>مستخلص مورد ${ex.number} - ${ex.supplier}</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact}table{font-size:10px;width:100%!important}}</style></head><body>${html}<script>
-    window.onload = function() {
-        window.focus();
-        setTimeout(function() {
-            window.focus();
-            window.print();
-        }, 300);
-    };
-    <\/script></body></html>`);
-    w.document.close();
-    w.focus();
+    printHTMLContent(html, `مستخلص مورد ${ex.number} - ${ex.supplier}`);
 }
 
 
@@ -3262,9 +3278,7 @@ function buildExpensesPrintHTML(){
 
 function printExpenses(){
     const html = buildExpensesPrintHTML();
-    const w = window.open('','_blank','width=1100,height=700');
-    w.document.write('<html dir="rtl"><head><title>مصروفات العمليات</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact}}</style></head><body>' + html + '<script>setTimeout(()=>window.print(),500)<' + '/script></body></html>');
-    w.document.close();
+    printHTMLContent(html, 'مصروفات العمليات');
 }
 
 function saveExpensesPDF(){
