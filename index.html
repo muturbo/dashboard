@@ -2294,6 +2294,182 @@ function onExtractContractorChange(){
     if(cExtracts.length){sel.value=cExtracts[cExtracts.length-1].id;onExtractNumberChange();}
     else{hide('extractContent');show('extractEmpty');gi('extractEmpty').querySelector('p').textContent='لا توجد مستخلصات — أنشئ مستخلص جديد';}
 }
+
+// ========================================
+// CONSOLIDATED / CUMULATIVE EXTRACTS (المستخلص المجمع)
+// ========================================
+function renderCombinedExtract(){
+    const item = gv('extractItemSelect'), ctr = gv('extractContractorSelect');
+    if(!item || !ctr) return;
+    
+    currentExtractId = 'combined';
+    show('extractContent'); hide('extractEmpty');
+
+    gi('extractNum').textContent = '📊 مستخلص مجمع (جميع المستخلصات)';
+    gi('extractContractorName').textContent = ctr;
+    gi('extractItemName').textContent = item;
+    gi('extractDate').value = today();
+    gi('extractNotes').value = 'مستخلص مجمع يحتوي على كافة البنود من جميع المستخلصات الفردية.';
+
+    const cExtracts = extracts.filter(ex => ex.contractor === ctr && ex.item === item).sort((a,b) => a.number - b.number);
+    const allRows = [];
+    cExtracts.forEach(ex => {
+        (ex.rows || []).forEach(r => {
+            allRows.push({ ...r, extractNumber: ex.number });
+        });
+    });
+
+    const sortOrder = (gi('extractSortOrder') ? gv('extractSortOrder') : 'asc') || 'asc';
+    if(sortOrder === 'asc') {
+        allRows.sort((a, b) => parseDateValue(a.rowDate || a.date) - parseDateValue(b.rowDate || b.date));
+    } else if(sortOrder === 'desc') {
+        allRows.sort((a, b) => parseDateValue(b.rowDate || b.date) - parseDateValue(a.rowDate || a.date));
+    }
+
+    const tb = gi('extractBody');
+    if(tb) {
+        tb.innerHTML = allRows.map((r, i) => {
+            const totalQty = (r.prevQty || 0) + (r.currentQty || 0);
+            const rowTotal = totalQty * (r.price || 0) * ((r.itemPct || 100) / 100) * ((r.disbursementPct || 100) / 100) - (r.deductions || 0);
+            return `<tr>
+                <td>${toAr(i+1)}</td>
+                <td><span class="badge badge-info" style="font-size:0.75rem; background:#e3f2fd; color:#1976d2; padding:2px 6px; border-radius:4px;">مستخلص ${r.extractNumber}</span> ${(r.rowDate || '').replace(/-/g, '/')}</td>
+                <td>${r.buildingNo || '—'}</td>
+                <td>${r.description || '—'}</td>
+                <td>${r.unit || 'م²'}</td>
+                <td>${r.type || 'تنفيذ'}</td>
+                <td class="amount-cell">${fmtNum(r.price || 0)}</td>
+                <td>${toAr(r.itemPct || 100)}%</td>
+                <td class="num">${fmtNum(r.prevQty || 0)}</td>
+                <td class="num">${fmtNum(r.currentQty || 0)}</td>
+                <td class="num font-bold">${fmtNum(totalQty)}</td>
+                <td>${toAr(r.disbursementPct || 100)}%</td>
+                <td class="num">${fmtNum(r.deductions || 0)}</td>
+                <td class="amount-cell calculated">${fmtNum(rowTotal)}</td>
+                <td class="action-buttons"><span class="text-muted" style="font-size:0.75rem; color:#888;">مجمع</span></td>
+            </tr>`;
+        }).join('');
+    }
+
+    // Calc totals
+    let grandTotal = 0;
+    allRows.forEach(r => {
+        const totalQty = (r.prevQty || 0) + (r.currentQty || 0);
+        const gross = totalQty * (r.price || 0) * ((r.itemPct || 100) / 100) * ((r.disbursementPct || 100) / 100);
+        grandTotal += gross - (r.deductions || 0);
+    });
+    const totalEl = gi('extractGrandTotal');
+    if(totalEl) totalEl.textContent = fmtNum(grandTotal);
+}
+
+function renderCombinedSupExtract(){
+    const item = gv('supExtractItemSelect'), sup = gv('supExtractSupplierSelect');
+    if(!item || !sup) return;
+
+    currentSupExtractId = 'combined';
+    show('supExtractContent'); hide('supExtractEmpty');
+
+    gi('supExtractNum').textContent = '📊 مستخلص مجمع (جميع المستخلصات)';
+    gi('supExtractSupplierName').textContent = sup;
+    gi('supExtractItemName').textContent = item;
+    gi('supExtractDate').value = today();
+    gi('supExtractNotes').value = 'مستخلص مجمع يحتوي على كافة بنود التوريد من جميع المستخلصات الفردية.';
+
+    const isReadyMix = isReadyMixItem(item);
+    const sExtracts = supplierExtracts.filter(ex => ex.supplier === sup && ex.item === item).sort((a,b) => a.number - b.number);
+    const allRows = [];
+    sExtracts.forEach(ex => {
+        (ex.rows || []).forEach(r => {
+            allRows.push({ ...r, extractNumber: ex.number });
+        });
+    });
+
+    const sortOrder = (gi('supExtractSortOrder') ? gv('supExtractSortOrder') : 'asc') || 'asc';
+    if(sortOrder === 'asc') {
+        allRows.sort((a, b) => parseDateValue(a.rowDate || a.date) - parseDateValue(b.rowDate || b.date));
+    } else if(sortOrder === 'desc') {
+        allRows.sort((a, b) => parseDateValue(b.rowDate || b.date) - parseDateValue(a.rowDate || a.date));
+    }
+
+    const tableHeader = gi('supExtractTable') ? gi('supExtractTable').querySelector('thead') : null;
+    if (tableHeader) {
+        if (isReadyMix) {
+            tableHeader.innerHTML = `<tr>
+                <th style="width:40px;">مسلسل</th>
+                <th>تاريخ الصب</th>
+                <th>العنصر</th>
+                <th>المحتوى</th>
+                <th>الجهد</th>
+                <th>الكمية</th>
+                <th>السعر</th>
+                <th>القيمة</th>
+                <th style="width:70px;">الإجراء</th>
+            </tr>`;
+        } else {
+            tableHeader.innerHTML = `<tr>
+                <th style="width:40px;">مسلسل</th>
+                <th>التاريخ</th>
+                <th>البيان</th>
+                <th>الوحدة</th>
+                <th>رقم الفاتورة</th>
+                <th>الكمية</th>
+                <th>السعر</th>
+                <th>خصومات</th>
+                <th>إجمالي المستحق</th>
+                <th style="width:70px;">الإجراء</th>
+            </tr>`;
+        }
+    }
+
+    const tb = gi('supExtractBody');
+    if(tb) {
+        tb.innerHTML = allRows.map((r, i) => {
+            if (isReadyMix) {
+                const rowTotal = (r.qty || 0) * (r.price || 0);
+                return `<tr>
+                    <td>${toAr(i+1)}</td>
+                    <td><span class="badge badge-info" style="font-size:0.75rem; background:#e3f2fd; color:#1976d2; padding:2px 6px; border-radius:4px;">مستخلص ${r.extractNumber}</span> ${(r.rowDate || '').replace(/-/g, '/')}</td>
+                    <td>${r.element || r.description || '—'}</td>
+                    <td>${r.content || '—'}</td>
+                    <td>${r.strength || '—'}</td>
+                    <td class="num">${fmtNum(r.qty || 0)}</td>
+                    <td class="amount-cell">${fmtNum(r.price || 0)}</td>
+                    <td class="amount-cell calculated">${fmtNum(rowTotal)}</td>
+                    <td><span class="text-muted" style="font-size:0.75rem; color:#888;">مجمع</span></td>
+                </tr>`;
+            } else {
+                const rowTotal = (r.qty || 0) * (r.price || 0) - (r.discounts || 0);
+                return `<tr>
+                    <td>${toAr(i+1)}</td>
+                    <td><span class="badge badge-info" style="font-size:0.75rem; background:#e3f2fd; color:#1976d2; padding:2px 6px; border-radius:4px;">مستخلص ${r.extractNumber}</span> ${(r.rowDate || '').replace(/-/g, '/')}</td>
+                    <td>${r.description || '—'}</td>
+                    <td>${r.unit || '—'}</td>
+                    <td>${r.invoiceNo || '—'}</td>
+                    <td class="num">${fmtNum(r.qty || 0)}</td>
+                    <td class="amount-cell">${fmtNum(r.price || 0)}</td>
+                    <td class="num">${fmtNum(r.discounts || 0)}</td>
+                    <td class="amount-cell calculated">${fmtNum(rowTotal)}</td>
+                    <td><span class="text-muted" style="font-size:0.75rem; color:#888;">مجمع</span></td>
+                </tr>`;
+            }
+        }).join('');
+    }
+
+    // Calc totals
+    let grandTotal = 0;
+    if (isReadyMix) {
+        allRows.forEach(r => { grandTotal += (r.qty || 0) * (r.price || 0); });
+    } else {
+        allRows.forEach(r => { grandTotal += (r.qty || 0) * (r.price || 0) - (r.discounts || 0); });
+    }
+    const totalEl = gi('supExtractGrandTotal');
+    if(totalEl) totalEl.textContent = fmtNum(grandTotal);
+}
+
+window.renderCombinedExtract = renderCombinedExtract;
+window.renderCombinedSupExtract = renderCombinedSupExtract;
+
+
 function onExtractNumberChange(){
     const exId=gv('extractNumberSelect');
     if(!exId){hide('extractContent');show('extractEmpty');return;}
@@ -2423,7 +2599,17 @@ function submitNewExtract(e){
 }
 
 function printExtract(){
-    const ex=extracts.find(x=>x.id===currentExtractId);if(!ex)return;
+    let ex = null;
+    if (currentExtractId === 'combined') {
+        const item = gv('extractItemSelect'), ctr = gv('extractContractorSelect');
+        const cExtracts = extracts.filter(x => x.contractor === ctr && x.item === item).sort((a,b) => a.number - b.number);
+        const allRows = [];
+        cExtracts.forEach(x => { (x.rows || []).forEach(r => allRows.push({ ...r, rowDate: (r.rowDate || '').replace(/-/g, '/') })); });
+        ex = { number: 'مجمع (كافة المستخلصات)', contractor: ctr, item: item, date: today(), notes: 'مستخلص مجمع يحتوي على كافة البنود من جميع المستخلصات الفردية', rows: allRows };
+    } else {
+        ex = extracts.find(x => x.id === currentExtractId);
+    }
+    if(!ex) return;
     let grandTotal=0;
     ex.rows.forEach(r=>{
         const tq=(r.prevQty||0)+(r.currentQty||0);
@@ -4361,7 +4547,16 @@ function exportStatementToExcel() {
 }
 
 function exportExtractToExcel() {
-    const ex = extracts.find(x => String(x.id) === String(currentExtractId));
+    let ex = null;
+    if (currentExtractId === 'combined') {
+        const item = gv('extractItemSelect'), ctr = gv('extractContractorSelect');
+        const cExtracts = extracts.filter(x => x.contractor === ctr && x.item === item).sort((a,b) => a.number - b.number);
+        const allRows = [];
+        cExtracts.forEach(x => { (x.rows || []).forEach(r => allRows.push({ ...r, rowDate: (r.rowDate || '').replace(/-/g, '/') })); });
+        ex = { number: 'مجمع', contractor: ctr, item: item, date: today(), notes: 'مستخلص مجمع', rows: allRows };
+    } else {
+        ex = extracts.find(x => String(x.id) === String(currentExtractId));
+    }
     if(!ex) { showToast('اختر مستخلص أولاً', 'error'); return; }
 
     const data = [
@@ -4401,7 +4596,16 @@ function exportExtractToExcel() {
 }
 
 function exportSupExtractToExcel() {
-    const ex = supplierExtracts.find(x => String(x.id) === String(currentSupExtractId));
+    let ex = null;
+    if (currentSupExtractId === 'combined') {
+        const item = gv('supExtractItemSelect'), sup = gv('supExtractSupplierSelect');
+        const sExtracts = supplierExtracts.filter(x => x.supplier === sup && x.item === item).sort((a,b) => a.number - b.number);
+        const allRows = [];
+        sExtracts.forEach(x => { (x.rows || []).forEach(r => allRows.push({ ...r, rowDate: (r.rowDate || '').replace(/-/g, '/') })); });
+        ex = { number: 'مجمع', supplier: sup, item: item, date: today(), notes: 'مستخلص مجمع', rows: allRows };
+    } else {
+        ex = supplierExtracts.find(x => String(x.id) === String(currentSupExtractId));
+    }
     if(!ex) { showToast('اختر مستخلص أولاً', 'error'); return; }
 
     const isReadyMix = isReadyMixItem(ex.item);
