@@ -1352,6 +1352,12 @@ function saveLocal(key,data){ try{localStorage.setItem(key,JSON.stringify(data))
 
 // Save to localStorage (cache)
 function saveToCache(){
+    if ((!contractors || contractors.length === 0) && typeof EMBEDDED_BACKUP_DATA !== 'undefined' && EMBEDDED_BACKUP_DATA.contractors) {
+        contractors = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.contractors));
+    }
+    if ((!payments || payments.length === 0) && typeof EMBEDDED_BACKUP_DATA !== 'undefined' && EMBEDDED_BACKUP_DATA.payments) {
+        payments = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.payments));
+    }
     saveLocal(SK.items,items);
     saveLocal(SK.contractors,contractors);
     saveLocal(SK.payments,payments);
@@ -1557,41 +1563,7 @@ function getColor(item){ return COLORS[items.indexOf(item)%COLORS.length]||'#888
 // INIT
 // ========================================
 
-    // ========================================
-    // CACHE INTEGRITY & SELF-CLEANING SHIELD
-    // ========================================
-    try {
-        const testCtrs = loadLocal(SK.contractors, []);
-        const testPay = loadLocal(SK.payments, []);
-        
-        // If cache has dummy "مقاول 1" or contractor/payment mismatch, purge stale cache
-        let isCorrupt = false;
-        if (Array.isArray(testCtrs) && testCtrs.some(c => c.name && c.name.includes('مقاول 1'))) {
-            isCorrupt = true;
-        }
-        if (Array.isArray(testCtrs) && Array.isArray(testPay) && testPay.length > 0) {
-            const ctrNames = new Set(testCtrs.map(c => c.name));
-            const unmatchedPay = testPay.filter(p => p.contractor && !ctrNames.has(p.contractor));
-            if (unmatchedPay.length > 5) {
-                isCorrupt = true;
-            }
-        }
-        
-        if (isCorrupt) {
-            console.warn('[SHIELD] Corrupted/mismatched LocalStorage cache detected. Purging cache...');
-            localStorage.removeItem(SK.contractors);
-            localStorage.removeItem(SK.payments);
-            localStorage.removeItem(SK.items);
-            localStorage.removeItem(SK.extracts);
-            localStorage.removeItem(SK.supplierExtracts);
-            localStorage.removeItem(SK.expenses);
-            localStorage.removeItem(SK.revenue);
-        }
-    } catch(e) {
-        console.warn('Cache integrity check error:', e);
-    }
-
-// IMMEDIATE SYNCHRONOUS FIRST RENDER
+    // IMMEDIATE SYNCHRONOUS FIRST RENDER & FAILSAFE BACKUP RESTORATION
 try {
     const cachedCtrs = loadLocal(SK.contractors, null);
     const cachedPay = loadLocal(SK.payments, null);
@@ -1609,16 +1581,15 @@ try {
     if (cachedExp !== null && Array.isArray(cachedExp) && cachedExp.length > 0) expenses = cachedExp;
     if (cachedRev !== null && Array.isArray(cachedRev) && cachedRev.length > 0) revenue = cachedRev;
 
-    
-    // FORCE INITIALIZATION FROM EMBEDDED BACKUP IF LOCAL STORAGE IS THIN
-    if (typeof EMBEDDED_BACKUP_DATA !== 'undefined') {
-        if (!Array.isArray(contractors) || contractors.length < 5) {
+    // FAILSAFE: Always fall back to embedded data if cache is empty or incomplete
+    if (typeof EMBEDDED_BACKUP_DATA !== 'undefined' && EMBEDDED_BACKUP_DATA) {
+        if (!Array.isArray(contractors) || contractors.length === 0) {
             contractors = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.contractors || []));
         }
-        if (!Array.isArray(payments) || payments.length < 5) {
+        if (!Array.isArray(payments) || payments.length === 0) {
             payments = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.payments || []));
         }
-        if (!Array.isArray(items) || items.length < 5) {
+        if (!Array.isArray(items) || items.length === 0) {
             items = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.items || []));
         }
         if (!Array.isArray(extracts) || extracts.length === 0) {
@@ -2861,10 +2832,16 @@ function renderSupExtract(){
     calcSupExtractTotals(ex);
 }
 function calcSupExtractTotals(ex){
+    if(!ex || !ex.rows) return;
     let grandTotal=0;
     if (isReadyMixItem(ex.item)) {
-        ex.rows.forEach(r=>{grandTotal+=(r.qty||0)*(r.price||0);}
-
+        ex.rows.forEach(r=>{grandTotal+=(r.qty||0)*(r.price||0);});
+    } else {
+        ex.rows.forEach(r=>{grandTotal+=(r.qty||0)*(r.price||0)-(r.discounts||0);});
+    }
+    const totalEl = gi('supExtractGrandTotal');
+    if(totalEl) totalEl.textContent=fmtNum(grandTotal);
+}
 
 // ========================================
 // SUPPLIER EXTRACT ROW ACTIONS
@@ -2912,13 +2889,7 @@ window.updateSupExtractRow = updateSupExtractRow;
 window.removeSupExtractRow = removeSupExtractRow;
 
 
-);
-    } else {
-        ex.rows.forEach(r=>{grandTotal+=(r.qty||0)*(r.price||0)-(r.discounts||0);});
-    }
-    const totalEl = gi('supExtractGrandTotal');
-    if(totalEl) totalEl.textContent=fmtNum(grandTotal);
-}
+
 function saveCurrentSupExtract(){
     const ex=supplierExtracts.find(x=>x.id===currentSupExtractId);if(!ex)return;
     ex.date=gv('supExtractDate');ex.notes=gv('supExtractNotes').trim();
