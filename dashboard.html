@@ -1692,6 +1692,20 @@ function initSidebar(){
 function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebarOverlay').classList.remove('active');}
 
 // ========================================
+
+function getSortedExtractRows(ex, isSupplier) {
+    if (!ex || !Array.isArray(ex.rows)) return [];
+    const sortSelectId = isSupplier ? 'supExtractSortOrder' : 'extractSortOrder';
+    const sortOrder = (gi(sortSelectId) ? gv(sortSelectId) : 'asc') || 'asc';
+    let rowsToDisplay = [...ex.rows];
+    rowsToDisplay.sort((a, b) => {
+        const dA = parseDateValue(a.rowDate || a.date);
+        const dB = parseDateValue(b.rowDate || b.date);
+        return sortOrder === 'desc' ? dB - dA : dA - dB;
+    });
+    return rowsToDisplay;
+}
+
 // DROPDOWNS
 // ========================================
 
@@ -2635,7 +2649,7 @@ function printHTMLContent(html, documentTitle) {
 
     const doc = iframe.contentWindow.document;
     doc.open();
-    doc.write(`<!DOCTYPE html><html dir="rtl"><head><title>${documentTitle || 'طباعة'}</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact;font-family:'Cairo',sans-serif;}table{font-size:10px;width:100%!important;border-collapse:collapse;}}</style></head><body>${html}</body></html>`);
+    doc.write(`<!DOCTYPE html><html dir="rtl"><head><title>${documentTitle || 'طباعة'}</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact;font-family:'Cairo',sans-serif;}table{font-size:10px;width:100%!important;border-collapse:collapse;}tfoot,tfoot tr,tfoot td,tfoot th{display:table-row-group!important;page-break-inside:avoid!important;break-inside:avoid!important;}tr,td,th{page-break-inside:avoid!important;break-inside:avoid!important;}.summary-table,.notes-box{page-break-inside:avoid!important;break-inside:avoid!important;margin-top:15px;}}</style></head><body>${html}</body></html>`);
     doc.close();
 
     setTimeout(() => {
@@ -2664,8 +2678,9 @@ function printExtract(){
         ex = extracts.find(x => x.id === currentExtractId);
     }
     if(!ex) return;
+    const sortedRows = getSortedExtractRows(ex, false);
     let grandTotal=0;
-    ex.rows.forEach(r=>{
+    sortedRows.forEach(r=>{
         const tq=(r.prevQty||0)+(r.currentQty||0);
         grandTotal+=tq*(r.price||0)*((r.itemPct||100)/100)*((r.disbursementPct||100)/100)-(r.deductions||0);
     });
@@ -2673,7 +2688,8 @@ function printExtract(){
     const th='padding:8px;border:1px solid #bbb;text-align:center;font-size:12px;';
     const td='padding:6px;border:1px solid #ddd;text-align:center;font-size:11px;';
     const headers=['م','التاريخ','رقم العمارة','بيان الأعمال','الوحدة','النوع','السعر','نسبة البند%','كمية سابقة','كمية حالية','مجموع الكميات','نسبة الصرف%','الاستقطاعات','إجمالي المستحق'];
-    const html=`<div style="font-family:Cairo,sans-serif;direction:rtl;padding:20px;color:#333;"><div style="text-align:center;margin-bottom:10px;"><img src="${COMPANY_LOGO}" style="height:80px;" alt="logo"></div>
+    const html=`<style>tfoot,tfoot tr,tfoot td,tfoot th{display:table-row-group!important;page-break-inside:avoid!important;break-inside:avoid!important;}.summary-table{page-break-inside:avoid!important;break-inside:avoid!important;margin-top:15px;}</style>
+        <div style="font-family:Cairo,sans-serif;direction:rtl;padding:20px;color:#333;"><div style="text-align:center;margin-bottom:10px;"><img src="${COMPANY_LOGO}" style="height:80px;" alt="logo"></div>
         <h2 style="text-align:center;margin:0 0 2px;color:#555;font-size:15px;">شركة الرحاب للمقاولات العمومية (ورثة سيد تهامي)</h2>
         <h2 style="text-align:center;margin:0 0 5px;color:#555;">المشروع : التوسعات الجنوبيه</h2>
         <h1 style="text-align:center;border-bottom:3px solid #333;padding-bottom:10px;">مستخلص رقم ${ex.number}</h1>
@@ -2684,19 +2700,19 @@ function printExtract(){
         </table>
         <table style="width:100%;border-collapse:collapse;margin-bottom:20px;">
             <thead><tr style="background:#e0e0e0;">${headers.map(h=>`<th style="${th}">${h}</th>`).join('')}</tr></thead>
-            <tbody>${ex.rows.map((r,i)=>{
+            <tbody>${sortedRows.map((r,i)=>{
                 const tq=(r.prevQty||0)+(r.currentQty||0);
                 const rowTotal=tq*(r.price||0)*((r.itemPct||100)/100)*((r.disbursementPct||100)/100)-(r.deductions||0);
                 return `<tr>${[toAr(i+1),fmtDate(r.rowDate),r.buildingNo||'—',r.description||'—',r.unit,r.type,fmtNum(r.price),toAr(r.itemPct)+'%',fmtNum(r.prevQty||0),fmtNum(r.currentQty||0),fmtNum(tq),toAr(r.disbursementPct)+'%',fmtNum(r.deductions||0),fmtNum(rowTotal)].map(c=>`<td style="${td}">${c}</td>`).join('')}</tr>`;
             }).join('')}</tbody>
-            <tfoot><tr style="background:#f0f0f0;font-weight:bold;"><td colspan="13" style="${th}">إجمالي المستحق للمقاول</td><td style="${th}">${fmtNum(grandTotal)}</td></tr></tfoot>
+            <tfoot style="display:table-row-group!important;page-break-inside:avoid!important;break-inside:avoid!important;"><tr style="background:#f0f0f0;font-weight:bold;page-break-inside:avoid!important;break-inside:avoid!important;"><td colspan="13" style="${th}">إجمالي المستحق للمقاول</td><td style="${th}">${fmtNum(grandTotal)}</td></tr></tfoot>
         </table>
-        <table style="width:50%;margin:0 auto;border-collapse:collapse;font-size:14px;">
+        <table class="summary-table" style="width:50%;margin:0 auto;border-collapse:collapse;font-size:14px;page-break-inside:avoid!important;break-inside:avoid!important;">
             <tr><td style="padding:10px;border:1px solid #ddd;background:#e8f5e9;font-weight:bold;">إجمالي المستحق</td><td style="padding:10px;border:1px solid #ddd;text-align:center;">${fmtCur(grandTotal)}</td></tr>
             <tr><td style="padding:10px;border:1px solid #ddd;background:#fff3e0;font-weight:bold;">إجمالي المنصرف</td><td style="padding:10px;border:1px solid #ddd;text-align:center;">${fmtCur(totalPaid)}</td></tr>
             <tr><td style="padding:10px;border:1px solid #ddd;background:#e3f2fd;font-weight:bold;">الباقي للمقاول</td><td style="padding:10px;border:1px solid #ddd;text-align:center;font-weight:bold;">${fmtCur(grandTotal-totalPaid)}</td></tr>
         </table>
-        ${ex.notes?`<p style="margin-top:16px;padding:10px;background:#f5f5f5;border-radius:8px;"><strong>ملاحظات:</strong> ${ex.notes}</p>`:''}
+        ${ex.notes?`<p class="notes-box" style="margin-top:16px;padding:10px;background:#f5f5f5;border-radius:8px;page-break-inside:avoid!important;break-inside:avoid!important;"><strong>ملاحظات:</strong> ${ex.notes}</p>`:''}
     </div>`;
     printHTMLContent(html, `مستخلص رقم ${ex.number} - ${ex.contractor}`);
 }
@@ -2707,8 +2723,9 @@ function printExtract(){
 function buildExtractHTML(){
     const ex = extracts.find(x => String(x.id) === String(currentExtractId));
     if (!ex) return null;
+    const sortedRows = getSortedExtractRows(ex, false);
     let grandTotal = 0;
-    ex.rows.forEach(r => {
+    sortedRows.forEach(r => {
         const tq = (r.prevQty||0) + (r.currentQty||0);
         grandTotal += tq * (r.price||0) * ((r.itemPct||100)/100) * ((r.disbursementPct||100)/100) - (r.deductions||0);
     });
@@ -2718,7 +2735,8 @@ function buildExtractHTML(){
     const headers = ['م','التاريخ','رقم العمارة','بيان الأعمال','الوحدة','النوع','السعر','نسبة البند %','كمية سابقة','كمية حالية','مجموع الكميات','نسبة الصرف %','الاستقطاعات','إجمالي المستحق'];
     const logoSrc = typeof COMPANY_LOGO !== 'undefined' ? COMPANY_LOGO : '';
     
-    let html = '<div style="font-family:Cairo, Tahoma, Arial, sans-serif;direction:rtl;text-align:right;padding:15px;color:#222;line-height:1.6;">';
+    let html = '<style>tfoot,tfoot tr,tfoot td,tfoot th{display:table-row-group!important;page-break-inside:avoid!important;break-inside:avoid!important;}.summary-table{page-break-inside:avoid!important;break-inside:avoid!important;margin-top:15px;}</style>';
+    html += '<div style="font-family:Cairo, Tahoma, Arial, sans-serif;direction:rtl;text-align:right;padding:15px;color:#222;line-height:1.6;">';
     html += '<div style="text-align:center;margin-bottom:10px;"><img src="' + logoSrc + '" style="height:75px;" alt="logo"></div>';
     html += '<h3 style="text-align:center;margin:0 0 4px;color:#333;font-size:14px;font-weight:700;">شركة الرحاب للمقاولات العمومية (ورثة سيد تهامي)</h3>';
     html += '<h3 style="text-align:center;margin:0 0 6px;color:#555;font-size:13px;">المشروع : التوسعات الجنوبية</h3>';
@@ -2730,22 +2748,23 @@ function buildExtractHTML(){
     html += '</table>';
     html += '<table style="width:100%;border-collapse:collapse;margin-bottom:15px;">';
     html += '<thead><tr style="background:#e0e0e0;">' + headers.map(h=>'<th style="' + th + '">' + h + '</th>').join('') + '</tr></thead>';
-    html += '<tbody>' + ex.rows.map((r,i)=>{
+    html += '<tbody>' + sortedRows.map((r,i)=>{
         const tq = (r.prevQty||0) + (r.currentQty||0);
         const rowTotal = tq * (r.price||0) * ((r.itemPct||100)/100) * ((r.disbursementPct||100)/100) - (r.deductions||0);
         return '<tr>' + [toAr(i+1),fmtDate(r.rowDate),r.buildingNo||'—',r.description||'—',r.unit,r.type,fmtNum(r.price),toAr(r.itemPct)+'%',fmtNum(r.prevQty||0),fmtNum(r.currentQty||0),fmtNum(tq),toAr(r.disbursementPct)+'%',fmtNum(r.deductions||0),fmtNum(rowTotal)].map(c=>'<td style="' + td + '">' + c + '</td>').join('') + '</tr>';
     }).join('') + '</tbody>';
-    html += '<tfoot><tr style="background:#f0f0f0;font-weight:bold;"><td colspan="13" style="' + th + '">إجمالي المستحق للمقاول</td><td style="' + th + '">' + fmtNum(grandTotal) + '</td></tr></tfoot>';
+    html += '<tfoot style="display:table-row-group!important;page-break-inside:avoid!important;break-inside:avoid!important;"><tr style="background:#f0f0f0;font-weight:bold;page-break-inside:avoid!important;break-inside:avoid!important;"><td colspan="13" style="' + th + '">إجمالي المستحق للمقاول</td><td style="' + th + '">' + fmtNum(grandTotal) + '</td></tr></tfoot>';
     html += '</table>';
-    html += '<table style="width:50%;margin:0 auto;border-collapse:collapse;font-size:12px;">';
+    html += '<table class="summary-table" style="width:50%;margin:0 auto;border-collapse:collapse;font-size:12px;page-break-inside:avoid!important;break-inside:avoid!important;">';
     html += '<tr><td style="padding:8px;border:1px solid #ddd;background:#e8f5e9;font-weight:bold;">إجمالي المستحق</td><td style="padding:8px;border:1px solid #ddd;text-align:center;">' + fmtCur(grandTotal) + '</td></tr>';
     html += '<tr><td style="padding:8px;border:1px solid #ddd;background:#fff3e0;font-weight:bold;">إجمالي المنصرف</td><td style="padding:8px;border:1px solid #ddd;text-align:center;">' + fmtCur(totalPaid) + '</td></tr>';
     html += '<tr><td style="padding:8px;border:1px solid #ddd;background:#e3f2fd;font-weight:bold;">صافي المستحق للمقاول</td><td style="padding:8px;border:1px solid #ddd;text-align:center;font-weight:bold;color:' + (grandTotal-totalPaid>=0?'#2e7d32':'#c62828') + ';">' + fmtCur(grandTotal-totalPaid) + '</td></tr>';
     html += '</table></div>';
-    if (ex.notes) html += '<p style="margin-top:16px;padding:10px;background:#f5f5f5;border-radius:8px;"><strong>ملاحظات:</strong> ' + ex.notes + '</p>';
+    if (ex.notes) html += '<p class="notes-box" style="margin-top:16px;padding:10px;background:#f5f5f5;border-radius:8px;page-break-inside:avoid!important;break-inside:avoid!important;"><strong>ملاحظات:</strong> ' + ex.notes + '</p>';
     
     return { ex, grandTotal, totalPaid, html };
 }
+
 
 function saveExtractPDF(){
     try {
@@ -3195,10 +3214,10 @@ function printSupExtract(){
         }
     }
     if(!ex) return;
-
+    const sortedRows = getSortedExtractRows(ex, true);
     const isReadyMix = isReadyMixItem(ex.item);
     let grandTotal=0;
-    ex.rows.forEach(r=>{
+    sortedRows.forEach(r=>{
         grandTotal += isReadyMix ? (r.qty||0)*(r.price||0) : (r.qty||0)*(r.price||0)-(r.discounts||0);
     });
     const totalPaid=payments.filter(p=>p.contractor===ex.supplier&&p.item===ex.item).reduce((s,p)=>s+p.amount,0);
@@ -3209,7 +3228,8 @@ function printSupExtract(){
         ['م','تاريخ الصب','العنصر','المحتوى','الجهد','الكمية','السعر','القيمة'] :
         ['م','التاريخ','البيان','الوحدة','رقم الفاتورة','الكمية','السعر','خصومات','إجمالي المستحق'];
 
-    const html=`<div style="font-family:Cairo,sans-serif;direction:rtl;padding:20px;color:#333;">
+    const html=`<style>tfoot,tfoot tr,tfoot td,tfoot th{display:table-row-group!important;page-break-inside:avoid!important;break-inside:avoid!important;}.summary-table{page-break-inside:avoid!important;break-inside:avoid!important;margin-top:15px;}</style>
+        <div style="font-family:Cairo,sans-serif;direction:rtl;padding:20px;color:#333;">
         <div style="text-align:center;margin-bottom:10px;"><img src="${COMPANY_LOGO}" style="height:80px;" alt="logo"></div>
         <h2 style="text-align:center;margin:0 0 2px;color:#555;font-size:15px;">شركة الرحاب للمقاولات العمومية (ورثة سيد تهامي)</h2>
         <h2 style="text-align:center;margin:0 0 5px;color:#555;">المشروع : التوسعات الجنوبيه</h2>
@@ -3221,27 +3241,26 @@ function printSupExtract(){
         </table>
         <table style="width:100%;border-collapse:collapse;margin-bottom:20px;">
             <thead><tr style="background:#e0e0e0;">${headers.map(h=>`<th style="${th}">${h}</th>`).join('')}</tr></thead>
-            <tbody>${ex.rows.map((r,i)=>{
+            <tbody>${sortedRows.map((r,i)=>{
                 if (isReadyMix) {
                     const rowTotal=(r.qty||0)*(r.price||0);
-                    return `<tr>${[i+1, fmtDate(r.rowDate), r.element||r.description||'—', toAr(r.content||'—'), toAr(r.strength||'—'), fmtNum(r.qty||0), fmtNum(r.price||0), fmtNum(rowTotal)].map(c=>`<td style="${td}">${c}</td>`).join('')}</tr>`;
+                    return `<tr>${[toAr(i+1), fmtDate(r.rowDate), r.element||r.description||'—', toAr(r.content||'—'), toAr(r.strength||'—'), fmtNum(r.qty||0), fmtNum(r.price||0), fmtNum(rowTotal)].map(c=>`<td style="${td}">${c}</td>`).join('')}</tr>`;
                 } else {
                     const rowTotal=(r.qty||0)*(r.price||0)-(r.discounts||0);
-                    return `<tr>${[i+1, fmtDate(r.rowDate), r.description||'—', r.unit, r.invoiceNo||'—', fmtNum(r.qty||0), fmtNum(r.price||0), fmtNum(r.discounts||0), fmtNum(rowTotal)].map(c=>`<td style="${td}">${c}</td>`).join('')}</tr>`;
+                    return `<tr>${[toAr(i+1), fmtDate(r.rowDate), r.description||'—', r.unit, r.invoiceNo||'—', fmtNum(r.qty||0), fmtNum(r.price||0), fmtNum(r.discounts||0), fmtNum(rowTotal)].map(c=>`<td style="${td}">${c}</td>`).join('')}</tr>`;
                 }
             }).join('')}</tbody>
-            <tfoot><tr style="background:#f0f0f0;font-weight:bold;"><td colspan="${isReadyMix?7:8}" style="${th}">إجمالي المستحق للمورد</td><td style="${th}">${fmtNum(grandTotal)}</td></tr></tfoot>
+            <tfoot style="display:table-row-group!important;page-break-inside:avoid!important;break-inside:avoid!important;"><tr style="background:#f0f0f0;font-weight:bold;page-break-inside:avoid!important;break-inside:avoid!important;"><td colspan="${isReadyMix?7:8}" style="${th}">إجمالي المستحق للمورد</td><td style="${th}">${fmtNum(grandTotal)}</td></tr></tfoot>
         </table>
-        <table style="width:50%;margin:0 auto;border-collapse:collapse;font-size:14px;">
+        <table class="summary-table" style="width:50%;margin:0 auto;border-collapse:collapse;font-size:14px;page-break-inside:avoid!important;break-inside:avoid!important;">
             <tr><td style="padding:10px;border:1px solid #ddd;background:#e8f5e9;font-weight:bold;">إجمالي المستحق</td><td style="padding:10px;border:1px solid #ddd;text-align:center;">${fmtCur(grandTotal)}</td></tr>
             <tr><td style="padding:10px;border:1px solid #ddd;background:#fff3e0;font-weight:bold;">إجمالي المنصرف</td><td style="padding:10px;border:1px solid #ddd;text-align:center;">${fmtCur(totalPaid)}</td></tr>
             <tr><td style="padding:10px;border:1px solid #ddd;background:#e3f2fd;font-weight:bold;">الباقي للمورد</td><td style="padding:10px;border:1px solid #ddd;text-align:center;font-weight:bold;">${fmtCur(grandTotal-totalPaid)}</td></tr>
         </table>
-        ${ex.notes?`<p style="margin-top:16px;padding:10px;background:#f5f5f5;border-radius:8px;"><strong>ملاحظات:</strong> ${ex.notes}</p>`:''}
+        ${ex.notes?`<p class="notes-box" style="margin-top:16px;padding:10px;background:#f5f5f5;border-radius:8px;page-break-inside:avoid!important;break-inside:avoid!important;"><strong>ملاحظات:</strong> ${ex.notes}</p>`:''}
     </div>`;
     printHTMLContent(html, `مستخلص مورد ${ex.number} - ${ex.supplier}`);
 }
-
 
 // ========================================
 // OPERATIONS EXPENSES MODULE
@@ -3352,53 +3371,55 @@ function saveSupExtractPDF(){
             return;
         }
 
+        const sortedRows = getSortedExtractRows(ex, true);
         const isReadyMix = isReadyMixItem(ex.item);
         let grandTotal = 0;
-        ex.rows.forEach(r => {
+        sortedRows.forEach(r => {
             grandTotal += isReadyMix ? (r.qty||0)*(r.price||0) : (r.qty||0)*(r.price||0)-(r.discounts||0);
         });
         const totalPaid = payments.filter(p => p.contractor === ex.supplier && p.item === ex.item).reduce((s,p) => s + p.amount, 0);
-        const fTh = 'padding:6px;border:1px solid #bbb;text-align:center;font-size:11px;';
-        const fTd = 'padding:5px;border:1px solid #ddd;text-align:center;font-size:10px;';
-
+        const th = 'padding:7px 6px;border:1px solid #999;text-align:center;font-size:11px;font-weight:700;';
+        const td = 'padding:6px 5px;border:1px solid #ccc;text-align:center;font-size:10px;line-height:1.5;';
         const headers = isReadyMix ?
             ['م','تاريخ الصب','العنصر','المحتوى','الجهد','الكمية','السعر','القيمة'] :
             ['م','التاريخ','البيان','الوحدة','رقم الفاتورة','الكمية','السعر','خصومات','إجمالي المستحق'];
+
         const logoSrc = typeof COMPANY_LOGO !== 'undefined' ? COMPANY_LOGO : '';
-        
-        let pdfHtml = '<div style="font-family:Cairo, Tahoma, Arial, sans-serif;direction:rtl;text-align:right;padding:15px;color:#222;line-height:1.6;">';
-        pdfHtml += '<div style="text-align:center;margin-bottom:10px;"><img src="' + logoSrc + '" style="height:75px;" alt="logo"></div>';
-        pdfHtml += '<h3 style="text-align:center;margin:0 0 4px;color:#333;font-size:14px;font-weight:700;">شركة الرحاب للمقاولات العمومية <span dir="rtl" style="unicode-bidi: isolate;">(ورثة سيد تهامي)</span></h3>';
-        pdfHtml += '<h3 style="text-align:center;margin:0 0 6px;color:#555;font-size:13px;">المشروع : التوسعات الجنوبية</h3>';
-        pdfHtml += '<h2 style="text-align:center;border-bottom:2px solid #333;padding-bottom:8px;font-size:16px;font-weight:800;">مستخلص مورد ' + (isCombined?'تجميعي':'رقم '+ex.number) + '</h2>';
-        pdfHtml += '<table style="width:100%;margin:12px 0;border-collapse:collapse;font-size:13px;">';
-        pdfHtml += '<tr><td style="padding:6px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">المورد</td><td style="padding:6px;border:1px solid #ddd;font-size:14px;font-weight:700;">' + ex.supplier + '</td>';
-        pdfHtml += '<td style="padding:6px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">البند</td><td style="padding:6px;border:1px solid #ddd;font-size:14px;font-weight:700;">' + ex.item + '</td>';
-        pdfHtml += '<td style="padding:6px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">التاريخ</td><td style="padding:6px;border:1px solid #ddd;">' + fmtDate(ex.date) + '</td></tr>';
-        pdfHtml += '</table>';
-        pdfHtml += '<table style="width:100%;border-collapse:collapse;margin-bottom:15px;">';
-        pdfHtml += '<thead><tr style="background:#e0e0e0;">' + headers.map(h=>'<th style="' + fTh + '">' + h + '</th>').join('') + '</tr></thead>';
-        pdfHtml += '<tbody>' + ex.rows.map((r,i)=>{
+        let cHtml = '<style>tfoot,tfoot tr,tfoot td,tfoot th{display:table-row-group!important;page-break-inside:avoid!important;break-inside:avoid!important;}.summary-table{page-break-inside:avoid!important;break-inside:avoid!important;margin-top:15px;}</style>';
+        cHtml += '<div style="font-family:Cairo, Tahoma, Arial, sans-serif;direction:rtl;text-align:right;padding:15px;color:#222;line-height:1.6;">';
+        cHtml += '<div style="text-align:center;margin-bottom:10px;"><img src="' + logoSrc + '" style="height:75px;" alt="logo"></div>';
+        cHtml += '<h3 style="text-align:center;margin:0 0 4px;color:#333;font-size:14px;font-weight:700;">شركة الرحاب للمقاولات العمومية (ورثة سيد تهامي)</h3>';
+        cHtml += '<h3 style="text-align:center;margin:0 0 6px;color:#555;font-size:13px;">المشروع : التوسعات الجنوبية</h3>';
+        cHtml += '<h2 style="text-align:center;border-bottom:2px solid #333;padding-bottom:8px;font-size:16px;font-weight:800;">مستخلص مورد ' + (isCombined ? 'تجميعي' : ('رقم ' + ex.number)) + '</h2>';
+        cHtml += '<table style="width:100%;margin:12px 0;border-collapse:collapse;font-size:13px;">';
+        cHtml += '<tr><td style="padding:6px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">المورد</td><td style="padding:6px;border:1px solid #ddd;font-size:14px;font-weight:700;">' + ex.supplier + '</td>';
+        cHtml += '<td style="padding:6px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">البند</td><td style="padding:6px;border:1px solid #ddd;font-size:14px;font-weight:700;">' + ex.item + '</td>';
+        cHtml += '<td style="padding:6px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">التاريخ</td><td style="padding:6px;border:1px solid #ddd;">' + fmtDate(ex.date) + '</td></tr>';
+        cHtml += '</table>';
+        cHtml += '<table style="width:100%;border-collapse:collapse;margin-bottom:15px;">';
+        cHtml += '<thead><tr style="background:#e0e0e0;">' + headers.map(h=>'<th style="' + th + '">' + h + '</th>').join('') + '</tr></thead>';
+        cHtml += '<tbody>' + sortedRows.map((r,i)=>{
             if (isReadyMix) {
                 const rowTotal=(r.qty||0)*(r.price||0);
-                return '<tr>' + [i+1, fmtDate(r.rowDate), r.element||r.description||'—', toAr(r.content||'—'), toAr(r.strength||'—'), fmtNum(r.qty||0), fmtNum(r.price||0), fmtNum(rowTotal)].map(c=>'<td style="' + fTd + '">' + c + '</td>').join('') + '</tr>';
+                return '<tr>' + [toAr(i+1), fmtDate(r.rowDate), r.element||r.description||'—', toAr(r.content||'—'), toAr(r.strength||'—'), fmtNum(r.qty||0), fmtNum(r.price||0), fmtNum(rowTotal)].map(c=>'<td style="' + td + '">' + c + '</td>').join('') + '</tr>';
             } else {
                 const rowTotal=(r.qty||0)*(r.price||0)-(r.discounts||0);
-                return '<tr>' + [i+1, fmtDate(r.rowDate), r.description||'—', r.unit, r.invoiceNo||'—', fmtNum(r.qty||0), fmtNum(r.price||0), fmtNum(r.discounts||0), fmtNum(rowTotal)].map(c=>'<td style="' + fTd + '">' + c + '</td>').join('') + '</tr>';
+                return '<tr>' + [toAr(i+1), fmtDate(r.rowDate), r.description||'—', r.unit, r.invoiceNo||'—', fmtNum(r.qty||0), fmtNum(r.price||0), fmtNum(r.discounts||0), fmtNum(rowTotal)].map(c=>'<td style="' + td + '">' + c + '</td>').join('') + '</tr>';
             }
         }).join('') + '</tbody>';
-        pdfHtml += '<tfoot><tr style="background:#f0f0f0;font-weight:bold;"><td colspan="' + (isReadyMix?7:8) + '" style="' + fTh + '">إجمالي المستحق للمورد</td><td style="' + fTh + '">' + fmtNum(grandTotal) + '</td></tr></tfoot>';
-        pdfHtml += '</table>';
-        pdfHtml += '<table style="width:50%;margin:0 auto;border-collapse:collapse;font-size:12px;">';
-        pdfHtml += '<tr><td style="padding:8px;border:1px solid #ddd;background:#e8f5e9;font-weight:bold;">إجمالي المستحق</td><td style="padding:8px;border:1px solid #ddd;text-align:center;">' + fmtCur(grandTotal) + '</td></tr>';
-        pdfHtml += '<tr><td style="padding:8px;border:1px solid #ddd;background:#fff3e0;font-weight:bold;">إجمالي المنصرف</td><td style="padding:8px;border:1px solid #ddd;text-align:center;">' + fmtCur(totalPaid) + '</td></tr>';
-        pdfHtml += '<tr><td style="padding:8px;border:1px solid #ddd;background:#e3f2fd;font-weight:bold;">الباقي للمورد</td><td style="padding:8px;border:1px solid #ddd;text-align:center;font-weight:bold;">' + fmtCur(grandTotal-totalPaid) + '</td></tr>';
-        pdfHtml += '</table></div>';
+        cHtml += '<tfoot style="display:table-row-group!important;page-break-inside:avoid!important;break-inside:avoid!important;"><tr style="background:#f0f0f0;font-weight:bold;page-break-inside:avoid!important;break-inside:avoid!important;"><td colspan="' + (isReadyMix?7:8) + '" style="' + th + '">إجمالي المستحق للمورد</td><td style="' + th + '">' + fmtNum(grandTotal) + '</td></tr></tfoot>';
+        cHtml += '</table>';
+        cHtml += '<table class="summary-table" style="width:50%;margin:0 auto;border-collapse:collapse;font-size:12px;page-break-inside:avoid!important;break-inside:avoid!important;">';
+        cHtml += '<tr><td style="padding:8px;border:1px solid #ddd;background:#e8f5e9;font-weight:bold;">إجمالي المستحق</td><td style="padding:8px;border:1px solid #ddd;text-align:center;">' + fmtCur(grandTotal) + '</td></tr>';
+        cHtml += '<tr><td style="padding:8px;border:1px solid #ddd;background:#fff3e0;font-weight:bold;">إجمالي المنصرف</td><td style="padding:8px;border:1px solid #ddd;text-align:center;">' + fmtCur(totalPaid) + '</td></tr>';
+        cHtml += '<tr><td style="padding:8px;border:1px solid #ddd;background:#e3f2fd;font-weight:bold;">صافي المستحق للمورد</td><td style="padding:8px;border:1px solid #ddd;text-align:center;font-weight:bold;color:' + (grandTotal-totalPaid>=0?'#2e7d32':'#c62828') + ';">' + fmtCur(grandTotal-totalPaid) + '</td></tr>';
+        cHtml += '</table></div>';
+        if (ex.notes) cHtml += '<p class="notes-box" style="margin-top:16px;padding:10px;background:#f5f5f5;border-radius:8px;page-break-inside:avoid!important;break-inside:avoid!important;"><strong>ملاحظات:</strong> ' + ex.notes + '</p>';
 
         const container = document.createElement('div');
-        container.innerHTML = pdfHtml;
+        container.innerHTML = cHtml;
         document.body.appendChild(container);
-        const fileName = 'مستخلص_مورد_' + ex.number + '_' + ex.supplier + '.pdf';
+        const fileName = 'مستخلص_مورد_' + (isCombined ? 'تجميعي' : ex.number) + '_' + ex.supplier + '.pdf';
         html2pdf().set({
             margin: 5,
             filename: fileName,
@@ -3417,6 +3438,7 @@ function saveSupExtractPDF(){
         if (typeof printSupExtract === 'function') printSupExtract();
     }
 }
+
 
 function printExpenses(){
     const html=buildExpensesPrintHTML();
