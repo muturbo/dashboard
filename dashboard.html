@@ -2302,6 +2302,52 @@ function printPayments(){
 }
 function savePaymentsPDF(){ printPayments(); }
 
+// OPERATIONS EXPENSES MODULE
+// ========================================
+function submitAddExpense(e){
+    if (e && e.preventDefault) e.preventDefault();
+    const date = gv('expenseDate'), desc = gv('expenseDescription').trim(), type = gv('expenseType');
+    const beneficiary = gv('expenseBeneficiary').trim(), amount = parseFloat(gv('expenseAmount'));
+    if(!date||!desc||!type||!beneficiary||!amount||amount<=0){showToast('⚠️ أكمل جميع البيانات','error');return;}
+    expenses.push({id:uid(),date,description:desc,type,beneficiary,amount,createdAt:new Date().toISOString()});
+    save(); renderExpenses();
+    if(e && e.target && e.target.reset) e.target.reset();
+    showToast('✅ تم إضافة المصروف بنجاح','success');
+}
+
+function renderExpenses(){
+    const df = gv('expenseDateFrom'), dt = gv('expenseDateTo'), so = gv('expenseSortOrder') || 'desc';
+    let fil = (expenses || []).filter(r => (!df || r.date >= df) && (!dt || r.date <= dt));
+    fil.sort((a,b) => so === 'desc' ? parseDateValue(b.date) - parseDateValue(a.date) : parseDateValue(a.date) - parseDateValue(b.date));
+    const total = fil.reduce((s,r) => s + (parseFloat(r.amount) || 0), 0);
+    const totalEl = gi('expensesGrandTotal'); if (totalEl) totalEl.textContent = fmtCur(total);
+    const countEl = gi('expensesCount'); if (countEl) countEl.textContent = toAr(fil.length) + ' مصروف';
+    const tb = gi('expensesBody');
+    if (tb) {
+        if (!fil.length) {
+            tb.innerHTML = '';
+            show('expensesEmpty'); hide('expensesTable');
+        } else {
+            hide('expensesEmpty'); show('expensesTable');
+            tb.innerHTML = fil.map((r,i) => `<tr style="animation-delay:${Math.min(i*0.02,0.5)}s">
+                <td>${toAr(i+1)}</td>
+                <td class="date-cell">${fmtDate(r.date)}</td>
+                <td><strong>${r.description||'—'}</strong></td>
+                <td>${r.type||'—'}</td>
+                <td>${r.beneficiary||'—'}</td>
+                <td class="amount-cell">${fmtCur(r.amount)}</td>
+                <td><button class="btn btn-icon-only btn-delete" onclick="confirmDeleteExpense(${r.id})" title="حذف">🗑️</button></td>
+            </tr>`).join('');
+        }
+    }
+}
+
+function confirmDeleteExpense(id){
+    deleteTarget = id; deleteType = 'expense';
+    gi('deleteModalText').innerHTML = 'هل تريد حذف هذا المصروف؟';
+    openModal('deleteModal');
+}
+
 function buildExpensesPrintHTML(){
     const total = (expenses || []).reduce((s,r) => s + (parseFloat(r.amount) || 0), 0);
     const th = 'padding:6px;border:1px solid #bbb;text-align:center;font-size:11px;';
@@ -2317,11 +2363,45 @@ function buildExpensesPrintHTML(){
             '<tfoot><tr style="background:#f0f0f0;font-weight:bold;"><td colspan="5" style="' + th + '">إجمالي المصروفات</td><td style="' + th + '">' + fmtCur(total) + '</td></tr></tfoot>' +
         '</table></div>';
 }
+
 function printExpenses(){ const html = buildExpensesPrintHTML(); printHTMLContent(html, 'مصروفات العمليات'); }
 function saveExpensesPDF(){ printExpenses(); }
 
+// REVENUE MODULE
+// ========================================
+function submitAddRevenue(e){
+    if (e && e.preventDefault) e.preventDefault();
+    const date=gv('revenueDate'),tender=gv('revenueTender').trim(),extractNo=gv('revenueExtractNo').trim();
+    const ref=gv('revenueRef').trim(),flowType=gv('revenueFlowType').trim(),amount=parseFloat(gv('revenueAmount'));
+    if(!date||!flowType||!amount||amount<=0){showToast('⚠️ أكمل البيانات المطلوبة','error');return;}
+    revenue.push({id:uid(),date,tender,extractNo,ref,flowType,amount,createdAt:new Date().toISOString()});
+    save();renderRevenue();
+    if (e && e.target && e.target.reset) e.target.reset();
+    showToast('✅ تم تسجيل الإيراد','success');
+}
+
+function renderRevenue(){
+    const df=gv('revenueDateFrom'), dt=gv('revenueDateTo'), so=gv('revenueSortOrder')||'desc';
+    let fil = (revenue || []).filter(r=>(!df||r.date>=df)&&(!dt||r.date<=dt));
+    fil.sort((a,b)=> so==='desc' ? parseDateValue(b.date)-parseDateValue(a.date) : parseDateValue(a.date)-parseDateValue(b.date));
+    const total=fil.reduce((s,r)=>s+r.amount,0);
+    const totalEl=gi('revenueGrandTotal');if(totalEl)totalEl.textContent=fmtCur(total);
+    const countEl=gi('revenueCount');if(countEl)countEl.textContent=toAr(fil.length)+' إيراد';
+    const tb=gi('revenueBody');
+    if(tb){
+        if(!fil.length){tb.innerHTML='';show('revenueEmpty');hide('revenueTable');}
+        else{hide('revenueEmpty');show('revenueTable');tb.innerHTML=fil.map((r,i)=>`<tr style="animation-delay:${Math.min(i*0.02,0.5)}s"><td>${toAr(i+1)}</td><td class="date-cell">${fmtDate(r.date)}</td><td>${r.flowType||'—'}</td><td><strong>${r.tender||'—'}</strong></td><td>${r.extractNo||'—'}</td><td>${r.ref?toAr(r.ref):'—'}</td><td class="amount-cell">${fmtCur(r.amount)}</td><td><button class="btn btn-icon-only btn-delete" onclick="confirmDeleteRevenue(${r.id})" title="حذف">🗑️</button></td></tr>`).join('');}
+    }
+}
+
+function confirmDeleteRevenue(id){
+    deleteTarget=id;deleteType='revenue';
+    gi('deleteModalText').innerHTML='هل تريد حذف هذا الإيراد؟';
+    openModal('deleteModal');
+}
+
 function buildRevenuePrintHTML(){
-    const total=revenue.reduce((s,r)=>s+r.amount,0);
+    const total=(revenue || []).reduce((s,r)=>s+r.amount,0);
     const th='padding:6px;border:1px solid #bbb;text-align:center;font-size:11px;';
     const td='padding:5px;border:1px solid #ddd;text-align:center;font-size:10px;';
     return `<div style="font-family:Cairo,sans-serif;direction:rtl;padding:15px;color:#333;"><div style="text-align:center;margin-bottom:10px;"><img src="${COMPANY_LOGO}" style="height:80px;" alt="logo"></div>
@@ -2330,41 +2410,13 @@ function buildRevenuePrintHTML(){
         <h2 style="text-align:center;border-bottom:2px solid #333;padding-bottom:8px;font-size:16px;">إيرادات المشروع</h2>
         <table style="width:100%;border-collapse:collapse;margin:15px 0;">
             <thead><tr style="background:#e0e0e0;">${['م','تاريخ الصرف','رقم المناقصة','رقم المستخلص','الرقم المرجعي','نوع التدفق','المبلغ المستلم'].map(h=>`<th style="${th}">${h}</th>`).join('')}</tr></thead>
-            <tbody>${revenue.map((r,i)=>`<tr>${[toAr(i+1),fmtDate(r.date),r.tender?toAr(r.tender):'—',r.extractNo?toAr(r.extractNo):'—',r.ref?toAr(r.ref):'—',r.flowType,fmtCur(r.amount)].map(c=>`<td style="${td}">${c}</td>`).join('')}</tr>`).join('')}</tbody>
+            <tbody>${(revenue || []).map((r,i)=>`<tr>${[toAr(i+1),fmtDate(r.date),r.tender?toAr(r.tender):'—',r.extractNo?toAr(r.extractNo):'—',r.ref?toAr(r.ref):'—',r.flowType,fmtCur(r.amount)].map(c=>`<td style="${td}">${c}</td>`).join('')}</tr>`).join('')}</tbody>
             <tfoot><tr style="background:#f0f0f0;font-weight:bold;"><td colspan="6" style="${th}">إجمالي إيرادات المشروع</td><td style="${th};color:#008800;">${fmtCur(total)}</td></tr></tfoot>
         </table></div>`;
 }
+
 function printRevenue(){ const html=buildRevenuePrintHTML(); printHTMLContent(html, 'إيرادات المشروع'); }
 function saveRevenuePDF(){ printRevenue(); }
-
-function buildBalancesPrintHTML(){
-    const all=calcBalances();
-    const ctrBal=all.filter(b=>b.type==='contractor');
-    const supBal=all.filter(b=>b.type==='supplier');
-    const ctrTotal=ctrBal.reduce((s,b)=>s+b.remaining,0);
-    const supTotal=supBal.reduce((s,b)=>s+b.remaining,0);
-    const th='padding:6px;border:1px solid #bbb;text-align:center;font-size:11px;';
-    const td='padding:5px;border:1px solid #ddd;text-align:center;font-size:10px;';
-    const buildTable=(title,data,total)=>{
-        if(!data.length) return '';
-        return `<h3 style="margin:15px 0 5px;">${title}</h3>
-        <table style="width:100%;border-collapse:collapse;margin-bottom:10px;">
-            <thead><tr style="background:#e0e0e0;">${['م','الاسم','البند','قيمة المستخلصات','إجمالي المدفوع','الرصيد المستحق'].map(h=>`<th style="${th}">${h}</th>`).join('')}</tr></thead>
-            <tbody>${data.map((b,i)=>`<tr>${[toAr(i+1),b.name,b.item,fmtCur(b.extractTotal),fmtCur(b.paidTotal),fmtCur(b.remaining)].map(c=>`<td style="${td}">${c}</td>`).join('')}</tr>`).join('')}</tbody>
-            <tfoot><tr style="background:#f0f0f0;font-weight:bold;"><td colspan="3" style="${th}">إجمالي</td><td style="${th}">${fmtCur(data.reduce((s,b)=>s+b.extractTotal,0))}</td><td style="${th}">${fmtCur(data.reduce((s,b)=>s+b.paidTotal,0))}</td><td style="${th};color:#c00;">${fmtCur(total)}</td></tr></tfoot>
-        </table>`;
-    };
-    return `<div style="font-family:Cairo,sans-serif;direction:rtl;padding:15px;color:#333;"><div style="text-align:center;margin-bottom:10px;"><img src="${COMPANY_LOGO}" style="height:80px;" alt="logo"></div>
-        <h3 style="text-align:center;margin:0 0 2px;font-size:13px;">شركة الرحاب للمقاولات العمومية (ورثة سيد تهامي)</h3>
-        <h3 style="text-align:center;margin:0 0 4px;font-size:12px;">المشروع : التوسعات الجنوبية</h3>
-        <h2 style="text-align:center;border-bottom:2px solid #333;padding-bottom:8px;font-size:16px;">الأرصدة الدائنة المستحقة</h2>
-        ${buildTable('👷 أرصدة المقاولين',ctrBal,ctrTotal)}
-        ${buildTable('🚚 أرصدة الموردين',supBal,supTotal)}
-        <div style="text-align:center;margin-top:15px;font-size:14px;font-weight:800;border:2px solid #333;padding:10px;">إجمالي الأرصدة الدائنة المستحقة: ${fmtCur(ctrTotal+supTotal)}</div>
-    </div>`;
-}
-function printBalances(){ const html=buildBalancesPrintHTML(); printHTMLContent(html, 'الأرصدة الدائنة المستحقة'); }
-function saveBalancesPDF(){ printBalances(); }
 
 
 function renderFinancialSummary(){
@@ -4057,3 +4109,12 @@ if (document.readyState === 'loading') {
 </html>
 
 
+
+<script>
+window.submitAddExpense = submitAddExpense;
+window.renderExpenses = renderExpenses;
+window.confirmDeleteExpense = confirmDeleteExpense;
+window.submitAddRevenue = submitAddRevenue;
+window.renderRevenue = renderRevenue;
+window.confirmDeleteRevenue = confirmDeleteRevenue;
+</script>
