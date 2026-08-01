@@ -180,15 +180,15 @@ if (typeof saveStockCardPDF !== 'undefined') window.saveStockCardPDF = saveStock
                 </div>
             </div>
             <div class="charts-grid">
-                <div class="card chart-card">
+                <div class="card chart-card" style="position:relative; min-height:340px;">
                     <h3 class="card-title">📊 توزيع المدفوعات حسب البند</h3>
-                    <div class="chart-container"><canvas id="pieChart"></canvas></div>
-                    <div class="chart-empty" id="pieEmpty"><p>لا توجد دفعات بعد</p></div>
+                    <div class="chart-container" id="pieChartContainer" style="position:relative; height:280px; width:100%;"><canvas id="pieChart"></canvas></div>
+                    <div class="chart-empty" id="pieEmpty" style="display:none;"><p>لا توجد دفعات بعد</p></div>
                 </div>
-                <div class="card chart-card">
+                <div class="card chart-card" style="position:relative; min-height:340px;">
                     <h3 class="card-title">📈 أكثر 10 مقاولين/موردين دفعات</h3>
-                    <div class="chart-container"><canvas id="barChart"></canvas></div>
-                    <div class="chart-empty" id="barEmpty"><p>لا توجد دفعات بعد</p></div>
+                    <div class="chart-container" id="barChartContainer" style="position:relative; height:280px; width:100%;"><canvas id="barChart"></canvas></div>
+                    <div class="chart-empty" id="barEmpty" style="display:none;"><p>لا توجد دفعات بعد</p></div>
                 </div>
             </div>
             <!-- Spending Breakdown -->
@@ -3632,24 +3632,214 @@ function saveBalancesPDF(){
 // ========================================
 // CHARTS
 // ========================================
+
+function renderFallbackDistribution(ie, totalPaidAll) {
+    const container = gi('pieChartContainer') || (gi('pieChart') ? gi('pieChart').parentNode : null);
+    if(!container) return;
+    
+    if(!ie.length || totalPaidAll <= 0) {
+        container.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#888;font-size:0.9rem;">لا توجد دفعات بعد</div>';
+        return;
+    }
+
+    let html = '<div class="fallback-chart-wrap" style="padding:10px; overflow-y:auto; max-height:260px; direction:rtl;">';
+    ie.forEach(([item, amt]) => {
+        const pct = totalPaidAll > 0 ? ((amt / totalPaidAll) * 100).toFixed(1) : 0;
+        const color = getColor(item);
+        html += `
+        <div style="margin-bottom:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.85rem; margin-bottom:4px; font-weight:600;">
+                <span><span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:${color}; margin-left:6px;"></span>${item}</span>
+                <span>${fmtCur(amt)} <small style="color:#888; font-weight:normal;">(${toAr(pct)}%)</small></span>
+            </div>
+            <div style="width:100%; height:8px; background:var(--border-color, #e0e0e0); border-radius:4px; overflow:hidden;">
+                <div style="width:${pct}%; height:100%; background:${color}; border-radius:4px; transition:width 0.6s ease;"></div>
+            </div>
+        </div>`;
+    });
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+function renderFallbackTopContractors(ce, topTotal) {
+    const container = gi('barChartContainer') || (gi('barChart') ? gi('barChart').parentNode : null);
+    if(!container) return;
+
+    if(!ce.length) {
+        container.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#888;font-size:0.9rem;">لا توجد دفعات بعد</div>';
+        return;
+    }
+
+    const maxAmt = ce.length > 0 ? Math.max(...ce.map(e => e[1])) : 1;
+
+    let html = '<div class="fallback-chart-wrap" style="padding:10px; overflow-y:auto; max-height:260px; direction:rtl;">';
+    ce.forEach(([ctrName, amt], idx) => {
+        const pct = maxAmt > 0 ? ((amt / maxAmt) * 100).toFixed(1) : 0;
+        const ctrObj = (contractors || []).find(c => c.name === ctrName);
+        const color = ctrObj ? getColor(ctrObj.item) : '#3b82f6';
+        html += `
+        <div style="margin-bottom:10px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.85rem; margin-bottom:3px;">
+                <span style="font-weight:700;"><span style="color:#888; margin-left:5px;">#${toAr(idx+1)}</span>${ctrName}</span>
+                <span style="font-weight:700; color:var(--text-primary, #333);">${fmtCur(amt)}</span>
+            </div>
+            <div style="width:100%; height:8px; background:var(--border-color, #e0e0e0); border-radius:4px; overflow:hidden;">
+                <div style="width:${pct}%; height:100%; background:${color}; border-radius:4px; transition:width 0.6s ease;"></div>
+            </div>
+        </div>`;
+    });
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+
 function renderCharts(){
-    // Pie
-    const pc=gi('pieChart'),pe=gi('pieEmpty');
-    const it={};payments.forEach(p=>{it[p.item]=(it[p.item]||0)+p.amount;});
-    const ie=Object.entries(it).sort((a,b)=>b[1]-a[1]);
-    if(!ie.length){pe.classList.remove('hidden');if(pieChart){pieChart.destroy();pieChart=null;}return;}
-    pe.classList.add('hidden');
-    if(pieChart)pieChart.destroy();
-    pieChart=new Chart(pc,{type:'doughnut',data:{labels:ie.map(e=>e[0]),datasets:[{data:ie.map(e=>e[1]),backgroundColor:ie.map(e=>getColor(e[0])+'99'),borderColor:ie.map(e=>getColor(e[0])),borderWidth:2,hoverOffset:8}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',rtl:true,labels:{color:'#e8eaf6',font:{family:'Cairo',size:11},padding:12,usePointStyle:true,pointStyleWidth:12}},tooltip:{rtl:true,titleFont:{family:'Cairo'},bodyFont:{family:'Cairo'},callbacks:{label:c=>` ${c.label}: ${fmtCur(c.parsed)}`}}},cutout:'55%',animation:{animateRotate:true,duration:1200}}});
-    // Bar
-    const bc=gi('barChart'),be=gi('barEmpty');
-    const ct={};payments.forEach(p=>{ct[p.contractor]=(ct[p.contractor]||0)+p.amount;});
-    const ce=Object.entries(ct).sort((a,b)=>b[1]-a[1]).slice(0,10);
-    if(!ce.length){be.classList.remove('hidden');if(barChart){barChart.destroy();barChart=null;}return;}
-    be.classList.add('hidden');
-    if(barChart)barChart.destroy();
-    const bColors=ce.map(e=>{const c=contractors.find(x=>x.name===e[0]);return c?getColor(c.item):'#00d2ff';});
-    barChart=new Chart(bc,{type:'bar',data:{labels:ce.map(e=>e[0]),datasets:[{label:'المدفوع',data:ce.map(e=>e[1]),backgroundColor:bColors.map(c=>c+'66'),borderColor:bColors,borderWidth:1.5,borderRadius:6,borderSkipped:false,barPercentage:0.7}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false},tooltip:{rtl:true,titleFont:{family:'Cairo'},bodyFont:{family:'Cairo'},callbacks:{label:c=>` ${fmtCur(c.parsed.x)}`}}},scales:{x:{grid:{color:'rgba(255,255,255,0.05)',drawBorder:false},ticks:{color:'#888',font:{family:'Cairo',size:10},callback:v=>fmtCompact(v)}},y:{grid:{display:false},ticks:{color:'#ccc',font:{family:'Cairo',size:11}}}},animation:{duration:1000,easing:'easeOutQuart'}}});
+    try {
+        const hasChartJS = (typeof Chart !== 'undefined');
+        const isDark = document.body.getAttribute('data-theme') === 'dark';
+        const textColor = isDark ? '#e8eaf6' : '#333333';
+
+        // 1. Pie / Doughnut Chart: Payment Distribution by Item
+        const pc = gi('pieChart'), pe = gi('pieEmpty'), pContainer = gi('pieChartContainer');
+        const it = {};
+        (payments || []).forEach(p => { if(p && p.item) it[p.item] = (it[p.item] || 0) + (p.amount || 0); });
+        const ie = Object.entries(it).sort((a,b) => b[1] - a[1]);
+        const totalPaidAll = ie.reduce((sum, e) => sum + e[1], 0);
+
+        if(!ie.length) {
+            if(pe) { pe.classList.remove('hidden'); pe.style.display = 'flex'; }
+            if(pContainer) { pContainer.style.display = 'none'; }
+            if(pieChart && typeof pieChart.destroy === 'function') { pieChart.destroy(); pieChart = null; }
+        } else {
+            if(pe) { pe.classList.add('hidden'); pe.style.display = 'none'; }
+            if(pContainer) { pContainer.style.display = 'block'; }
+            
+            if (hasChartJS && pc) {
+                // Ensure canvas exists inside container
+                if(!pContainer.querySelector('canvas#pieChart')) {
+                    pContainer.innerHTML = '<canvas id="pieChart"></canvas>';
+                }
+                const canvasEl = gi('pieChart');
+                if(pieChart && typeof pieChart.destroy === 'function') pieChart.destroy();
+                
+                pieChart = new Chart(canvasEl, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ie.map(e => e[0]),
+                        datasets: [{
+                            data: ie.map(e => e[1]),
+                            backgroundColor: ie.map(e => getColor(e[0]) + 'CC'),
+                            borderColor: ie.map(e => getColor(e[0])),
+                            borderWidth: 2,
+                            hoverOffset: 8
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'right',
+                                rtl: true,
+                                labels: { color: textColor, font: { family: 'Cairo', size: 11 }, padding: 10, usePointStyle: true }
+                            },
+                            tooltip: {
+                                rtl: true,
+                                titleFont: { family: 'Cairo' },
+                                bodyFont: { family: 'Cairo' },
+                                callbacks: { label: c => ` ${c.label}: ${fmtCur(c.parsed)}` }
+                            }
+                        },
+                        cutout: '55%',
+                        animation: { animateRotate: true, duration: 1000 }
+                    }
+                });
+            } else {
+                renderFallbackDistribution(ie, totalPaidAll);
+            }
+        }
+
+        // 2. Bar Chart: Top 10 Contractors/Suppliers
+        const bc = gi('barChart'), be = gi('barEmpty'), bContainer = gi('barChartContainer');
+        const ct = {};
+        (payments || []).forEach(p => { if(p && p.contractor) ct[p.contractor] = (ct[p.contractor] || 0) + (p.amount || 0); });
+        const ce = Object.entries(ct).sort((a,b) => b[1] - a[1]).slice(0, 10);
+        const topTotal = ce.reduce((sum, e) => sum + e[1], 0);
+
+        if(!ce.length) {
+            if(be) { be.classList.remove('hidden'); be.style.display = 'flex'; }
+            if(bContainer) { bContainer.style.display = 'none'; }
+            if(barChart && typeof barChart.destroy === 'function') { barChart.destroy(); barChart = null; }
+        } else {
+            if(be) { be.classList.add('hidden'); be.style.display = 'none'; }
+            if(bContainer) { bContainer.style.display = 'block'; }
+
+            if (hasChartJS && bc) {
+                if(!bContainer.querySelector('canvas#barChart')) {
+                    bContainer.innerHTML = '<canvas id="barChart"></canvas>';
+                }
+                const canvasEl = gi('barChart');
+                if(barChart && typeof barChart.destroy === 'function') barChart.destroy();
+                const bColors = ce.map(e => {
+                    const c = (contractors || []).find(x => x.name === e[0]);
+                    return c ? getColor(c.item) : '#3b82f6';
+                });
+
+                barChart = new Chart(canvasEl, {
+                    type: 'bar',
+                    data: {
+                        labels: ce.map(e => e[0]),
+                        datasets: [{
+                            label: 'المدفوع',
+                            data: ce.map(e => e[1]),
+                            backgroundColor: bColors.map(c => c + 'AA'),
+                            borderColor: bColors,
+                            borderWidth: 1.5,
+                            borderRadius: 6,
+                            borderSkipped: false,
+                            barPercentage: 0.7
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        indexAxis: 'y',
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                rtl: true,
+                                titleFont: { family: 'Cairo' },
+                                bodyFont: { family: 'Cairo' },
+                                callbacks: { label: c => ` ${fmtCur(c.parsed.x)}` }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: { color: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)', drawBorder: false },
+                                ticks: { color: textColor, font: { family: 'Cairo', size: 10 }, callback: v => fmtCompact(v) }
+                            },
+                            y: {
+                                grid: { display: false },
+                                ticks: { color: textColor, font: { family: 'Cairo', size: 11 } }
+                            }
+                        },
+                        animation: { duration: 1000, easing: 'easeOutQuart' }
+                    }
+                });
+            } else {
+                renderFallbackTopContractors(ce, topTotal);
+            }
+        }
+    } catch(err) {
+        console.error('renderCharts error:', err);
+        const it = {}; (payments || []).forEach(p => { if(p && p.item) it[p.item] = (it[p.item] || 0) + (p.amount || 0); });
+        const ie = Object.entries(it).sort((a,b) => b[1] - a[1]);
+        renderFallbackDistribution(ie, ie.reduce((s,e) => s + e[1], 0));
+
+        const ct = {}; (payments || []).forEach(p => { if(p && p.contractor) ct[p.contractor] = (ct[p.contractor] || 0) + (p.amount || 0); });
+        const ce = Object.entries(ct).sort((a,b) => b[1] - a[1]).slice(0, 10);
+        renderFallbackTopContractors(ce, ce.reduce((s,e) => s + e[1], 0));
+    }
 }
 
 // ========================================
