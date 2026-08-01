@@ -2684,12 +2684,13 @@ function printExtract(){
         </table>
         <table style="width:100%;border-collapse:collapse;margin-bottom:20px;">
             <thead><tr style="background:#e0e0e0;">${headers.map(h=>`<th style="${th}">${h}</th>`).join('')}</tr></thead>
-            <tbody>${ex.rows.map((r,i)=>{
+            <tbody>${([...(ex.rows||[])].sort((a,b)=>parseDateValue(a.rowDate)-parseDateValue(b.rowDate))).map((r,i)=>{
                 const tq=(r.prevQty||0)+(r.currentQty||0);
                 const rowTotal=tq*(r.price||0)*((r.itemPct||100)/100)*((r.disbursementPct||100)/100)-(r.deductions||0);
                 return `<tr>${[toAr(i+1),fmtDate(r.rowDate),r.buildingNo||'—',r.description||'—',r.unit,r.type,fmtNum(r.price),toAr(r.itemPct)+'%',fmtNum(r.prevQty||0),fmtNum(r.currentQty||0),fmtNum(tq),toAr(r.disbursementPct)+'%',fmtNum(r.deductions||0),fmtNum(rowTotal)].map(c=>`<td style="${td}">${c}</td>`).join('')}</tr>`;
-            }).join('')}</tbody>
-            <tfoot><tr style="background:#f0f0f0;font-weight:bold;"><td colspan="13" style="${th}">إجمالي المستحق للمقاول</td><td style="${th}">${fmtNum(grandTotal)}</td></tr></tfoot>
+            }).join('')}
+            <tr style="background:#f0f0f0;font-weight:bold;"><td colspan="13" style="${th}">إجمالي المستحق للمقاول</td><td style="${th}">${fmtNum(grandTotal)}</td></tr>
+            </tbody>
         </table>
         <table style="width:50%;margin:0 auto;border-collapse:collapse;font-size:14px;">
             <tr><td style="padding:10px;border:1px solid #ddd;background:#e8f5e9;font-weight:bold;">إجمالي المستحق</td><td style="padding:10px;border:1px solid #ddd;text-align:center;">${fmtCur(grandTotal)}</td></tr>
@@ -2730,12 +2731,12 @@ function buildExtractHTML(){
     html += '</table>';
     html += '<table style="width:100%;border-collapse:collapse;margin-bottom:15px;">';
     html += '<thead><tr style="background:#e0e0e0;">' + headers.map(h=>'<th style="' + th + '">' + h + '</th>').join('') + '</tr></thead>';
-    html += '<tbody>' + ex.rows.map((r,i)=>{
+    const sortedRows = [...(ex.rows||[])].sort((a,b)=>parseDateValue(a.rowDate)-parseDateValue(b.rowDate));
+    html += '<tbody>' + sortedRows.map((r,i)=>{
         const tq = (r.prevQty||0) + (r.currentQty||0);
         const rowTotal = tq * (r.price||0) * ((r.itemPct||100)/100) * ((r.disbursementPct||100)/100) - (r.deductions||0);
         return '<tr>' + [toAr(i+1),fmtDate(r.rowDate),r.buildingNo||'—',r.description||'—',r.unit,r.type,fmtNum(r.price),toAr(r.itemPct)+'%',fmtNum(r.prevQty||0),fmtNum(r.currentQty||0),fmtNum(tq),toAr(r.disbursementPct)+'%',fmtNum(r.deductions||0),fmtNum(rowTotal)].map(c=>'<td style="' + td + '">' + c + '</td>').join('') + '</tr>';
-    }).join('') + '</tbody>';
-    html += '<tfoot><tr style="background:#f0f0f0;font-weight:bold;"><td colspan="13" style="' + th + '">إجمالي المستحق للمقاول</td><td style="' + th + '">' + fmtNum(grandTotal) + '</td></tr></tfoot>';
+    }).join('') + '<tr style="background:#f0f0f0;font-weight:bold;"><td colspan="13" style="' + th + '">إجمالي المستحق للمقاول</td><td style="' + th + '">' + fmtNum(grandTotal) + '</td></tr></tbody>';
     html += '</table>';
     html += '<table style="width:50%;margin:0 auto;border-collapse:collapse;font-size:12px;">';
     html += '<tr><td style="padding:8px;border:1px solid #ddd;background:#e8f5e9;font-weight:bold;">إجمالي المستحق</td><td style="padding:8px;border:1px solid #ddd;text-align:center;">' + fmtCur(grandTotal) + '</td></tr>';
@@ -2747,9 +2748,12 @@ function buildExtractHTML(){
     return { ex, grandTotal, totalPaid, html };
 }
 
-function saveExtractPDF(){
-    printExtract();
-}
+function saveExtractPDF(){
+
+    printExtract();
+
+}
+
 
 
 function fillSupplierDD(selId,item){
@@ -3132,7 +3136,7 @@ function printSupExtract(){
         </table>
         <table style="width:100%;border-collapse:collapse;margin-bottom:20px;">
             <thead><tr style="background:#e0e0e0;">${headers.map(h=>`<th style="${th}">${h}</th>`).join('')}</tr></thead>
-            <tbody>${ex.rows.map((r,i)=>{
+            <tbody>${([...(ex.rows||[])].sort((a,b)=>parseDateValue(a.rowDate)-parseDateValue(b.rowDate))).map((r,i)=>{
                 if (isReadyMix) {
                     const rowTotal=(r.qty||0)*(r.price||0);
                     return `<tr>${[i+1, fmtDate(r.rowDate), r.element||r.description||'—', toAr(r.content||'—'), toAr(r.strength||'—'), fmtNum(r.qty||0), fmtNum(r.price||0), fmtNum(rowTotal)].map(c=>`<td style="${td}">${c}</td>`).join('')}</tr>`;
@@ -3140,8 +3144,9 @@ function printSupExtract(){
                     const rowTotal=(r.qty||0)*(r.price||0)-(r.discounts||0);
                     return `<tr>${[i+1, fmtDate(r.rowDate), r.description||'—', r.unit, r.invoiceNo||'—', fmtNum(r.qty||0), fmtNum(r.price||0), fmtNum(r.discounts||0), fmtNum(rowTotal)].map(c=>`<td style="${td}">${c}</td>`).join('')}</tr>`;
                 }
-            }).join('')}</tbody>
-            <tfoot><tr style="background:#f0f0f0;font-weight:bold;"><td colspan="${isReadyMix?7:8}" style="${th}">إجمالي المستحق للمورد</td><td style="${th}">${fmtNum(grandTotal)}</td></tr></tfoot>
+            }).join('')}
+            <tr style="background:#f0f0f0;font-weight:bold;"><td colspan="${isReadyMix?7:8}" style="${th}">إجمالي المستحق للمورد</td><td style="${th}">${fmtNum(grandTotal)}</td></tr>
+            </tbody>
         </table>
         <table style="width:50%;margin:0 auto;border-collapse:collapse;font-size:14px;">
             <tr><td style="padding:10px;border:1px solid #ddd;background:#e8f5e9;font-weight:bold;">إجمالي المستحق</td><td style="padding:10px;border:1px solid #ddd;text-align:center;">${fmtCur(grandTotal)}</td></tr>
@@ -3238,9 +3243,12 @@ window.saveExpensesPDF = saveExpensesPDF;
 
 
 
-function saveSupExtractPDF(){
-    printSupExtract();
-}
+function saveSupExtractPDF(){
+
+    printSupExtract();
+
+}
+
 
 function printExpenses(){
     const html=buildExpensesPrintHTML();
