@@ -2238,6 +2238,51 @@ function onPaymentItemFilterChange(){
 // ========================================
 // UNIFIED PRINT & SAVE AS PDF (NATIVE DIALOG FOR ALL REPORTS)
 // ========================================
+
+// ========================================
+// SEAMLESS PRINT & PRINT PREVIEW ENGINE
+// ========================================
+function printHTMLContent(html, documentTitle) {
+    let oldFrame = document.getElementById('seamlessPrintIframe');
+    if (oldFrame && oldFrame.parentNode) oldFrame.parentNode.removeChild(oldFrame);
+
+    const iframe = document.createElement('iframe');
+    iframe.id = 'seamlessPrintIframe';
+    iframe.style.position = 'fixed';
+    iframe.style.right = '0';
+    iframe.style.bottom = '0';
+    iframe.style.width = '1px';
+    iframe.style.height = '1px';
+    iframe.style.border = 'none';
+    iframe.style.opacity = '0.01';
+    iframe.style.zIndex = '-9999';
+
+    document.body.appendChild(iframe);
+
+    const doc = iframe.contentWindow.document;
+    doc.open();
+    doc.write(`<!DOCTYPE html><html dir="rtl"><head><title>${documentTitle || 'طباعة'}</title><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact;font-family:'Cairo',Tahoma,Arial,sans-serif;}table{font-size:10px;width:100%!important;border-collapse:collapse;}}body{font-family:'Cairo',Tahoma,Arial,sans-serif;}</style></head><body>${html}</body></html>`);
+    doc.close();
+
+    let printed = false;
+    const triggerPrint = () => {
+        if (printed) return;
+        printed = true;
+        try {
+            iframe.contentWindow.focus();
+            iframe.contentWindow.print();
+        } catch (e) {
+            console.error('Print iframe error:', e);
+            window.print();
+        }
+    };
+
+    iframe.onload = triggerPrint;
+    setTimeout(triggerPrint, 200);
+}
+window.printHTMLContent = printHTMLContent;
+
+
 function printPayments(){
     const itemF=gv('paymentItemFilter'),ctrF=gv('paymentContractorFilter')||'',df=gv('dateFrom'),dt=gv('dateTo');
     let fil=payments.filter(p=>(!itemF||p.item===itemF)&&(!ctrF||p.contractor===ctrF)&&(!df||p.date>=df)&&(!dt||p.date<=dt)).sort((a,b)=>{const o=gv('paymentSortOrder')||'desc';return o==='desc'?parseDateValue(b.date)-parseDateValue(a.date):parseDateValue(a.date)-parseDateValue(b.date);});
