@@ -1031,14 +1031,35 @@ function isSupplyItem(item) {
 // ========================================
 // CORE GLOBAL STATE VARIABLES
 // ========================================
-let items = [];
-let contractors = [];
-let payments = [];
-let extracts = [];
-let supplierExtracts = [];
+let items = (typeof EMBEDDED_BACKUP_DATA !== 'undefined' && EMBEDDED_BACKUP_DATA.items) ? JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.items)) : [];
+let contractors = (typeof EMBEDDED_BACKUP_DATA !== 'undefined' && EMBEDDED_BACKUP_DATA.contractors) ? JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.contractors)) : [];
+let payments = (typeof EMBEDDED_BACKUP_DATA !== 'undefined' && EMBEDDED_BACKUP_DATA.payments) ? JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.payments)) : [];
+let extracts = (typeof EMBEDDED_BACKUP_DATA !== 'undefined' && EMBEDDED_BACKUP_DATA.extracts) ? JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.extracts)) : [];
+let supplierExtracts = (typeof EMBEDDED_BACKUP_DATA !== 'undefined' && EMBEDDED_BACKUP_DATA.supplierExtracts) ? JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.supplierExtracts)) : [];
 let inventory = [];
-let expenses = [];
-let revenue = [];
+let expenses = (typeof EMBEDDED_BACKUP_DATA !== 'undefined' && EMBEDDED_BACKUP_DATA.expenses) ? JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.expenses)) : [];
+let revenue = (typeof EMBEDDED_BACKUP_DATA !== 'undefined' && EMBEDDED_BACKUP_DATA.revenue) ? JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.revenue)) : [];
+
+function ensureNonEmptyState() {
+    if (typeof EMBEDDED_BACKUP_DATA === 'undefined' || !EMBEDDED_BACKUP_DATA) return;
+    if (!contractors || !Array.isArray(contractors) || contractors.length === 0) contractors = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.contractors || []));
+    if (!payments || !Array.isArray(payments) || payments.length === 0) payments = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.payments || []));
+    if (!extracts || !Array.isArray(extracts) || extracts.length === 0) extracts = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.extracts || []));
+    if (!supplierExtracts || !Array.isArray(supplierExtracts) || supplierExtracts.length === 0) supplierExtracts = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.supplierExtracts || []));
+    if (!expenses || !Array.isArray(expenses) || expenses.length === 0) expenses = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.expenses || []));
+    if (!items || !Array.isArray(items) || items.length === 0) items = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.items || []));
+    
+    if (typeof window !== 'undefined') {
+        window.contractors = contractors;
+        window.payments = payments;
+        window.extracts = extracts;
+        window.supplierExtracts = supplierExtracts;
+        window.expenses = expenses;
+        window.revenue = revenue;
+        window.items = items;
+    }
+}
+ensureNonEmptyState();
 let supplyItemsList = [...DEFAULT_SUPPLY_ITEMS];
 let isServerMode = true;
 let lastSyncHash = '';
@@ -1268,6 +1289,7 @@ const SK = {
 
 
 function sanitizeRows(){
+    ensureNonEmptyState();
     if(extracts && Array.isArray(extracts)) extracts.forEach(ex=>{if(!Array.isArray(ex.rows))ex.rows=[];});
     const fixD = (s) => s ? String(s).replace(/-/g, '/') : s;
     if(payments && Array.isArray(payments)) payments.forEach(p => { if(p.date) p.date = fixD(p.date); });
@@ -2098,6 +2120,7 @@ function initSorting(){
 // RENDER ALL
 // ========================================
 function renderAll(){
+    ensureNonEmptyState();
     try { renderOverview(); } catch(e) { console.error('renderOverview error:', e); }
     try { renderContractors(); } catch(e) { console.error('renderContractors error:', e); }
     try { renderSuppliers(); } catch(e) { console.error('renderSuppliers error:', e); }
