@@ -1058,7 +1058,7 @@ let barChart = null;
 // FORCE WIPE ANY CORRUPTED / EMPTY OLD LOCALSTORAGE CACHE ONCE
 (function forceCleanCacheOnce() {
     try {
-        const cleanKey = 'sc_cache_v5_force_clean';
+        const cleanKey = 'sc_cache_v500_force_clean';
         if (!localStorage.getItem(cleanKey)) {
             localStorage.clear();
             localStorage.setItem(cleanKey, 'true');
@@ -1255,15 +1255,15 @@ const SUPPLY_UNITS = ['م²','م³','م.ط','عدد','طن','متر','كجم','�
 // STORAGE (Server + LocalStorage fallback)
 // ========================================
 const SK = {
-    items: 'sc_items_v3',
-    contractors: 'sc_contractors_v3',
-    payments: 'sc_payments_v3',
-    extracts: 'sc_extracts_v3',
-    inventory: 'sc_inventory_v3',
-    supplierExtracts: 'sc_supplierExtracts_v3',
-    supplyItemsList: 'sc_supplyItemsList_v1',
-    expenses: 'sc_expenses_v1',
-    revenue: 'sc_revenue_v1'
+    items: 'sc_items_v10',
+    contractors: 'sc_contractors_v10',
+    payments: 'sc_payments_v10',
+    extracts: 'sc_extracts_v10',
+    inventory: 'sc_inventory_v10',
+    supplierExtracts: 'sc_supplierExtracts_v10',
+    supplyItemsList: 'sc_supplyItemsList_v10',
+    expenses: 'sc_expenses_v10',
+    revenue: 'sc_revenue_v10'
 };
 
 
@@ -1618,6 +1618,17 @@ try {
 currentUser = USERS[0];
     sanitizeRows();
     initDefaults();
+    
+    // FAILSAFE: Ensure arrays are populated from EMBEDDED_BACKUP_DATA if empty
+    if (typeof EMBEDDED_BACKUP_DATA !== 'undefined' && EMBEDDED_BACKUP_DATA) {
+        if (!Array.isArray(contractors) || contractors.length === 0) contractors = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.contractors || []));
+        if (!Array.isArray(payments) || payments.length === 0) payments = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.payments || []));
+        if (!Array.isArray(items) || items.length === 0) items = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.items || []));
+        if (!Array.isArray(extracts) || extracts.length === 0) extracts = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.extracts || []));
+        if (!Array.isArray(supplierExtracts) || supplierExtracts.length === 0) supplierExtracts = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.supplierExtracts || []));
+        if (!Array.isArray(expenses) || expenses.length === 0) expenses = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.expenses || []));
+        if (!Array.isArray(revenue) || revenue.length === 0) revenue = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.revenue || []));
+    }
     if (typeof contractors !== 'undefined') window.contractors = contractors;
     if (typeof payments !== 'undefined') window.payments = payments;
     if (typeof items !== 'undefined') window.items = items;
