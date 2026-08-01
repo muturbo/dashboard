@@ -1275,7 +1275,17 @@ function sanitizeRows(){
     if(revenue && Array.isArray(revenue)) revenue.forEach(r => { if(r.date) r.date = fixD(r.date); });
     if(extracts && Array.isArray(extracts)) extracts.forEach(ex => {
         if(ex.date) ex.date = fixD(ex.date);
-        if(ex.rows) ex.rows.forEach(r => { if(r.rowDate) r.rowDate = fixD(r.rowDate); if(r.date) r.date = fixD(r.date); });
+        if(ex.rows) {
+            ex.rows.forEach(r => { if(r.rowDate) r.rowDate = fixD(r.rowDate); if(r.date) r.date = fixD(r.date); });
+            ex.rows.sort((a,b) => parseDateValue(a.rowDate || a.date) - parseDateValue(b.rowDate || b.date));
+        }
+    });
+    if(supplierExtracts && Array.isArray(supplierExtracts)) supplierExtracts.forEach(ex => {
+        if(ex.date) ex.date = fixD(ex.date);
+        if(ex.rows) {
+            ex.rows.forEach(r => { if(r.rowDate) r.rowDate = fixD(r.rowDate); if(r.date) r.date = fixD(r.date); });
+            ex.rows.sort((a,b) => parseDateValue(a.rowDate || a.date) - parseDateValue(b.rowDate || b.date));
+        }
     });
     if(supplierExtracts && Array.isArray(supplierExtracts)) supplierExtracts.forEach(ex => {
         if(ex.date) ex.date = fixD(ex.date);
@@ -2515,6 +2525,9 @@ function renderBalance(item,ctr){
 
 function renderExtract(){
     const ex=extracts.find(x=>x.id===currentExtractId);if(!ex)return;
+    if(Array.isArray(ex.rows)) {
+        ex.rows.sort((a,b) => parseDateValue(a.rowDate || a.date) - parseDateValue(b.rowDate || b.date));
+    }
     gi('extractNum').textContent=`مستخلص رقم ${ex.number}`;
     gi('extractContractorName').textContent=ex.contractor;
     gi('extractItemName').textContent=ex.item;
@@ -2901,6 +2914,9 @@ function isReadyMixItem(item){
 
 function renderSupExtract(){
     const ex=supplierExtracts.find(x=>x.id===currentSupExtractId);if(!ex)return;
+    if(Array.isArray(ex.rows)) {
+        ex.rows.sort((a,b) => parseDateValue(a.rowDate || a.date) - parseDateValue(b.rowDate || b.date));
+    }
     gi('supExtractNum').textContent=`مستخلص رقم ${ex.number}`;
     gi('supExtractSupplierName').textContent=ex.supplier;
     gi('supExtractItemName').textContent=ex.item;
