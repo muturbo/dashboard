@@ -8,18 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js">
-
-// EXPLICIT GLOBAL WINDOW BINDINGS FOR ALL PDF BUTTONS
-window.saveExtractPDF = saveExtractPDF;
-window.saveSupExtractPDF = saveSupExtractPDF;
-if (typeof savePaymentsPDF !== 'undefined') window.savePaymentsPDF = savePaymentsPDF;
-if (typeof saveExpensesPDF !== 'undefined') window.saveExpensesPDF = saveExpensesPDF;
-if (typeof saveRevenuePDF !== 'undefined') window.saveRevenuePDF = saveRevenuePDF;
-if (typeof saveBalancesPDF !== 'undefined') window.saveBalancesPDF = saveBalancesPDF;
-if (typeof saveStockCardPDF !== 'undefined') window.saveStockCardPDF = saveStockCardPDF;
-
-</script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="style_v4.css">
@@ -2136,6 +2125,29 @@ function renderAll(){
 // ========================================
 // OVERVIEW
 // ========================================
+function renderFinancialSummary(){
+    const ctrPay=payments.filter(p=>!isSupplyItem(p.item)).reduce((s,p)=>s+p.amount,0);
+    const supPay=payments.filter(p=>isSupplyItem(p.item)).reduce((s,p)=>s+p.amount,0);
+    const expTotal=expenses.reduce((s,e)=>s+e.amount,0);
+    const totalExpenses=ctrPay+supPay+expTotal;
+    const totalRevenue=revenue.reduce((s,r)=>s+r.amount,0);
+    const netProfit=totalRevenue-totalExpenses;
+
+    const e1=gi('sumContractorPay');if(e1)e1.textContent=fmtCur(ctrPay);
+    const e2=gi('sumSupplierPay');if(e2)e2.textContent=fmtCur(supPay);
+    const e3=gi('sumExpenses');if(e3)e3.textContent=fmtCur(expTotal);
+    const e4=gi('sumTotalExpenses');if(e4)e4.textContent=fmtCur(totalExpenses);
+    const e5=gi('sumTotalRevenue');if(e5)e5.textContent=fmtCur(totalRevenue);
+    const e6=gi('sumNetProfit');if(e6){
+        e6.textContent=fmtCur(netProfit);
+        e6.style.color=netProfit>=0?'#059669':'#e11d48';
+    }
+}
+
+function renderStatement(){
+    console.log('[DEBUG] renderStatement called');
+}
+
 function renderOverview(){
     console.log('[DEBUG] renderOverview running, contractors count:', contractors ? contractors.length : 'NULL', 'payments count:', payments ? payments.length : 'NULL');
     showSyncStatus('synced');
@@ -2295,7 +2307,17 @@ function printHTMLContent(html, documentTitle) {
 
     const doc = iframe.contentWindow.document;
     doc.open();
-    doc.write(`<!DOCTYPE html><html dir="rtl"><head><title>${documentTitle || 'طباعة'}</title><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact;font-family:'Cairo',Tahoma,Arial,sans-serif;}table{font-size:10px;width:100%!important;border-collapse:collapse;}}body{font-family:'Cairo',Tahoma,Arial,sans-serif;}</style></head><body>${html}</body></html>`);
+    doc.write(`<!DOCTYPE html><html dir="rtl"><head><title>${documentTitle || 'طباعة'}</title><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact;font-family:'Cairo',Tahoma,Arial,sans-serif;}table{font-size:10px;width:100%!important;border-collapse:collapse;}}body{font-family:'Cairo',Tahoma,Arial,sans-serif;}</style></head><body>${html}<script>
+// EXPLICIT GLOBAL WINDOW BINDINGS FOR ALL PDF BUTTONS
+if (typeof saveExtractPDF !== 'undefined') window.saveExtractPDF = saveExtractPDF;
+if (typeof saveSupExtractPDF !== 'undefined') window.saveSupExtractPDF = saveSupExtractPDF;
+if (typeof savePaymentsPDF !== 'undefined') window.savePaymentsPDF = savePaymentsPDF;
+if (typeof saveExpensesPDF !== 'undefined') window.saveExpensesPDF = saveExpensesPDF;
+if (typeof saveRevenuePDF !== 'undefined') window.saveRevenuePDF = saveRevenuePDF;
+if (typeof saveBalancesPDF !== 'undefined') window.saveBalancesPDF = saveBalancesPDF;
+if (typeof saveStockCardPDF !== 'undefined') window.saveStockCardPDF = saveStockCardPDF;
+<\/script>
+</body></html>`);
     doc.close();
 
     let printed = false;
@@ -2660,7 +2682,17 @@ function printHTMLContent(html, documentTitle) {
 
     const doc = iframe.contentWindow.document;
     doc.open();
-    doc.write(`<!DOCTYPE html><html dir="rtl"><head><title>${documentTitle || 'طباعة'}</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact;font-family:'Cairo',sans-serif;}table{font-size:10px;width:100%!important;border-collapse:collapse;}}</style></head><body>${html}</body></html>`);
+    doc.write(`<!DOCTYPE html><html dir="rtl"><head><title>${documentTitle || 'طباعة'}</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact;font-family:'Cairo',sans-serif;}table{font-size:10px;width:100%!important;border-collapse:collapse;}}</style></head><body>${html}<script>
+// EXPLICIT GLOBAL WINDOW BINDINGS FOR ALL PDF BUTTONS
+if (typeof saveExtractPDF !== 'undefined') window.saveExtractPDF = saveExtractPDF;
+if (typeof saveSupExtractPDF !== 'undefined') window.saveSupExtractPDF = saveSupExtractPDF;
+if (typeof savePaymentsPDF !== 'undefined') window.savePaymentsPDF = savePaymentsPDF;
+if (typeof saveExpensesPDF !== 'undefined') window.saveExpensesPDF = saveExpensesPDF;
+if (typeof saveRevenuePDF !== 'undefined') window.saveRevenuePDF = saveRevenuePDF;
+if (typeof saveBalancesPDF !== 'undefined') window.saveBalancesPDF = saveBalancesPDF;
+if (typeof saveStockCardPDF !== 'undefined') window.saveStockCardPDF = saveStockCardPDF;
+<\/script>
+</body></html>`);
     doc.close();
 
     setTimeout(() => {
@@ -2774,87 +2806,6 @@ function buildExtractHTML(){
 
 function saveExtractPDF(){
     printExtract();
-}
-        }
-
-        if (!cHtml) {
-            const item = (gi('extractItemSelect') ? gv('extractItemSelect') : '').trim();
-            const contractor = (gi('extractContractorSelect') ? gv('extractContractorSelect') : '').trim();
-            if (contractor && item) {
-                const cExtracts = extracts.filter(x => x.contractor === contractor && x.item === item).sort((a,b) => a.number - b.number);
-                if (cExtracts.length > 0) {
-                    let combinedRows = [];
-                    cExtracts.forEach(e => combinedRows.push(...e.rows));
-                    exObj = { number: 'تجميعي', contractor: contractor, item: item, date: today(), notes: '', rows: combinedRows };
-                    let grandTotal = 0;
-                    exObj.rows.forEach(r => {
-                        const tq = (r.prevQty||0) + (r.currentQty||0);
-                        grandTotal += tq * (r.price||0) * ((r.itemPct||100)/100) * ((r.disbursementPct||100)/100) - (r.deductions||0);
-                    });
-                    const totalPaid = payments.filter(p => p.contractor === exObj.contractor && p.item === exObj.item).reduce((s,p) => s + p.amount, 0);
-                    const fTh = 'padding:7px 6px;border:1px solid #999;text-align:center;font-size:11px;font-weight:700;';
-                    const fTd = 'padding:6px 5px;border:1px solid #ccc;text-align:center;font-size:10px;line-height:1.5;';
-                    const fHeaders = ['م','التاريخ','رقم العمارة','بيان الأعمال','الوحدة','النوع','السعر','نسبة البند %','كمية سابقة','كمية حالية','مجموع الكميات','نسبة الصرف %','الاستقطاعات','إجمالي المستحق'];
-                    const logoSrc = typeof COMPANY_LOGO !== 'undefined' ? COMPANY_LOGO : '';
-                    cHtml = '<div style="font-family:Cairo, Tahoma, Arial, sans-serif;direction:rtl;text-align:right;padding:15px;color:#222;line-height:1.6;">' +
-                        '<div style="text-align:center;margin-bottom:10px;"><img src="' + logoSrc + '" style="height:75px;" alt="logo"></div>' +
-                        '<h3 style="text-align:center;margin:0 0 4px;color:#333;font-size:14px;font-weight:700;">شركة الرحاب للمقاولات العمومية (ورثة سيد تهامي)</h3>' +
-                        '<h3 style="text-align:center;margin:0 0 6px;color:#555;font-size:13px;">المشروع : التوسعات الجنوبية</h3>' +
-                        '<h2 style="text-align:center;border-bottom:2px solid #333;padding-bottom:8px;font-size:16px;font-weight:800;">مستخلص مقاول تجميعي</h2>' +
-                        '<table style="width:100%;margin:12px 0;border-collapse:collapse;font-size:13px;">' +
-                            '<tr><td style="padding:6px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">المقاول</td><td style="padding:6px;border:1px solid #ddd;font-size:14px;font-weight:700;">' + exObj.contractor + '</td>' +
-                            '<td style="padding:6px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">البند</td><td style="padding:6px;border:1px solid #ddd;font-size:14px;font-weight:700;">' + exObj.item + '</td>' +
-                            '<td style="padding:6px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">التاريخ</td><td style="padding:6px;border:1px solid #ddd;">' + fmtDate(exObj.date) + '</td></tr>' +
-                        '</table>' +
-                        '<table style="width:100%;border-collapse:collapse;margin-bottom:15px;">' +
-                            '<thead><tr style="background:#e0e0e0;">' + fHeaders.map(h=>'<th style="' + fTh + '">' + h + '</th>').join('') + '</tr></thead>' +
-                            '<tbody>' + exObj.rows.map((r,i)=>{
-                                const tq=(r.prevQty||0)+(r.currentQty||0);
-                                const rowTotal=tq*(r.price||0)*((r.itemPct||100)/100)*((r.disbursementPct||100)/100)-(r.deductions||0);
-                                return '<tr>' + [toAr(i+1),fmtDate(r.rowDate),r.buildingNo||'—',r.description||'—',r.unit,r.type,fmtNum(r.price),toAr(r.itemPct)+'%',fmtNum(r.prevQty||0),fmtNum(r.currentQty||0),fmtNum(tq),toAr(r.disbursementPct)+'%',fmtNum(r.deductions||0),fmtNum(rowTotal)].map(c=>'<td style="' + fTd + '">' + c + '</td>').join('') + '</tr>';
-                            }).join('') + '</tbody>' +
-                            '<tfoot><tr style="background:#f0f0f0;font-weight:bold;"><td colspan="13" style="' + fTh + '">إجمالي المستحق للمقاول</td><td style="' + fTh + '">' + fmtNum(grandTotal) + '</td></tr></tfoot>' +
-                        '</table>' +
-                        '<table style="width:50%;margin:0 auto;border-collapse:collapse;font-size:12px;">' +
-                            '<tr><td style="padding:8px;border:1px solid #ddd;background:#e8f5e9;font-weight:bold;">إجمالي المستحق</td><td style="padding:8px;border:1px solid #ddd;text-align:center;">' + fmtCur(grandTotal) + '</td></tr>' +
-                            '<tr><td style="padding:8px;border:1px solid #ddd;background:#fff3e0;font-weight:bold;">إجمالي المنصرف</td><td style="padding:8px;border:1px solid #ddd;text-align:center;">' + fmtCur(totalPaid) + '</td></tr>' +
-                            '<tr><td style="padding:8px;border:1px solid #ddd;background:#e3f2fd;font-weight:bold;">صافي المستحق للمقاول</td><td style="padding:8px;border:1px solid #ddd;text-align:center;font-weight:bold;color:' + (grandTotal-totalPaid>=0?'#2e7d32':'#c62828') + ';">' + fmtCur(grandTotal-totalPaid) + '</td></tr>' +
-                        '</table></div>';
-                }
-            }
-        }
-
-        if (!cHtml) {
-            showToast('⚠️ يرجى اختيار المستخلص أولاً لتصدير PDF', 'warning');
-            return;
-        }
-
-        if (typeof html2pdf === 'undefined') {
-            printExtract();
-            return;
-        }
-
-        const container = document.createElement('div');
-        container.innerHTML = cHtml;
-        document.body.appendChild(container);
-        const fileName = exObj ? ('مستخلص_مقاول_' + exObj.number + '_' + exObj.contractor + '.pdf') : 'مستخلص_مقاول.pdf';
-        html2pdf().set({
-            margin: 5,
-            filename: fileName,
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
-        }).from(container).save().then(() => {
-            if (container.parentNode) document.body.removeChild(container);
-            showToast('✅ تم حفظ مستخلص المقاول كـ PDF بنجاح', 'success');
-        }).catch(err => {
-            if (container.parentNode) document.body.removeChild(container);
-            printExtract();
-        });
-    } catch(e) {
-        console.error('saveExtractPDF error:', e);
-        if (typeof printExtract === 'function') printExtract();
-    }
 }
 
 
@@ -3322,18 +3273,6 @@ function printExpenses(){
 function saveExpensesPDF(){
     printExpenses();
 }
-    const html = buildExpensesPrintHTML();
-    const container = document.createElement('div');
-    container.innerHTML = html;
-    document.body.appendChild(container);
-    html2pdf().set({margin:5,filename:'مصروفات_العمليات.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,useCORS:true,scrollY:0},jsPDF:{unit:'mm',format:'a4',orientation:'landscape'}}).from(container).save().then(() => {
-        if (container.parentNode) document.body.removeChild(container);
-    }).catch(() => {
-        if (container.parentNode) document.body.removeChild(container);
-        printExpenses();
-    });
-}
-
 window.submitAddExpense = submitAddExpense;
 window.renderExpenses = renderExpenses;
 window.confirmDeleteExpense = confirmDeleteExpense;
@@ -3347,84 +3286,6 @@ window.saveExpensesPDF = saveExpensesPDF;
 
 function saveSupExtractPDF(){
     printSupExtract();
-};
-                isCombined = true;
-            }
-        }
-        if(!ex) {
-            showToast('⚠️ يرجى اختيار المورد والبند لعرض المستخلص أولاً', 'warning');
-            return;
-        }
-
-        if (typeof html2pdf === 'undefined') {
-            printSupExtract();
-            return;
-        }
-
-        const isReadyMix = isReadyMixItem(ex.item);
-        let grandTotal = 0;
-        ex.rows.forEach(r => {
-            grandTotal += isReadyMix ? (r.qty||0)*(r.price||0) : (r.qty||0)*(r.price||0)-(r.discounts||0);
-        });
-        const totalPaid = payments.filter(p => p.contractor === ex.supplier && p.item === ex.item).reduce((s,p) => s + p.amount, 0);
-        const fTh = 'padding:6px;border:1px solid #bbb;text-align:center;font-size:11px;';
-        const fTd = 'padding:5px;border:1px solid #ddd;text-align:center;font-size:10px;';
-
-        const headers = isReadyMix ?
-            ['م','تاريخ الصب','العنصر','المحتوى','الجهد','الكمية','السعر','القيمة'] :
-            ['م','التاريخ','البيان','الوحدة','رقم الفاتورة','الكمية','السعر','خصومات','إجمالي المستحق'];
-        const logoSrc = typeof COMPANY_LOGO !== 'undefined' ? COMPANY_LOGO : '';
-        
-        let pdfHtml = '<div style="font-family:Cairo, Tahoma, Arial, sans-serif;direction:rtl;text-align:right;padding:15px;color:#222;line-height:1.6;">';
-        pdfHtml += '<div style="text-align:center;margin-bottom:10px;"><img src="' + logoSrc + '" style="height:75px;" alt="logo"></div>';
-        pdfHtml += '<h3 style="text-align:center;margin:0 0 4px;color:#333;font-size:14px;font-weight:700;">شركة الرحاب للمقاولات العمومية <span dir="rtl" style="unicode-bidi: isolate;">(ورثة سيد تهامي)</span></h3>';
-        pdfHtml += '<h3 style="text-align:center;margin:0 0 6px;color:#555;font-size:13px;">المشروع : التوسعات الجنوبية</h3>';
-        pdfHtml += '<h2 style="text-align:center;border-bottom:2px solid #333;padding-bottom:8px;font-size:16px;font-weight:800;">مستخلص مورد ' + (isCombined?'تجميعي':'رقم '+ex.number) + '</h2>';
-        pdfHtml += '<table style="width:100%;margin:12px 0;border-collapse:collapse;font-size:13px;">';
-        pdfHtml += '<tr><td style="padding:6px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">المورد</td><td style="padding:6px;border:1px solid #ddd;font-size:14px;font-weight:700;">' + ex.supplier + '</td>';
-        pdfHtml += '<td style="padding:6px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">البند</td><td style="padding:6px;border:1px solid #ddd;font-size:14px;font-weight:700;">' + ex.item + '</td>';
-        pdfHtml += '<td style="padding:6px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">التاريخ</td><td style="padding:6px;border:1px solid #ddd;">' + fmtDate(ex.date) + '</td></tr>';
-        pdfHtml += '</table>';
-        pdfHtml += '<table style="width:100%;border-collapse:collapse;margin-bottom:15px;">';
-        pdfHtml += '<thead><tr style="background:#e0e0e0;">' + headers.map(h=>'<th style="' + fTh + '">' + h + '</th>').join('') + '</tr></thead>';
-        pdfHtml += '<tbody>' + ex.rows.map((r,i)=>{
-            if (isReadyMix) {
-                const rowTotal=(r.qty||0)*(r.price||0);
-                return '<tr>' + [i+1, fmtDate(r.rowDate), r.element||r.description||'—', toAr(r.content||'—'), toAr(r.strength||'—'), fmtNum(r.qty||0), fmtNum(r.price||0), fmtNum(rowTotal)].map(c=>'<td style="' + fTd + '">' + c + '</td>').join('') + '</tr>';
-            } else {
-                const rowTotal=(r.qty||0)*(r.price||0)-(r.discounts||0);
-                return '<tr>' + [i+1, fmtDate(r.rowDate), r.description||'—', r.unit, r.invoiceNo||'—', fmtNum(r.qty||0), fmtNum(r.price||0), fmtNum(r.discounts||0), fmtNum(rowTotal)].map(c=>'<td style="' + fTd + '">' + c + '</td>').join('') + '</tr>';
-            }
-        }).join('') + '</tbody>';
-        pdfHtml += '<tfoot><tr style="background:#f0f0f0;font-weight:bold;"><td colspan="' + (isReadyMix?7:8) + '" style="' + fTh + '">إجمالي المستحق للمورد</td><td style="' + fTh + '">' + fmtNum(grandTotal) + '</td></tr></tfoot>';
-        pdfHtml += '</table>';
-        pdfHtml += '<table style="width:50%;margin:0 auto;border-collapse:collapse;font-size:12px;">';
-        pdfHtml += '<tr><td style="padding:8px;border:1px solid #ddd;background:#e8f5e9;font-weight:bold;">إجمالي المستحق</td><td style="padding:8px;border:1px solid #ddd;text-align:center;">' + fmtCur(grandTotal) + '</td></tr>';
-        pdfHtml += '<tr><td style="padding:8px;border:1px solid #ddd;background:#fff3e0;font-weight:bold;">إجمالي المنصرف</td><td style="padding:8px;border:1px solid #ddd;text-align:center;">' + fmtCur(totalPaid) + '</td></tr>';
-        pdfHtml += '<tr><td style="padding:8px;border:1px solid #ddd;background:#e3f2fd;font-weight:bold;">الباقي للمورد</td><td style="padding:8px;border:1px solid #ddd;text-align:center;font-weight:bold;">' + fmtCur(grandTotal-totalPaid) + '</td></tr>';
-        pdfHtml += '</table></div>';
-
-        const container = document.createElement('div');
-        container.innerHTML = pdfHtml;
-        document.body.appendChild(container);
-        const fileName = 'مستخلص_مورد_' + ex.number + '_' + ex.supplier + '.pdf';
-        html2pdf().set({
-            margin: 5,
-            filename: fileName,
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
-        }).from(container).save().then(() => {
-            if (container.parentNode) document.body.removeChild(container);
-            showToast('✅ تم حفظ مستخلص المورد كـ PDF بنجاح', 'success');
-        }).catch(err => {
-            if (container.parentNode) document.body.removeChild(container);
-            printSupExtract();
-        });
-    } catch(e) {
-        console.error('saveSupExtractPDF error:', e);
-        if (typeof printSupExtract === 'function') printSupExtract();
-    }
 }
 
 function printExpenses(){
@@ -3434,13 +3295,22 @@ function printExpenses(){
 function _old_printExpenses(){
     const w=window.open('','_blank','width=1100,height=700');
     w.document.write(`<html dir="rtl"><head><title>\u0645\u0635\u0631\u0648\u0641\u0627\u062a \u0627\u0644\u0639\u0645\u0644\u064a\u0627\u062a</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact}}</style></head><body>${html}<script>setTimeout(()=>window.print(),500)<\/script>
-<script>setTimeout(()=>window.print(),500)<\/script></body></html>`);
+<script>setTimeout(()=>window.print(),500)<\/script><script>
+// EXPLICIT GLOBAL WINDOW BINDINGS FOR ALL PDF BUTTONS
+if (typeof saveExtractPDF !== 'undefined') window.saveExtractPDF = saveExtractPDF;
+if (typeof saveSupExtractPDF !== 'undefined') window.saveSupExtractPDF = saveSupExtractPDF;
+if (typeof savePaymentsPDF !== 'undefined') window.savePaymentsPDF = savePaymentsPDF;
+if (typeof saveExpensesPDF !== 'undefined') window.saveExpensesPDF = saveExpensesPDF;
+if (typeof saveRevenuePDF !== 'undefined') window.saveRevenuePDF = saveRevenuePDF;
+if (typeof saveBalancesPDF !== 'undefined') window.saveBalancesPDF = saveBalancesPDF;
+if (typeof saveStockCardPDF !== 'undefined') window.saveStockCardPDF = saveStockCardPDF;
+<\/script>
+</body></html>`);
     w.document.close();
 }
 
 function saveExpensesPDF(){
     printExpenses();
-},html2canvas:{scale:2,useCORS:true,scrollY:0},jsPDF:{unit:'mm',format:'a4',orientation:'landscape'}}).from(container).save().then(()=>document.body.removeChild(container));
 }
 
 // ========================================
@@ -3497,46 +3367,22 @@ function printRevenue(){
 function _old_printRevenue(){
     const w=window.open('','_blank','width=1100,height=700');
     w.document.write(`<html dir="rtl"><head><title>\u0625\u064a\u0631\u0627\u062f\u0627\u062a \u0627\u0644\u0645\u0634\u0631\u0648\u0639</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact}}</style></head><body>${html}<script>setTimeout(()=>window.print(),500)<\/script>
-<script>setTimeout(()=>window.print(),500)<\/script></body></html>`);
+<script>setTimeout(()=>window.print(),500)<\/script><script>
+// EXPLICIT GLOBAL WINDOW BINDINGS FOR ALL PDF BUTTONS
+if (typeof saveExtractPDF !== 'undefined') window.saveExtractPDF = saveExtractPDF;
+if (typeof saveSupExtractPDF !== 'undefined') window.saveSupExtractPDF = saveSupExtractPDF;
+if (typeof savePaymentsPDF !== 'undefined') window.savePaymentsPDF = savePaymentsPDF;
+if (typeof saveExpensesPDF !== 'undefined') window.saveExpensesPDF = saveExpensesPDF;
+if (typeof saveRevenuePDF !== 'undefined') window.saveRevenuePDF = saveRevenuePDF;
+if (typeof saveBalancesPDF !== 'undefined') window.saveBalancesPDF = saveBalancesPDF;
+if (typeof saveStockCardPDF !== 'undefined') window.saveStockCardPDF = saveStockCardPDF;
+<\/script>
+</body></html>`);
     w.document.close();
 }
 
 function saveRevenuePDF(){
     printRevenue();
-},html2canvas:{scale:2,useCORS:true,scrollY:0},jsPDF:{unit:'mm',format:'a4',orientation:'landscape'}}).from(container).save().then(()=>document.body.removeChild(container));
-}
-
-// ========================================
-// FINANCIAL SUMMARY (الملخص المالي الشامل)
-// ========================================
-
-
-function renderFinancialSummary(){
-    const ctrPay=payments.filter(p=>!isSupplyItem(p.item)).reduce((s,p)=>s+p.amount,0);
-    const supPay=payments.filter(p=>isSupplyItem(p.item)).reduce((s,p)=>s+p.amount,0);
-    const expTotal=expenses.reduce((s,e)=>s+e.amount,0);
-    const totalExpenses=ctrPay+supPay+expTotal;
-    const totalRevenue=revenue.reduce((s,r)=>s+r.amount,0);
-    const net=totalRevenue-totalExpenses;
-
-    const set=(id,val)=>{const el=gi(id);if(el)el.textContent=fmtCur(val);};
-    set('sumContractorPay',ctrPay);
-    set('sumSupplierPay',supPay);
-    set('sumExpenses',expTotal);
-    set('sumTotalExpenses',totalExpenses);
-    set('sumTotalRevenue',totalRevenue);
-
-    const netEl=gi('sumNetProfit');
-    if(netEl){
-        netEl.textContent=fmtCur(Math.abs(net));
-        if(net>=0){
-            netEl.style.color='#059669';
-            netEl.textContent=fmtCur(net)+' \u2705';
-        } else {
-            netEl.style.color='#e11d48';
-            netEl.textContent='- '+fmtCur(Math.abs(net))+' \u274c';
-        }
-    }
 }
 
 // ========================================
@@ -4292,7 +4138,17 @@ function printStockCard() {
 
     const w=window.open('','_blank','width=1100,height=700');
     w.document.write(`<html dir="rtl"><head><title>كارت صنف - ${prod.productName}</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact}table{font-size:10px;width:100%!important}}</style></head><body>${html}<script>setTimeout(()=>window.print(),500)<\/script>
-<script>setTimeout(()=>window.print(),500)<\/script></body></html>`);
+<script>setTimeout(()=>window.print(),500)<\/script><script>
+// EXPLICIT GLOBAL WINDOW BINDINGS FOR ALL PDF BUTTONS
+if (typeof saveExtractPDF !== 'undefined') window.saveExtractPDF = saveExtractPDF;
+if (typeof saveSupExtractPDF !== 'undefined') window.saveSupExtractPDF = saveSupExtractPDF;
+if (typeof savePaymentsPDF !== 'undefined') window.savePaymentsPDF = savePaymentsPDF;
+if (typeof saveExpensesPDF !== 'undefined') window.saveExpensesPDF = saveExpensesPDF;
+if (typeof saveRevenuePDF !== 'undefined') window.saveRevenuePDF = saveRevenuePDF;
+if (typeof saveBalancesPDF !== 'undefined') window.saveBalancesPDF = saveBalancesPDF;
+if (typeof saveStockCardPDF !== 'undefined') window.saveStockCardPDF = saveStockCardPDF;
+<\/script>
+</body></html>`);
     w.document.close();
 }
 
@@ -5195,6 +5051,16 @@ if (document.readyState === 'loading') {
 
 
 
+</script>
+<script>
+// EXPLICIT GLOBAL WINDOW BINDINGS FOR ALL PDF BUTTONS
+if (typeof saveExtractPDF !== 'undefined') window.saveExtractPDF = saveExtractPDF;
+if (typeof saveSupExtractPDF !== 'undefined') window.saveSupExtractPDF = saveSupExtractPDF;
+if (typeof savePaymentsPDF !== 'undefined') window.savePaymentsPDF = savePaymentsPDF;
+if (typeof saveExpensesPDF !== 'undefined') window.saveExpensesPDF = saveExpensesPDF;
+if (typeof saveRevenuePDF !== 'undefined') window.saveRevenuePDF = saveRevenuePDF;
+if (typeof saveBalancesPDF !== 'undefined') window.saveBalancesPDF = saveBalancesPDF;
+if (typeof saveStockCardPDF !== 'undefined') window.saveStockCardPDF = saveStockCardPDF;
 </script>
 </body>
 
