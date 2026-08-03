@@ -1768,21 +1768,27 @@ function populateDropdowns(){
     const allSels=['paymentItem','paymentItemFilter','statementItem'];
     allSels.forEach(id=>{
         const s=document.getElementById(id); if(!s)return;
-        const f=s.options[0]; s.innerHTML=''; s.appendChild(f);
+        const savedVal = s.value;
+        const f=s.options[0]; s.innerHTML=''; if(f) s.appendChild(f);
         items.forEach(it=>{const o=document.createElement('option');o.value=it;o.textContent=it;s.appendChild(o);});
+        if(savedVal && [...s.options].some(o => o.value === savedVal)) s.value = savedVal;
     });
     // Contractor-only items
     const ctrSels=['itemFilter','addContractorItem','extractItemSelect'];
     ctrSels.forEach(id=>{
         const s=document.getElementById(id); if(!s)return;
-        const f=s.options[0]; s.innerHTML=''; s.appendChild(f);
+        const savedVal = s.value;
+        const f=s.options[0]; s.innerHTML=''; if(f) s.appendChild(f);
         items.filter(i=>!isSupplyItem(i)).forEach(it=>{const o=document.createElement('option');o.value=it;o.textContent=it;s.appendChild(o);});
+        if(savedVal && [...s.options].some(o => o.value === savedVal)) s.value = savedVal;
     });
     initDropdownListeners();
     populateSupplyDropdowns();
     populateInventoryDropdowns();
 }
 function initDropdownListeners(){
+    if (window._dropdownListenersInited) return;
+    window._dropdownListenersInited = true;
     const bind=(selId,evt,handler)=>{const el=document.getElementById(selId);if(el)el.addEventListener(evt,handler);};
     bind('paymentItem','change',e=>fillContractorDD('paymentContractor',e.target.value));
     bind('statementItem','change',e=>{fillContractorDD('statementContractor',e.target.value);hide('statementContent');show('noStatementSelected');hide('printStatement');});
@@ -1801,12 +1807,15 @@ function initDropdownListeners(){
     bind('extractNumberSelect','change',onExtractNumberChange);
 }
 function fillContractorDD(selId,item){
+    const s=gi(selId);if(!s)return;
+    const savedVal = s.value;
     const label=isSupplyItem(item)?'المورد':'المقاول';
-    const s=document.getElementById(selId);if(!s)return;
     s.innerHTML=`<option value="">اختر ${label}...</option>`;
     if(!item){s.disabled=true;return;}
-    contractors.filter(c=>c.item===item).forEach(c=>{const o=document.createElement('option');o.value=c.name;o.textContent=c.name;s.appendChild(o);});
+    const names=[...new Set(contractors.filter(c=>c.item===item).map(c=>c.name))];
+    names.sort().forEach(name=>{const o=document.createElement('option');o.value=name;o.textContent=name;s.appendChild(o);});
     s.disabled=false;
+    if(savedVal && [...s.options].some(o => o.value === savedVal)) s.value = savedVal;
 }
 
 // ========================================
@@ -2882,6 +2891,7 @@ function saveExtractPDF(){
 
 function fillSupplierDD(selId,item){
     const s=gi(selId);if(!s)return;
+    const savedVal = s.value;
     s.innerHTML='<option value="">اختر المورد...</option>';
     if(!item){s.disabled=true;return;}
     const trimmedItem = String(item).trim();
@@ -2896,6 +2906,7 @@ function fillSupplierDD(selId,item){
         const o=document.createElement('option');o.value=name;o.textContent=name;s.appendChild(o);
     });
     s.disabled=false;
+    if(savedVal && [...s.options].some(o => o.value === savedVal)) s.value = savedVal;
 }
 
 
