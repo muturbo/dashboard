@@ -1830,18 +1830,18 @@ function initForms(){
             defaultDate: new Date()
         });
     }
-    document.getElementById('paymentForm').addEventListener('submit',submitPayment);
+    
     document.getElementById('paymentDate').value=today();
-    document.getElementById('addContractorForm').addEventListener('submit',submitAddContractor);
-    document.getElementById('addItemForm').addEventListener('submit',submitAddItem);
-    document.getElementById('editContractorForm').addEventListener('submit',submitEditContractor);
-    document.getElementById('editItemForm').addEventListener('submit',submitEditItem);
-    document.getElementById('newExtractForm').addEventListener('submit',submitNewExtract);
-    const addSupForm=document.getElementById('addSupplierForm');if(addSupForm)addSupForm.addEventListener('submit',submitAddSupplier);
-    const addSIForm=document.getElementById('addSupplyItemForm');if(addSIForm)addSIForm.addEventListener('submit',submitAddSupplyItem);
-    const addPF=document.getElementById('addProductForm');if(addPF)addPF.addEventListener('submit',submitAddProduct);
-    const addMF=document.getElementById('addMovementForm');if(addMF)addMF.addEventListener('submit',submitAddMovement);
-    const editPF=document.getElementById('editPaymentForm');if(editPF)editPF.addEventListener('submit',submitEditPayment);
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 }
 
 function submitPayment(e){
@@ -2724,6 +2724,10 @@ function openNewExtractModal(){
     gi('newExtractDate').value=today();openModal('newExtractModal');
 }
 function submitNewExtract(e){
+    if (e && e.preventDefault) e.preventDefault();
+    if (window._submittingExtractLock) return;
+    window._submittingExtractLock = true;
+    setTimeout(() => { window._submittingExtractLock = false; }, 600);
     e.preventDefault();
     const item=gv('extractItemSelect'),ctr=gv('extractContractorSelect'),date=gv('newExtractDate'),notes=gv('newExtractNotes').trim();
     const cExtracts=extracts.filter(ex=>ex.contractor===ctr&&ex.item===item);
@@ -3214,6 +3218,10 @@ function openNewSupExtractModal(){
     gi('newSupExtractDate').value=today();openModal('newSupExtractModal');
 }
 function submitNewSupExtract(e){
+    if (e && e.preventDefault) e.preventDefault();
+    if (window._submittingSupExtractLock) return;
+    window._submittingSupExtractLock = true;
+    setTimeout(() => { window._submittingSupExtractLock = false; }, 600);
     e.preventDefault();
     const item=gv('supExtractItemSelect'),sup=gv('supExtractSupplierSelect'),date=gv('newSupExtractDate'),notes=gv('newSupExtractNotes').trim();
     const sExtracts=supplierExtracts.filter(ex=>ex.supplier===sup&&ex.item===item);
