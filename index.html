@@ -2262,17 +2262,17 @@ function buildPaymentsPrintHTML(){
     const itemF=gv('paymentItemFilter'),ctrF=gv('paymentContractorFilter')||'',df=gv('dateFrom'),dt=gv('dateTo');
     let fil=payments.filter(p=>(!itemF||p.item===itemF)&&(!ctrF||p.contractor===ctrF)&&(!df||p.date>=df)&&(!dt||p.date<=dt)).sort((a,b)=>{const o=gv('paymentSortOrder')||'desc';return o==='desc'?parseDateValue(b.date)-parseDateValue(a.date):parseDateValue(a.date)-parseDateValue(b.date);});
     const total=fil.reduce((s,p)=>s+p.amount,0);
-    const th='padding:6px;border:1px solid #bbb;text-align:center;font-size:11px;font-weight:700;';
-    const td='padding:5px;border:1px solid #ddd;text-align:center;font-size:10px;';
+    const th='padding:3px 5px;border:1px solid #999;text-align:center;font-size:11px;font-weight:700;';
+    const td='padding:2.5px 4px;border:1px solid #ccc;text-align:center;font-size:10px;';
     const title=ctrF?`كشف دفعات - ${ctrF}`+(itemF?` (${itemF})`:''):itemF?`كشف دفعات - ${itemF}`:'كشف جميع الدفعات';
     const logoSrc = typeof COMPANY_LOGO !== 'undefined' ? COMPANY_LOGO : '';
     
     let html = `<div style="font-family:Cairo,sans-serif;direction:rtl;padding:20px;color:#333;">
-        <div style="text-align:center;margin-bottom:10px;"><img src="${logoSrc}" style="height:80px;" alt="logo"></div>
+        <div style="text-align:center;margin-bottom:10px;"><img src="${logoSrc}" style="height:45px;" alt="logo"></div>
         <h3 style="text-align:center;margin:0 0 2px;color:#555;font-size:15px;">شركة الرحاب للمقاولات العموميه (ورثة سيد تهامى)</h3>
         <h3 style="text-align:center;margin:0 0 5px;color:#555;font-size:13px;">المشروع : التوسعات الجنوبيه</h3>
         <h2 style="text-align:center;border-bottom:3px solid #333;padding-bottom:10px;font-size:16px;">${title}</h2>
-        <table style="width:100%;border-collapse:collapse;margin:20px 0;">
+        <table style="width:100%;border-collapse:collapse;margin:6px 0;">
             <thead><tr style="background:#e0e0e0;">${['م','المقاول/المورد','البند','المبلغ','التاريخ','المرجع','ملاحظات'].map(h=>`<th style="${th}">${h}</th>`).join('')}</tr></thead>
             <tbody>${fil.map((p,i)=>`<tr>${[toAr(i+1),p.contractor,p.item,fmtCur(p.amount),fmtDate(p.date),p.checkNo?toAr(p.checkNo):'—',p.notes||'—'].map(c=>`<td style="${td}">${c}</td>`).join('')}</tr>`).join('')}</tbody>
             <tfoot><tr style="background:#f0f0f0;font-weight:bold;"><td colspan="3" style="${th}">إجمالي الدفعات</td><td style="${th}">${fmtCur(total)}</td><td colspan="3" style="${th}">${toAr(fil.length)} دفعة</td></tr></tfoot>
@@ -2351,7 +2351,7 @@ function printHTMLContent(html, documentTitle) {
 
     const doc = iframe.contentWindow.document;
     doc.open();
-    doc.write(`<!DOCTYPE html><html dir="rtl"><head><title>${documentTitle || 'طباعة'}</title><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact;font-family:'Cairo',Tahoma,Arial,sans-serif;}table{font-size:10px;width:100%!important;border-collapse:collapse;}}body{font-family:'Cairo',Tahoma,Arial,sans-serif;}</style></head><body>${html}<script>
+    doc.write(`<!DOCTYPE html><html dir="rtl"><head><title>${documentTitle || 'طباعة'}</title><style>@page{size:landscape;margin:4mm 6mm 4mm 6mm}@media print{body{margin:0;-webkit-print-color-adjust:exact;font-family:'Cairo',sans-serif;}table{width:100%!important;border-collapse:collapse;page-break-inside:auto;margin-top:4px!important;margin-bottom:4px!important;}tr{page-break-inside:avoid;page-break-after:auto;}thead{display:table-header-group;}tfoot{display:table-footer-group;}th{padding:3px 5px!important;font-size:10px!important;font-weight:700!important;background:#e0e0e0!important;border:1px solid #888!important;}td{padding:2.5px 4px!important;font-size:9px!important;border:1px solid #bbb!important;line-height:1.15!important;}}</style></head><body>${html}<script>
 // EXPLICIT GLOBAL WINDOW BINDINGS FOR ALL PDF BUTTONS
 if (typeof saveExtractPDF !== 'undefined') window.saveExtractPDF = saveExtractPDF;
 if (typeof saveSupExtractPDF !== 'undefined') window.saveSupExtractPDF = saveSupExtractPDF;
@@ -2812,7 +2812,7 @@ function printHTMLContent(html, documentTitle) {
 
     const doc = iframe.contentWindow.document;
     doc.open();
-    doc.write(`<!DOCTYPE html><html dir="rtl"><head><title>${documentTitle || 'طباعة'}</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact;font-family:'Cairo',sans-serif;}table{font-size:10px;width:100%!important;border-collapse:collapse;}}</style></head><body>${html}<script>
+    doc.write(`<!DOCTYPE html><html dir="rtl"><head><title>${documentTitle || 'طباعة'}</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:4mm 6mm 4mm 6mm}@media print{body{margin:0;-webkit-print-color-adjust:exact;font-family:'Cairo',sans-serif;}table{width:100%!important;border-collapse:collapse;page-break-inside:auto;margin-top:4px!important;margin-bottom:4px!important;}tr{page-break-inside:avoid;page-break-after:auto;}thead{display:table-header-group;}tfoot{display:table-footer-group;}th{padding:3px 5px!important;font-size:10px!important;font-weight:700!important;background:#e0e0e0!important;border:1px solid #888!important;}td{padding:2.5px 4px!important;font-size:9px!important;border:1px solid #bbb!important;line-height:1.15!important;}}</style></head><body>${html}<script>
 // EXPLICIT GLOBAL WINDOW BINDINGS FOR ALL PDF BUTTONS
 if (typeof saveExtractPDF !== 'undefined') window.saveExtractPDF = saveExtractPDF;
 if (typeof saveSupExtractPDF !== 'undefined') window.saveSupExtractPDF = saveSupExtractPDF;
@@ -2943,17 +2943,17 @@ function printExtract(){
         grandTotal+=tq*(r.price||0)*((r.itemPct||100)/100)*((r.disbursementPct||100)/100)-(r.deductions||0);
     });
     const totalPaid=payments.filter(p=>p.contractor===ex.contractor&&p.item===ex.item).reduce((s,p)=>s+p.amount,0);
-    const th='padding:8px;border:1px solid #bbb;text-align:center;font-size:12px;';
-    const td='padding:6px;border:1px solid #ddd;text-align:center;font-size:11px;';
+    const th='padding:3px 5px;border:1px solid #999;text-align:center;font-size:12px;';
+    const td='padding:2.5px 4px;border:1px solid #ccc;text-align:center;font-size:11px;';
     const headers=['م','التاريخ','رقم العمارة','بيان الأعمال','الوحدة','النوع','السعر','نسبة البند%','كمية سابقة','كمية حالية','مجموع الكميات','نسبة الصرف%','الاستقطاعات','إجمالي المستحق'];
-    const html=`<div style="font-family:Cairo,sans-serif;direction:rtl;padding:20px;color:#333;"><div style="text-align:center;margin-bottom:10px;"><img src="${COMPANY_LOGO}" style="height:80px;" alt="logo"></div>
+    const html=`<div style="font-family:Cairo,sans-serif;direction:rtl;padding:20px;color:#333;"><div style="text-align:center;margin-bottom:10px;"><img src="${COMPANY_LOGO}" style="height:45px;" alt="logo"></div>
         <h2 style="text-align:center;margin:0 0 2px;color:#555;font-size:15px;">شركة الرحاب للمقاولات العمومية (ورثة سيد تهامي)</h2>
         <h2 style="text-align:center;margin:0 0 5px;color:#555;">المشروع : التوسعات الجنوبيه</h2>
         <h1 style="text-align:center;border-bottom:3px solid #333;padding-bottom:10px;">مستخلص رقم ${ex.number}</h1>
-        <table style="width:100%;margin:20px 0;border-collapse:collapse;font-size:16px;">
-            <tr><td style="padding:10px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">المقاول</td><td style="padding:10px;border:1px solid #ddd;font-size:18px;font-weight:700;">${ex.contractor}</td>
-            <td style="padding:10px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">البند</td><td style="padding:10px;border:1px solid #ddd;font-size:18px;font-weight:700;">${ex.item}</td>
-            <td style="padding:10px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">التاريخ</td><td style="padding:10px;border:1px solid #ddd;">${fmtDate(ex.date)}</td></tr>
+        <table style="width:100%;margin:6px 0;border-collapse:collapse;font-size:16px;">
+            <tr><td style="padding:4px 6px;border:1px solid #ccc;background:#f5f5f5;font-weight:bold;">المقاول</td><td style="padding:4px 6px;border:1px solid #ccc;font-size:18px;font-weight:700;">${ex.contractor}</td>
+            <td style="padding:4px 6px;border:1px solid #ccc;background:#f5f5f5;font-weight:bold;">البند</td><td style="padding:4px 6px;border:1px solid #ccc;font-size:18px;font-weight:700;">${ex.item}</td>
+            <td style="padding:4px 6px;border:1px solid #ccc;background:#f5f5f5;font-weight:bold;">التاريخ</td><td style="padding:4px 6px;border:1px solid #ccc;">${fmtDate(ex.date)}</td></tr>
         </table>
         <table style="width:100%;border-collapse:collapse;margin-bottom:20px;">
             <thead><tr style="background:#e0e0e0;">${headers.map(h=>`<th style="${th}">${h}</th>`).join('')}</tr></thead>
@@ -2965,9 +2965,9 @@ function printExtract(){
             <tfoot><tr style="background:#f0f0f0;font-weight:bold;"><td colspan="13" style="${th}">إجمالي المستحق للمقاول</td><td style="${th}">${fmtNum(grandTotal)}</td></tr></tfoot>
         </table>
         <table style="width:50%;margin:0 auto;border-collapse:collapse;font-size:14px;">
-            <tr><td style="padding:10px;border:1px solid #ddd;background:#e8f5e9;font-weight:bold;">إجمالي المستحق</td><td style="padding:10px;border:1px solid #ddd;text-align:center;">${fmtCur(grandTotal)}</td></tr>
-            <tr><td style="padding:10px;border:1px solid #ddd;background:#fff3e0;font-weight:bold;">إجمالي المنصرف</td><td style="padding:10px;border:1px solid #ddd;text-align:center;">${fmtCur(totalPaid)}</td></tr>
-            <tr><td style="padding:10px;border:1px solid #ddd;background:#e3f2fd;font-weight:bold;">الباقي للمقاول</td><td style="padding:10px;border:1px solid #ddd;text-align:center;font-weight:bold;">${fmtCur(grandTotal-totalPaid)}</td></tr>
+            <tr><td style="padding:4px 6px;border:1px solid #ccc;background:#e8f5e9;font-weight:bold;">إجمالي المستحق</td><td style="padding:4px 6px;border:1px solid #ccc;text-align:center;">${fmtCur(grandTotal)}</td></tr>
+            <tr><td style="padding:4px 6px;border:1px solid #ccc;background:#fff3e0;font-weight:bold;">إجمالي المنصرف</td><td style="padding:4px 6px;border:1px solid #ccc;text-align:center;">${fmtCur(totalPaid)}</td></tr>
+            <tr><td style="padding:4px 6px;border:1px solid #ccc;background:#e3f2fd;font-weight:bold;">الباقي للمقاول</td><td style="padding:4px 6px;border:1px solid #ccc;text-align:center;font-weight:bold;">${fmtCur(grandTotal-totalPaid)}</td></tr>
         </table>
         ${ex.notes?`<p style="margin-top:16px;padding:10px;background:#f5f5f5;border-radius:8px;"><strong>ملاحظات:</strong> ${ex.notes}</p>`:''}
     </div>`;
@@ -2997,9 +2997,9 @@ function buildExtractHTML(){
     html += '<h3 style="text-align:center;margin:0 0 6px;color:#555;font-size:13px;">المشروع : التوسعات الجنوبية</h3>';
     html += '<h2 style="text-align:center;border-bottom:2px solid #333;padding-bottom:8px;font-size:16px;font-weight:800;">مستخلص رقم ' + ex.number + '</h2>';
     html += '<table style="width:100%;margin:12px 0;border-collapse:collapse;font-size:13px;">';
-    html += '<tr><td style="padding:6px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">المقاول</td><td style="padding:6px;border:1px solid #ddd;font-size:14px;font-weight:700;">' + ex.contractor + '</td>';
-    html += '<td style="padding:6px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">البند</td><td style="padding:6px;border:1px solid #ddd;font-size:14px;font-weight:700;">' + ex.item + '</td>';
-    html += '<td style="padding:6px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">التاريخ</td><td style="padding:6px;border:1px solid #ddd;">' + fmtDate(ex.date) + '</td></tr>';
+    html += '<tr><td style="padding:2.5px 4px;border:1px solid #ccc;background:#f5f5f5;font-weight:bold;">المقاول</td><td style="padding:2.5px 4px;border:1px solid #ccc;font-size:14px;font-weight:700;">' + ex.contractor + '</td>';
+    html += '<td style="padding:2.5px 4px;border:1px solid #ccc;background:#f5f5f5;font-weight:bold;">البند</td><td style="padding:2.5px 4px;border:1px solid #ccc;font-size:14px;font-weight:700;">' + ex.item + '</td>';
+    html += '<td style="padding:2.5px 4px;border:1px solid #ccc;background:#f5f5f5;font-weight:bold;">التاريخ</td><td style="padding:2.5px 4px;border:1px solid #ccc;">' + fmtDate(ex.date) + '</td></tr>';
     html += '</table>';
     html += '<table style="width:100%;border-collapse:collapse;margin-bottom:15px;">';
     html += '<thead><tr style="background:#e0e0e0;">' + headers.map(h=>'<th style="' + th + '">' + h + '</th>').join('') + '</tr></thead>';
@@ -3386,22 +3386,22 @@ function printSupExtract(){
         grandTotal += isReadyMix ? (r.qty||0)*(r.price||0) : (r.qty||0)*(r.price||0)-(r.discounts||0);
     });
     const totalPaid=payments.filter(p=>p.contractor===ex.supplier&&p.item===ex.item).reduce((s,p)=>s+p.amount,0);
-    const th='padding:8px;border:1px solid #bbb;text-align:center;font-size:12px;';
-    const td='padding:6px;border:1px solid #ddd;text-align:center;font-size:11px;';
+    const th='padding:3px 5px;border:1px solid #999;text-align:center;font-size:12px;';
+    const td='padding:2.5px 4px;border:1px solid #ccc;text-align:center;font-size:11px;';
 
     const headers = isReadyMix ?
         ['م','تاريخ الصب','العنصر','المحتوى','الجهد','الكمية','السعر','القيمة'] :
         ['م','التاريخ','البيان','الوحدة','رقم الفاتورة','الكمية','السعر','خصومات','إجمالي المستحق'];
 
     const html=`<div style="font-family:Cairo,sans-serif;direction:rtl;padding:20px;color:#333;">
-        <div style="text-align:center;margin-bottom:10px;"><img src="${COMPANY_LOGO}" style="height:80px;" alt="logo"></div>
+        <div style="text-align:center;margin-bottom:10px;"><img src="${COMPANY_LOGO}" style="height:45px;" alt="logo"></div>
         <h2 style="text-align:center;margin:0 0 2px;color:#555;font-size:15px;">شركة الرحاب للمقاولات العمومية (ورثة سيد تهامي)</h2>
         <h2 style="text-align:center;margin:0 0 5px;color:#555;">المشروع : التوسعات الجنوبيه</h2>
         <h1 style="text-align:center;border-bottom:3px solid #333;padding-bottom:10px;">مستخلص مورد ${isCombined?'تجميعي':'رقم '+ex.number}</h1>
-        <table style="width:100%;margin:20px 0;border-collapse:collapse;font-size:16px;">
-            <tr><td style="padding:10px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">المورد</td><td style="padding:10px;border:1px solid #ddd;font-size:18px;font-weight:700;">${ex.supplier}</td>
-            <td style="padding:10px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">البند</td><td style="padding:10px;border:1px solid #ddd;font-size:18px;font-weight:700;">${ex.item}</td>
-            <td style="padding:10px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">التاريخ</td><td style="padding:10px;border:1px solid #ddd;">${fmtDate(ex.date)}</td></tr>
+        <table style="width:100%;margin:6px 0;border-collapse:collapse;font-size:16px;">
+            <tr><td style="padding:4px 6px;border:1px solid #ccc;background:#f5f5f5;font-weight:bold;">المورد</td><td style="padding:4px 6px;border:1px solid #ccc;font-size:18px;font-weight:700;">${ex.supplier}</td>
+            <td style="padding:4px 6px;border:1px solid #ccc;background:#f5f5f5;font-weight:bold;">البند</td><td style="padding:4px 6px;border:1px solid #ccc;font-size:18px;font-weight:700;">${ex.item}</td>
+            <td style="padding:4px 6px;border:1px solid #ccc;background:#f5f5f5;font-weight:bold;">التاريخ</td><td style="padding:4px 6px;border:1px solid #ccc;">${fmtDate(ex.date)}</td></tr>
         </table>
         <table style="width:100%;border-collapse:collapse;margin-bottom:20px;">
             <thead><tr style="background:#e0e0e0;">${headers.map(h=>`<th style="${th}">${h}</th>`).join('')}</tr></thead>
@@ -3417,9 +3417,9 @@ function printSupExtract(){
             <tfoot><tr style="background:#f0f0f0;font-weight:bold;"><td colspan="${isReadyMix?7:8}" style="${th}">إجمالي المستحق للمورد</td><td style="${th}">${fmtNum(grandTotal)}</td></tr></tfoot>
         </table>
         <table style="width:50%;margin:0 auto;border-collapse:collapse;font-size:14px;">
-            <tr><td style="padding:10px;border:1px solid #ddd;background:#e8f5e9;font-weight:bold;">إجمالي المستحق</td><td style="padding:10px;border:1px solid #ddd;text-align:center;">${fmtCur(grandTotal)}</td></tr>
-            <tr><td style="padding:10px;border:1px solid #ddd;background:#fff3e0;font-weight:bold;">إجمالي المنصرف</td><td style="padding:10px;border:1px solid #ddd;text-align:center;">${fmtCur(totalPaid)}</td></tr>
-            <tr><td style="padding:10px;border:1px solid #ddd;background:#e3f2fd;font-weight:bold;">الباقي للمورد</td><td style="padding:10px;border:1px solid #ddd;text-align:center;font-weight:bold;">${fmtCur(grandTotal-totalPaid)}</td></tr>
+            <tr><td style="padding:4px 6px;border:1px solid #ccc;background:#e8f5e9;font-weight:bold;">إجمالي المستحق</td><td style="padding:4px 6px;border:1px solid #ccc;text-align:center;">${fmtCur(grandTotal)}</td></tr>
+            <tr><td style="padding:4px 6px;border:1px solid #ccc;background:#fff3e0;font-weight:bold;">إجمالي المنصرف</td><td style="padding:4px 6px;border:1px solid #ccc;text-align:center;">${fmtCur(totalPaid)}</td></tr>
+            <tr><td style="padding:4px 6px;border:1px solid #ccc;background:#e3f2fd;font-weight:bold;">الباقي للمورد</td><td style="padding:4px 6px;border:1px solid #ccc;text-align:center;font-weight:bold;">${fmtCur(grandTotal-totalPaid)}</td></tr>
         </table>
         ${ex.notes?`<p style="margin-top:16px;padding:10px;background:#f5f5f5;border-radius:8px;"><strong>ملاحظات:</strong> ${ex.notes}</p>`:''}
     </div>`;
@@ -3556,14 +3556,14 @@ function confirmDeleteExpense(id){
 
 function buildExpensesPrintHTML(){
     const total = (expenses || []).reduce((s,r) => s + (parseFloat(r.amount) || 0), 0);
-    const th = 'padding:6px;border:1px solid #bbb;text-align:center;font-size:11px;';
-    const td = 'padding:5px;border:1px solid #ddd;text-align:center;font-size:10px;';
+    const th = 'padding:3px 5px;border:1px solid #999;text-align:center;font-size:11px;';
+    const td = 'padding:2.5px 4px;border:1px solid #ccc;text-align:center;font-size:10px;';
     const logoSrc = typeof COMPANY_LOGO !== 'undefined' ? COMPANY_LOGO : '';
-    return '<div style="font-family:Cairo,sans-serif;direction:rtl;padding:15px;color:#333;"><div style="text-align:center;margin-bottom:10px;"><img src="' + logoSrc + '" style="height:80px;" alt="logo"></div>' +
+    return '<div style="font-family:Cairo,sans-serif;direction:rtl;padding:15px;color:#333;"><div style="text-align:center;margin-bottom:10px;"><img src="' + logoSrc + '" style="height:45px;" alt="logo"></div>' +
         '<h3 style="text-align:center;margin:0 0 2px;font-size:13px;">شركة الرحاب للمقاولات العموميه (ورثة سيد تهامى)</h3>' +
         '<h3 style="text-align:center;margin:0 0 4px;font-size:12px;">المشروع : التوسعات الجنوبيه</h3>' +
         '<h2 style="text-align:center;border-bottom:2px solid #333;padding-bottom:8px;font-size:16px;">مصروفات العمليات</h2>' +
-        '<table style="width:100%;border-collapse:collapse;margin:15px 0;">' +
+        '<table style="width:100%;border-collapse:collapse;margin:6px 0;">' +
             '<thead><tr style="background:#e0e0e0;">' + ['م','التاريخ','البيان','النوع','المستفيد','المبلغ'].map(h => '<th style="' + th + '">' + h + '</th>').join('') + '</tr></thead>' +
             '<tbody>' + (expenses || []).map((r,i) => '<tr>' + [toAr(i+1), fmtDate(r.date), r.description||'—', r.type||'—', r.beneficiary||'—', fmtCur(r.amount)].map(c => '<td style="' + td + '">' + c + '</td>').join('') + '</tr>').join('') + '</tbody>' +
             '<tfoot><tr style="background:#f0f0f0;font-weight:bold;"><td colspan="5" style="' + th + '">إجمالي المصروفات</td><td style="' + th + '">' + fmtCur(total) + '</td></tr></tfoot>' +
@@ -3599,7 +3599,7 @@ function printExpenses(){
 }
 function _old_printExpenses(){
     const w=window.open('','_blank','width=1100,height=700');
-    w.document.write(`<html dir="rtl"><head><title>\u0645\u0635\u0631\u0648\u0641\u0627\u062a \u0627\u0644\u0639\u0645\u0644\u064a\u0627\u062a</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact}}</style></head><body>${html}<script>setTimeout(()=>window.print(),500)<\/script>
+    w.document.write(`<html dir="rtl"><head><title>\u0645\u0635\u0631\u0648\u0641\u0627\u062a \u0627\u0644\u0639\u0645\u0644\u064a\u0627\u062a</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:4mm 6mm 4mm 6mm}@media print{body{margin:0;-webkit-print-color-adjust:exact;font-family:'Cairo',sans-serif;}table{width:100%!important;border-collapse:collapse;page-break-inside:auto;margin-top:4px!important;margin-bottom:4px!important;}tr{page-break-inside:avoid;page-break-after:auto;}thead{display:table-header-group;}tfoot{display:table-footer-group;}th{padding:3px 5px!important;font-size:10px!important;font-weight:700!important;background:#e0e0e0!important;border:1px solid #888!important;}td{padding:2.5px 4px!important;font-size:9px!important;border:1px solid #bbb!important;line-height:1.15!important;}}</style></head><body>${html}<script>setTimeout(()=>window.print(),500)<\/script>
 <script>setTimeout(()=>window.print(),500)<\/script><script>
 // EXPLICIT GLOBAL WINDOW BINDINGS FOR ALL PDF BUTTONS
 if (typeof saveExtractPDF !== 'undefined') window.saveExtractPDF = saveExtractPDF;
@@ -3738,13 +3738,13 @@ function confirmDeleteRevenue(id){
 
 function buildRevenuePrintHTML(){
     const total=revenue.reduce((s,r)=>s+r.amount,0);
-    const th='padding:6px;border:1px solid #bbb;text-align:center;font-size:11px;';
-    const td='padding:5px;border:1px solid #ddd;text-align:center;font-size:10px;';
-    return `<div style="font-family:Cairo,sans-serif;direction:rtl;padding:15px;color:#333;"><div style="text-align:center;margin-bottom:10px;"><img src="${COMPANY_LOGO}" style="height:80px;" alt="logo"></div>
+    const th='padding:3px 5px;border:1px solid #999;text-align:center;font-size:11px;';
+    const td='padding:2.5px 4px;border:1px solid #ccc;text-align:center;font-size:10px;';
+    return `<div style="font-family:Cairo,sans-serif;direction:rtl;padding:15px;color:#333;"><div style="text-align:center;margin-bottom:10px;"><img src="${COMPANY_LOGO}" style="height:45px;" alt="logo"></div>
         <h3 style="text-align:center;margin:0 0 2px;font-size:13px;">\u0634\u0631\u0643\u0629 \u0627\u0644\u0631\u062d\u0627\u0628 \u0644\u0644\u0645\u0642\u0627\u0648\u0644\u0627\u062a \u0627\u0644\u0639\u0645\u0648\u0645\u064a\u0647 (\u0648\u0631\u062b\u0629 \u0633\u064a\u062f \u062a\u0647\u0627\u0645\u0649)</h3>
         <h3 style="text-align:center;margin:0 0 4px;font-size:12px;">\u0627\u0644\u0645\u0634\u0631\u0648\u0639 : \u0627\u0644\u062a\u0648\u0633\u0639\u0627\u062a \u0627\u0644\u062c\u0646\u0648\u0628\u064a\u0647</h3>
         <h2 style="text-align:center;border-bottom:2px solid #333;padding-bottom:8px;font-size:16px;">\u0625\u064a\u0631\u0627\u062f\u0627\u062a \u0627\u0644\u0645\u0634\u0631\u0648\u0639</h2>
-        <table style="width:100%;border-collapse:collapse;margin:15px 0;">
+        <table style="width:100%;border-collapse:collapse;margin:6px 0;">
             <thead><tr style="background:#e0e0e0;">${['\u0645','\u062a\u0627\u0631\u064a\u062e \u0627\u0644\u0635\u0631\u0641','\u0631\u0642\u0645 \u0627\u0644\u0645\u0646\u0627\u0642\u0635\u0629','\u0631\u0642\u0645 \u0627\u0644\u0645\u0633\u062a\u062e\u0644\u0635','\u0627\u0644\u0631\u0642\u0645 \u0627\u0644\u0645\u0631\u062c\u0639\u064a','\u0646\u0648\u0639 \u0627\u0644\u062a\u062f\u0641\u0642','\u0627\u0644\u0645\u0628\u0644\u063a \u0627\u0644\u0645\u0633\u062a\u0644\u0645'].map(h=>`<th style="${th}">${h}</th>`).join('')}</tr></thead>
             <tbody>${revenue.map((r,i)=>`<tr>${[toAr(i+1),fmtDate(r.date),r.tender?toAr(r.tender):'\u2014',r.extractNo?toAr(r.extractNo):'\u2014',r.ref?toAr(r.ref):'\u2014',r.flowType,fmtCur(r.amount)].map(c=>`<td style="${td}">${c}</td>`).join('')}</tr>`).join('')}</tbody>
             <tfoot><tr style="background:#f0f0f0;font-weight:bold;"><td colspan="6" style="${th}">\u0625\u062c\u0645\u0627\u0644\u064a \u0625\u064a\u0631\u0627\u062f\u0627\u062a \u0627\u0644\u0645\u0634\u0631\u0648\u0639</td><td style="${th};color:#008800;">${fmtCur(total)}</td></tr></tfoot>
@@ -3757,7 +3757,7 @@ function printRevenue(){
 }
 function _old_printRevenue(){
     const w=window.open('','_blank','width=1100,height=700');
-    w.document.write(`<html dir="rtl"><head><title>\u0625\u064a\u0631\u0627\u062f\u0627\u062a \u0627\u0644\u0645\u0634\u0631\u0648\u0639</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact}}</style></head><body>${html}<script>setTimeout(()=>window.print(),500)<\/script>
+    w.document.write(`<html dir="rtl"><head><title>\u0625\u064a\u0631\u0627\u062f\u0627\u062a \u0627\u0644\u0645\u0634\u0631\u0648\u0639</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:4mm 6mm 4mm 6mm}@media print{body{margin:0;-webkit-print-color-adjust:exact;font-family:'Cairo',sans-serif;}table{width:100%!important;border-collapse:collapse;page-break-inside:auto;margin-top:4px!important;margin-bottom:4px!important;}tr{page-break-inside:avoid;page-break-after:auto;}thead{display:table-header-group;}tfoot{display:table-footer-group;}th{padding:3px 5px!important;font-size:10px!important;font-weight:700!important;background:#e0e0e0!important;border:1px solid #888!important;}td{padding:2.5px 4px!important;font-size:9px!important;border:1px solid #bbb!important;line-height:1.15!important;}}</style></head><body>${html}<script>setTimeout(()=>window.print(),500)<\/script>
 <script>setTimeout(()=>window.print(),500)<\/script><script>
 // EXPLICIT GLOBAL WINDOW BINDINGS FOR ALL PDF BUTTONS
 if (typeof saveExtractPDF !== 'undefined') window.saveExtractPDF = saveExtractPDF;
@@ -3932,8 +3932,8 @@ function buildBalancesPrintHTML(){
     const supBal=all.filter(b=>b.type==='supplier');
     const ctrTotal=ctrBal.reduce((s,b)=>s+b.remaining,0);
     const supTotal=supBal.reduce((s,b)=>s+b.remaining,0);
-    const th='padding:6px;border:1px solid #bbb;text-align:center;font-size:11px;';
-    const td='padding:5px;border:1px solid #ddd;text-align:center;font-size:10px;';
+    const th='padding:3px 5px;border:1px solid #999;text-align:center;font-size:11px;';
+    const td='padding:2.5px 4px;border:1px solid #ccc;text-align:center;font-size:10px;';
     const buildTable=(title,data,total)=>{
         if(!data.length) return '';
         return `<h3 style="margin:15px 0 5px;">${title}</h3>
@@ -3943,7 +3943,7 @@ function buildBalancesPrintHTML(){
             <tfoot><tr style="background:#f0f0f0;font-weight:bold;"><td colspan="3" style="${th}">\u0625\u062c\u0645\u0627\u0644\u064a</td><td style="${th}">${fmtCur(data.reduce((s,b)=>s+b.extractTotal,0))}</td><td style="${th}">${fmtCur(data.reduce((s,b)=>s+b.paidTotal,0))}</td><td style="${th};color:#c00;">${fmtCur(total)}</td></tr></tfoot>
         </table>`;
     };
-    return `<div style="font-family:Cairo,sans-serif;direction:rtl;padding:15px;color:#333;"><div style="text-align:center;margin-bottom:10px;"><img src="${COMPANY_LOGO}" style="height:80px;" alt="logo"></div>
+    return `<div style="font-family:Cairo,sans-serif;direction:rtl;padding:15px;color:#333;"><div style="text-align:center;margin-bottom:10px;"><img src="${COMPANY_LOGO}" style="height:45px;" alt="logo"></div>
         <h3 style="text-align:center;margin:0 0 2px;font-size:13px;">\u0634\u0631\u0643\u0629 \u0627\u0644\u0631\u062d\u0627\u0628 \u0644\u0644\u0645\u0642\u0627\u0648\u0644\u0627\u062a \u0627\u0644\u0639\u0645\u0648\u0645\u064a\u0647 (\u0648\u0631\u062b\u0629 \u0633\u064a\u062f \u062a\u0647\u0627\u0645\u0649)</h3>
         <h3 style="text-align:center;margin:0 0 4px;font-size:12px;">\u0627\u0644\u0645\u0634\u0631\u0648\u0639 : \u0627\u0644\u062a\u0648\u0633\u0639\u0627\u062a \u0627\u0644\u062c\u0646\u0648\u0628\u064a\u0647</h3>
         <h2 style="text-align:center;border-bottom:2px solid #333;padding-bottom:8px;font-size:16px;">\u0627\u0644\u0623\u0631\u0635\u062f\u0629 \u0627\u0644\u062f\u0627\u0626\u0646\u0629 \u0627\u0644\u0645\u0633\u062a\u062d\u0642\u0629</h2>
@@ -4567,8 +4567,8 @@ function printStockCard() {
     });
     const currentBal = totalIn - totalOut;
 
-    const th='padding:8px;border:1px solid #bbb;text-align:center;font-size:12px;';
-    const td='padding:6px;border:1px solid #ddd;text-align:center;font-size:11px;';
+    const th='padding:3px 5px;border:1px solid #999;text-align:center;font-size:12px;';
+    const td='padding:2.5px 4px;border:1px solid #ccc;text-align:center;font-size:11px;';
 
     let runningBal = 0;
     const rowsHtml = txs.map((t, i) => {
@@ -4589,11 +4589,11 @@ function printStockCard() {
     }).join('');
 
     const html=`<div style="font-family:Cairo,sans-serif;direction:rtl;padding:20px;color:#333;">
-        <div style="text-align:center;margin-bottom:10px;"><img src="${COMPANY_LOGO}" style="height:80px;" alt="logo"></div>
+        <div style="text-align:center;margin-bottom:10px;"><img src="${COMPANY_LOGO}" style="height:45px;" alt="logo"></div>
         <h2 style="text-align:center;margin:0 0 2px;color:#555;font-size:15px;">شركة الرحاب للمقاولات العمومية (ورثة سيد تهامي)</h2>
         <h2 style="text-align:center;margin:0 0 5px;color:#555;">المشروع : التوسعات الجنوبيه</h2>
         <h1 style="text-align:center;border-bottom:3px solid #333;padding-bottom:10px;">كارت صنف مخزون : ${prod.productName}</h1>
-        <table style="width:100%;margin:20px 0;border-collapse:collapse;font-size:15px;">
+        <table style="width:100%;margin:6px 0;border-collapse:collapse;font-size:15px;">
             <tr>
                 <td style="padding:8px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">البند</td><td style="padding:8px;border:1px solid #ddd;">${prod.item}</td>
                 <td style="padding:8px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">المورد</td><td style="padding:8px;border:1px solid #ddd;">${prod.supplier}</td>
@@ -4614,7 +4614,7 @@ function printStockCard() {
     </div>`;
 
     const w=window.open('','_blank','width=1100,height=700');
-    w.document.write(`<html dir="rtl"><head><title>كارت صنف - ${prod.productName}</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:10mm}@media print{body{margin:0;-webkit-print-color-adjust:exact}table{font-size:10px;width:100%!important}}</style></head><body>${html}<script>setTimeout(()=>window.print(),500)<\/script>
+    w.document.write(`<html dir="rtl"><head><title>كارت صنف - ${prod.productName}</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>@page{size:landscape;margin:4mm 6mm 4mm 6mm}@media print{body{margin:0;-webkit-print-color-adjust:exact;font-family:'Cairo',sans-serif;}table{width:100%!important;border-collapse:collapse;page-break-inside:auto;margin-top:4px!important;margin-bottom:4px!important;}tr{page-break-inside:avoid;page-break-after:auto;}thead{display:table-header-group;}tfoot{display:table-footer-group;}th{padding:3px 5px!important;font-size:10px!important;font-weight:700!important;background:#e0e0e0!important;border:1px solid #888!important;}td{padding:2.5px 4px!important;font-size:9px!important;border:1px solid #bbb!important;line-height:1.15!important;}}</style></head><body>${html}<script>setTimeout(()=>window.print(),500)<\/script>
 <script>setTimeout(()=>window.print(),500)<\/script><script>
 // EXPLICIT GLOBAL WINDOW BINDINGS FOR ALL PDF BUTTONS
 if (typeof saveExtractPDF !== 'undefined') window.saveExtractPDF = saveExtractPDF;
@@ -4728,8 +4728,8 @@ function saveStockCardPDF(){
     });
     const currentBal = totalIn - totalOut;
 
-    const th='padding:6px;border:1px solid #bbb;text-align:center;font-size:11px;';
-    const td='padding:5px;border:1px solid #ddd;text-align:center;font-size:10px;';
+    const th='padding:3px 5px;border:1px solid #999;text-align:center;font-size:11px;';
+    const td='padding:2.5px 4px;border:1px solid #ccc;text-align:center;font-size:10px;';
 
     let runningBal = 0;
     const rowsHtml = txs.map((t, i) => {
@@ -4756,9 +4756,9 @@ function saveStockCardPDF(){
         <h2 style="text-align:center;border-bottom:2px solid #333;padding-bottom:8px;font-size:16px;font-weight:800;">كارت صنف مخزون : ${prod.productName}</h2>
         <table style="width:100%;margin:12px 0;border-collapse:collapse;font-size:13px;">
             <tr>
-                <td style="padding:6px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">البند</td><td style="padding:6px;border:1px solid #ddd;">${prod.item}</td>
-                <td style="padding:6px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">المورد</td><td style="padding:6px;border:1px solid #ddd;">${prod.supplier}</td>
-                <td style="padding:6px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">الوحدة</td><td style="padding:6px;border:1px solid #ddd;">${prod.unit}</td>
+                <td style="padding:2.5px 4px;border:1px solid #ccc;background:#f5f5f5;font-weight:bold;">البند</td><td style="padding:2.5px 4px;border:1px solid #ccc;">${prod.item}</td>
+                <td style="padding:2.5px 4px;border:1px solid #ccc;background:#f5f5f5;font-weight:bold;">المورد</td><td style="padding:2.5px 4px;border:1px solid #ccc;">${prod.supplier}</td>
+                <td style="padding:2.5px 4px;border:1px solid #ccc;background:#f5f5f5;font-weight:bold;">الوحدة</td><td style="padding:2.5px 4px;border:1px solid #ccc;">${prod.unit}</td>
             </tr>
         </table>
         <table style="width:100%;border-collapse:collapse;margin-bottom:15px;">
