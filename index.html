@@ -2450,20 +2450,22 @@ function renderCombinedExtract(){
     gi('extractDate').value = today();
     gi('extractNotes').value = 'مستخلص مجمع يحتوي على كافة البنود من جميع المستخلصات الفردية.';
 
-    const cExtracts = extracts.filter(ex => ex.contractor === ctr && ex.item === item).sort((a,b) => a.number - b.number);
+    const cExtracts = extracts.filter(ex => ex.contractor === ctr && ex.item === item).sort((a,b) => (parseFloat(a.number)||0) - (parseFloat(b.number)||0));
     const allRows = [];
+    const sortOrder = (gi('extractSortOrder') ? gv('extractSortOrder') : 'asc') || 'asc';
+
     cExtracts.forEach(ex => {
-        (ex.rows || []).forEach(r => {
+        const sortedRows = [...(ex.rows || [])].sort((ra, rb) => {
+            const dateA = parseDateValue(ra.rowDate || ra.date);
+            const dateB = parseDateValue(rb.rowDate || rb.date);
+            return sortOrder === 'desc' ? dateB - dateA : dateA - dateB;
+        });
+        sortedRows.forEach(r => {
             allRows.push({ ...r, extractNumber: ex.number });
         });
     });
 
-    const sortOrder = (gi('extractSortOrder') ? gv('extractSortOrder') : 'asc') || 'asc';
-    if(sortOrder === 'asc') {
-        allRows.sort((a, b) => parseDateValue(a.rowDate || a.date) - parseDateValue(b.rowDate || b.date));
-    } else if(sortOrder === 'desc') {
-        allRows.sort((a, b) => parseDateValue(b.rowDate || b.date) - parseDateValue(a.rowDate || a.date));
-    }
+    // Grouped by Extract number first, then sorted by date per extract
 
     const tb = gi('extractBody');
     if(tb) {
@@ -2515,20 +2517,22 @@ function renderCombinedSupExtract(){
     gi('supExtractNotes').value = 'مستخلص مجمع يحتوي على كافة بنود التوريد من جميع المستخلصات الفردية.';
 
     const isReadyMix = isReadyMixItem(item);
-    const sExtracts = supplierExtracts.filter(ex => ex.supplier === sup && ex.item === item).sort((a,b) => a.number - b.number);
+    const sExtracts = supplierExtracts.filter(ex => ex.supplier === sup && ex.item === item).sort((a,b) => (parseFloat(a.number)||0) - (parseFloat(b.number)||0));
     const allRows = [];
+    const sortOrder = (gi('supExtractSortOrder') ? gv('supExtractSortOrder') : 'asc') || 'asc';
+
     sExtracts.forEach(ex => {
-        (ex.rows || []).forEach(r => {
+        const sortedRows = [...(ex.rows || [])].sort((ra, rb) => {
+            const dateA = parseDateValue(ra.rowDate || ra.date);
+            const dateB = parseDateValue(rb.rowDate || rb.date);
+            return sortOrder === 'desc' ? dateB - dateA : dateA - dateB;
+        });
+        sortedRows.forEach(r => {
             allRows.push({ ...r, extractNumber: ex.number });
         });
     });
 
-    const sortOrder = (gi('supExtractSortOrder') ? gv('supExtractSortOrder') : 'asc') || 'asc';
-    if(sortOrder === 'asc') {
-        allRows.sort((a, b) => parseDateValue(a.rowDate || a.date) - parseDateValue(b.rowDate || b.date));
-    } else if(sortOrder === 'desc') {
-        allRows.sort((a, b) => parseDateValue(b.rowDate || b.date) - parseDateValue(a.rowDate || a.date));
-    }
+    // Grouped by Extract number first, then sorted by date per extract
 
     const tableHeader = gi('supExtractTable') ? gi('supExtractTable').querySelector('thead') : null;
     if (tableHeader) {
@@ -2797,9 +2801,12 @@ function printExtract(){
     let ex = null;
     if (currentExtractId === 'combined') {
         const item = gv('extractItemSelect'), ctr = gv('extractContractorSelect');
-        const cExtracts = extracts.filter(x => x.contractor === ctr && x.item === item).sort((a,b) => a.number - b.number);
+        const cExtracts = extracts.filter(x => x.contractor === ctr && x.item === item).sort((a,b) => (parseFloat(a.number)||0) - (parseFloat(b.number)||0));
         const allRows = [];
-        cExtracts.forEach(x => { (x.rows || []).forEach(r => allRows.push({ ...r, rowDate: (r.rowDate || '').replace(/-/g, '/') })); });
+        cExtracts.forEach(x => {
+            const sortedRows = [...(x.rows || [])].sort((ra, rb) => parseDateValue(ra.rowDate || ra.date) - parseDateValue(rb.rowDate || rb.date));
+            sortedRows.forEach(r => allRows.push({ ...r, extractNumber: x.number, rowDate: (r.rowDate || '').replace(/-/g, '/') }));
+        });
         ex = { number: 'مجمع (كافة المستخلصات)', contractor: ctr, item: item, date: today(), notes: 'مستخلص مجمع يحتوي على كافة البنود من جميع المستخلصات الفردية', rows: allRows };
     } else {
         ex = extracts.find(x => x.id === currentExtractId);
@@ -3243,12 +3250,15 @@ function printSupExtract(){
     const item=gv('supExtractItemSelect'),sup=gv('supExtractSupplierSelect');
     let ex = supplierExtracts.find(x=>x.id===currentSupExtractId);
     let isCombined = false;
-    if(!ex && currentSupExtractId === null) {
-        const sExtracts = supplierExtracts.filter(x=>x.supplier===sup&&x.item===item).sort((a,b)=>a.number-b.number);
+    if(currentSupExtractId === 'combined' || (!ex && currentSupExtractId === null)) {
+        const sExtracts = supplierExtracts.filter(x=>x.supplier===sup&&x.item===item).sort((a,b)=>(parseFloat(a.number)||0)-(parseFloat(b.number)||0));
         if(sExtracts.length) {
             let combinedRows = [];
-            sExtracts.forEach(e => combinedRows.push(...e.rows));
-            ex = { number: 'تجميعي', supplier: sup, item: item, date: today(), notes: '', rows: combinedRows };
+            sExtracts.forEach(e => {
+                const sortedRows = [...(e.rows || [])].sort((ra, rb) => parseDateValue(ra.rowDate || ra.date) - parseDateValue(rb.rowDate || rb.date));
+                sortedRows.forEach(r => combinedRows.push({ ...r, extractNumber: e.number }));
+            });
+            ex = { number: 'تجميعي (كافة المستخلصات)', supplier: sup, item: item, date: today(), notes: '', rows: combinedRows };
             isCombined = true;
         }
     }
