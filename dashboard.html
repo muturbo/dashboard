@@ -2360,6 +2360,92 @@ if (typeof saveRevenuePDF !== 'undefined') window.saveRevenuePDF = saveRevenuePD
 if (typeof saveBalancesPDF !== 'undefined') window.saveBalancesPDF = saveBalancesPDF;
 if (typeof saveStockCardPDF !== 'undefined') window.saveStockCardPDF = saveStockCardPDF;
 <\/script>
+
+    <!-- Edit Expense Modal -->
+    <div class="modal" id="editExpenseModal">
+        <div class="modal-content card" style="max-width:480px;">
+            <div class="modal-header">
+                <h3>✏️ تعديل المصروف</h3>
+                <button class="btn btn-icon-only modal-close" onclick="closeModal('editExpenseModal')">✕</button>
+            </div>
+            <form onsubmit="submitEditExpense(event)">
+                <input type="hidden" id="editExpenseId">
+                <div class="form-group">
+                    <label>التاريخ <span class="required">*</span></label>
+                    <input type="text" class="text-input date-picker" id="editExpenseDate" required>
+                </div>
+                <div class="form-group">
+                    <label>البيان / ملاحظات <span class="required">*</span></label>
+                    <input type="text" class="text-input" id="editExpenseDescription" placeholder="مثال: شراء أدوات صيانة..." required>
+                </div>
+                <div class="form-group">
+                    <label>نوع المصروف <span class="required">*</span></label>
+                    <select class="select-input" id="editExpenseType" required>
+                        <option value="إدارية">إدارية</option>
+                        <option value="موقع">موقع</option>
+                        <option value="صيانة">صيانة</option>
+                        <option value="نقل">نقل</option>
+                        <option value="نثرية">نثرية</option>
+                        <option value="أخرى">أخرى</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>المستفيد / جهة الصرف <span class="required">*</span></label>
+                    <input type="text" class="text-input" id="editExpenseBeneficiary" placeholder="اسم المستفيد..." required>
+                </div>
+                <div class="form-group">
+                    <label>المبلغ (ج.م) <span class="required">*</span></label>
+                    <input type="number" class="text-input num" id="editExpenseAmount" min="0.01" step="0.01" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-ghost" onclick="closeModal('editExpenseModal')">إلغاء</button>
+                    <button type="submit" class="btn btn-primary">💾 حفظ التعديلات</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Revenue Modal -->
+    <div class="modal" id="editRevenueModal">
+        <div class="modal-content card" style="max-width:480px;">
+            <div class="modal-header">
+                <h3>✏️ تعديل الإيراد</h3>
+                <button class="btn btn-icon-only modal-close" onclick="closeModal('editRevenueModal')">✕</button>
+            </div>
+            <form onsubmit="submitEditRevenue(event)">
+                <input type="hidden" id="editRevenueId">
+                <div class="form-group">
+                    <label>التاريخ <span class="required">*</span></label>
+                    <input type="text" class="text-input date-picker" id="editRevenueDate" required>
+                </div>
+                <div class="form-group">
+                    <label>نوع التدفق <span class="required">*</span></label>
+                    <input type="text" class="text-input" id="editRevenueFlowType" placeholder="مثال: مستخلص خرسانة..." required>
+                </div>
+                <div class="form-group">
+                    <label>اسم المشروع / المناقصة</label>
+                    <input type="text" class="text-input" id="editRevenueTender" placeholder="المناقصة / المشروع">
+                </div>
+                <div class="form-group">
+                    <label>رقم المستخلص</label>
+                    <input type="text" class="text-input" id="editRevenueExtractNo" placeholder="رقم المستخلص">
+                </div>
+                <div class="form-group">
+                    <label>الرقم المرجعي / الإيصال</label>
+                    <input type="text" class="text-input" id="editRevenueRef" placeholder="رقم الإيصال / الشيك">
+                </div>
+                <div class="form-group">
+                    <label>المبلغ المستلم (ج.م) <span class="required">*</span></label>
+                    <input type="number" class="text-input num" id="editRevenueAmount" min="0.01" step="0.01" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-ghost" onclick="closeModal('editRevenueModal')">إلغاء</button>
+                    <button type="submit" class="btn btn-primary">💾 حفظ التعديلات</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 </body></html>`);
     doc.close();
 
@@ -2735,6 +2821,92 @@ if (typeof saveRevenuePDF !== 'undefined') window.saveRevenuePDF = saveRevenuePD
 if (typeof saveBalancesPDF !== 'undefined') window.saveBalancesPDF = saveBalancesPDF;
 if (typeof saveStockCardPDF !== 'undefined') window.saveStockCardPDF = saveStockCardPDF;
 <\/script>
+
+    <!-- Edit Expense Modal -->
+    <div class="modal" id="editExpenseModal">
+        <div class="modal-content card" style="max-width:480px;">
+            <div class="modal-header">
+                <h3>✏️ تعديل المصروف</h3>
+                <button class="btn btn-icon-only modal-close" onclick="closeModal('editExpenseModal')">✕</button>
+            </div>
+            <form onsubmit="submitEditExpense(event)">
+                <input type="hidden" id="editExpenseId">
+                <div class="form-group">
+                    <label>التاريخ <span class="required">*</span></label>
+                    <input type="text" class="text-input date-picker" id="editExpenseDate" required>
+                </div>
+                <div class="form-group">
+                    <label>البيان / ملاحظات <span class="required">*</span></label>
+                    <input type="text" class="text-input" id="editExpenseDescription" placeholder="مثال: شراء أدوات صيانة..." required>
+                </div>
+                <div class="form-group">
+                    <label>نوع المصروف <span class="required">*</span></label>
+                    <select class="select-input" id="editExpenseType" required>
+                        <option value="إدارية">إدارية</option>
+                        <option value="موقع">موقع</option>
+                        <option value="صيانة">صيانة</option>
+                        <option value="نقل">نقل</option>
+                        <option value="نثرية">نثرية</option>
+                        <option value="أخرى">أخرى</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>المستفيد / جهة الصرف <span class="required">*</span></label>
+                    <input type="text" class="text-input" id="editExpenseBeneficiary" placeholder="اسم المستفيد..." required>
+                </div>
+                <div class="form-group">
+                    <label>المبلغ (ج.م) <span class="required">*</span></label>
+                    <input type="number" class="text-input num" id="editExpenseAmount" min="0.01" step="0.01" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-ghost" onclick="closeModal('editExpenseModal')">إلغاء</button>
+                    <button type="submit" class="btn btn-primary">💾 حفظ التعديلات</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Revenue Modal -->
+    <div class="modal" id="editRevenueModal">
+        <div class="modal-content card" style="max-width:480px;">
+            <div class="modal-header">
+                <h3>✏️ تعديل الإيراد</h3>
+                <button class="btn btn-icon-only modal-close" onclick="closeModal('editRevenueModal')">✕</button>
+            </div>
+            <form onsubmit="submitEditRevenue(event)">
+                <input type="hidden" id="editRevenueId">
+                <div class="form-group">
+                    <label>التاريخ <span class="required">*</span></label>
+                    <input type="text" class="text-input date-picker" id="editRevenueDate" required>
+                </div>
+                <div class="form-group">
+                    <label>نوع التدفق <span class="required">*</span></label>
+                    <input type="text" class="text-input" id="editRevenueFlowType" placeholder="مثال: مستخلص خرسانة..." required>
+                </div>
+                <div class="form-group">
+                    <label>اسم المشروع / المناقصة</label>
+                    <input type="text" class="text-input" id="editRevenueTender" placeholder="المناقصة / المشروع">
+                </div>
+                <div class="form-group">
+                    <label>رقم المستخلص</label>
+                    <input type="text" class="text-input" id="editRevenueExtractNo" placeholder="رقم المستخلص">
+                </div>
+                <div class="form-group">
+                    <label>الرقم المرجعي / الإيصال</label>
+                    <input type="text" class="text-input" id="editRevenueRef" placeholder="رقم الإيصال / الشيك">
+                </div>
+                <div class="form-group">
+                    <label>المبلغ المستلم (ج.م) <span class="required">*</span></label>
+                    <input type="number" class="text-input num" id="editRevenueAmount" min="0.01" step="0.01" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-ghost" onclick="closeModal('editRevenueModal')">إلغاء</button>
+                    <button type="submit" class="btn btn-primary">💾 حفظ التعديلات</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 </body></html>`);
     doc.close();
 
@@ -3257,6 +3429,95 @@ function printSupExtract(){
 // ========================================
 // OPERATIONS EXPENSES MODULE
 // ========================================
+
+// ========================================
+// EDIT EXPENSE & REVENUE HANDLERS
+// ========================================
+function openEditExpenseModal(id) {
+    const exp = expenses.find(x => String(x.id) === String(id));
+    if (!exp) return;
+    const setV = (elemId, val) => { const el = gi(elemId); if (el) el.value = val || ''; };
+    setV('editExpenseId', exp.id);
+    setV('editExpenseDate', exp.date);
+    setV('editExpenseDescription', exp.description);
+    setV('editExpenseType', exp.type);
+    setV('editExpenseBeneficiary', exp.beneficiary);
+    setV('editExpenseAmount', exp.amount);
+    openModal('editExpenseModal');
+}
+
+function submitEditExpense(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    const id = gv('editExpenseId');
+    const exp = expenses.find(x => String(x.id) === String(id));
+    if (!exp) return;
+    const date = gv('editExpenseDate'), desc = gv('editExpenseDescription').trim(), type = gv('editExpenseType');
+    const beneficiary = gv('editExpenseBeneficiary').trim(), amount = parseFloat(gv('editExpenseAmount'));
+    if (!date || !desc || !type || !beneficiary || !amount || amount <= 0) {
+        showToast('⚠️ أكمل جميع البيانات المطلوبة للتعديل', 'error');
+        return;
+    }
+    exp.date = date;
+    exp.description = desc;
+    exp.type = type;
+    exp.beneficiary = beneficiary;
+    exp.amount = amount;
+    exp.updatedAt = new Date().toISOString();
+    save();
+    renderExpenses();
+    renderOverview();
+    renderFinancialSummary();
+    closeModal('editExpenseModal');
+    showToast('✅ تم تعديل المصروف بنجاح', 'success');
+}
+
+function openEditRevenueModal(id) {
+    const rev = revenue.find(x => String(x.id) === String(id));
+    if (!rev) return;
+    const setV = (elemId, val) => { const el = gi(elemId); if (el) el.value = val || ''; };
+    setV('editRevenueId', rev.id);
+    setV('editRevenueDate', rev.date);
+    setV('editRevenueFlowType', rev.flowType);
+    setV('editRevenueTender', rev.tender);
+    setV('editRevenueExtractNo', rev.extractNo);
+    setV('editRevenueRef', rev.ref);
+    setV('editRevenueAmount', rev.amount);
+    openModal('editRevenueModal');
+}
+
+function submitEditRevenue(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    const id = gv('editRevenueId');
+    const rev = revenue.find(x => String(x.id) === String(id));
+    if (!rev) return;
+    const date = gv('editRevenueDate'), flowType = gv('editRevenueFlowType').trim();
+    const tender = gv('editRevenueTender').trim(), extractNo = gv('editRevenueExtractNo').trim();
+    const ref = gv('editRevenueRef').trim(), amount = parseFloat(gv('editRevenueAmount'));
+    if (!date || !flowType || !amount || amount <= 0) {
+        showToast('⚠️ أكمل البيانات المطلوبة للتعديل', 'error');
+        return;
+    }
+    rev.date = date;
+    rev.flowType = flowType;
+    rev.tender = tender;
+    rev.extractNo = extractNo;
+    rev.ref = ref;
+    rev.amount = amount;
+    rev.updatedAt = new Date().toISOString();
+    save();
+    renderRevenue();
+    renderOverview();
+    renderFinancialSummary();
+    closeModal('editRevenueModal');
+    showToast('✅ تم تعديل الإيراد بنجاح', 'success');
+}
+
+window.openEditExpenseModal = openEditExpenseModal;
+window.submitEditExpense = submitEditExpense;
+window.openEditRevenueModal = openEditRevenueModal;
+window.submitEditRevenue = submitEditRevenue;
+
+
 function submitAddExpense(e){
     if (e && e.preventDefault) e.preventDefault();
     const date = gv('expenseDate'), desc = gv('expenseDescription').trim(), type = gv('expenseType');
@@ -3280,7 +3541,7 @@ function renderExpenses(){
         if (!fil.length) {
             tb.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:#888;">لا توجد مصروفات مسجلة</td></tr>';
         } else {
-            tb.innerHTML = fil.map((r,i) => `<tr style="animation-delay:${Math.min(i*0.02,0.5)}s"><td>${toAr(i+1)}</td><td class="date-cell">${fmtDate(r.date)}</td><td><strong>${r.description||'—'}</strong></td><td>${r.type||'—'}</td><td>${r.beneficiary||'—'}</td><td class="amount-cell">${fmtCur(r.amount)}</td><td><button class="btn btn-icon-only btn-delete" onclick="confirmDeleteExpense('${r.id}')" title="حذف">🗑️</button></td></tr>`).join('');
+            tb.innerHTML = fil.map((r,i) => `<tr style="animation-delay:${Math.min(i*0.02,0.5)}s"><td>${toAr(i+1)}</td><td class="date-cell">${fmtDate(r.date)}</td><td><strong>${r.description||'—'}</strong></td><td>${r.type||'—'}</td><td>${r.beneficiary||'—'}</td><td class="amount-cell">${fmtCur(r.amount)}</td><td><button class="btn btn-icon-only btn-edit" onclick="openEditExpenseModal('${r.id}')" title="تعديل" style="margin-left:4px;">✏️</button><button class="btn btn-icon-only btn-delete" onclick="confirmDeleteExpense('${r.id}')" title="حذف">🗑️</button></td></tr>`).join('');
         }
     }
 }
@@ -3348,6 +3609,92 @@ if (typeof saveRevenuePDF !== 'undefined') window.saveRevenuePDF = saveRevenuePD
 if (typeof saveBalancesPDF !== 'undefined') window.saveBalancesPDF = saveBalancesPDF;
 if (typeof saveStockCardPDF !== 'undefined') window.saveStockCardPDF = saveStockCardPDF;
 <\/script>
+
+    <!-- Edit Expense Modal -->
+    <div class="modal" id="editExpenseModal">
+        <div class="modal-content card" style="max-width:480px;">
+            <div class="modal-header">
+                <h3>✏️ تعديل المصروف</h3>
+                <button class="btn btn-icon-only modal-close" onclick="closeModal('editExpenseModal')">✕</button>
+            </div>
+            <form onsubmit="submitEditExpense(event)">
+                <input type="hidden" id="editExpenseId">
+                <div class="form-group">
+                    <label>التاريخ <span class="required">*</span></label>
+                    <input type="text" class="text-input date-picker" id="editExpenseDate" required>
+                </div>
+                <div class="form-group">
+                    <label>البيان / ملاحظات <span class="required">*</span></label>
+                    <input type="text" class="text-input" id="editExpenseDescription" placeholder="مثال: شراء أدوات صيانة..." required>
+                </div>
+                <div class="form-group">
+                    <label>نوع المصروف <span class="required">*</span></label>
+                    <select class="select-input" id="editExpenseType" required>
+                        <option value="إدارية">إدارية</option>
+                        <option value="موقع">موقع</option>
+                        <option value="صيانة">صيانة</option>
+                        <option value="نقل">نقل</option>
+                        <option value="نثرية">نثرية</option>
+                        <option value="أخرى">أخرى</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>المستفيد / جهة الصرف <span class="required">*</span></label>
+                    <input type="text" class="text-input" id="editExpenseBeneficiary" placeholder="اسم المستفيد..." required>
+                </div>
+                <div class="form-group">
+                    <label>المبلغ (ج.م) <span class="required">*</span></label>
+                    <input type="number" class="text-input num" id="editExpenseAmount" min="0.01" step="0.01" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-ghost" onclick="closeModal('editExpenseModal')">إلغاء</button>
+                    <button type="submit" class="btn btn-primary">💾 حفظ التعديلات</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Revenue Modal -->
+    <div class="modal" id="editRevenueModal">
+        <div class="modal-content card" style="max-width:480px;">
+            <div class="modal-header">
+                <h3>✏️ تعديل الإيراد</h3>
+                <button class="btn btn-icon-only modal-close" onclick="closeModal('editRevenueModal')">✕</button>
+            </div>
+            <form onsubmit="submitEditRevenue(event)">
+                <input type="hidden" id="editRevenueId">
+                <div class="form-group">
+                    <label>التاريخ <span class="required">*</span></label>
+                    <input type="text" class="text-input date-picker" id="editRevenueDate" required>
+                </div>
+                <div class="form-group">
+                    <label>نوع التدفق <span class="required">*</span></label>
+                    <input type="text" class="text-input" id="editRevenueFlowType" placeholder="مثال: مستخلص خرسانة..." required>
+                </div>
+                <div class="form-group">
+                    <label>اسم المشروع / المناقصة</label>
+                    <input type="text" class="text-input" id="editRevenueTender" placeholder="المناقصة / المشروع">
+                </div>
+                <div class="form-group">
+                    <label>رقم المستخلص</label>
+                    <input type="text" class="text-input" id="editRevenueExtractNo" placeholder="رقم المستخلص">
+                </div>
+                <div class="form-group">
+                    <label>الرقم المرجعي / الإيصال</label>
+                    <input type="text" class="text-input" id="editRevenueRef" placeholder="رقم الإيصال / الشيك">
+                </div>
+                <div class="form-group">
+                    <label>المبلغ المستلم (ج.م) <span class="required">*</span></label>
+                    <input type="number" class="text-input num" id="editRevenueAmount" min="0.01" step="0.01" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-ghost" onclick="closeModal('editRevenueModal')">إلغاء</button>
+                    <button type="submit" class="btn btn-primary">💾 حفظ التعديلات</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 </body></html>`);
     w.document.close();
 }
@@ -3379,7 +3726,7 @@ function renderRevenue(){
     const countEl=gi('revenueCount');if(countEl)countEl.textContent=toAr(fil.length)+' إيراد';
     const tb=gi('revenueBody');
     if(!fil.length){tb.innerHTML='';show('revenueEmpty');hide('revenueTable');}
-    else{hide('revenueEmpty');show('revenueTable');tb.innerHTML=fil.map((r,i)=>`<tr style="animation-delay:${Math.min(i*0.02,0.5)}s"><td>${toAr(i+1)}</td><td class="date-cell">${fmtDate(r.date)}</td><td>${r.flowType||'—'}</td><td><strong>${r.tender||'—'}</strong></td><td>${r.extractNo||'—'}</td><td>${r.ref?toAr(r.ref):'—'}</td><td class="amount-cell">${fmtCur(r.amount)}</td><td><button class="btn btn-icon-only btn-delete" onclick="confirmDeleteRevenue(${r.id})" title="حذف">🗑️</button></td></tr>`).join('');}
+    else{hide('revenueEmpty');show('revenueTable');tb.innerHTML=fil.map((r,i)=>`<tr style="animation-delay:${Math.min(i*0.02,0.5)}s"><td>${toAr(i+1)}</td><td class="date-cell">${fmtDate(r.date)}</td><td>${r.flowType||'—'}</td><td><strong>${r.tender||'—'}</strong></td><td>${r.extractNo||'—'}</td><td>${r.ref?toAr(r.ref):'—'}</td><td class="amount-cell">${fmtCur(r.amount)}</td><td><button class="btn btn-icon-only btn-edit" onclick="openEditRevenueModal('${r.id}')" title="تعديل" style="margin-left:4px;">✏️</button><button class="btn btn-icon-only btn-delete" onclick="confirmDeleteRevenue('${r.id}')" title="حذف">🗑️</button></td></tr>`).join('');}
 }
 
 function confirmDeleteRevenue(id){
@@ -3420,6 +3767,92 @@ if (typeof saveRevenuePDF !== 'undefined') window.saveRevenuePDF = saveRevenuePD
 if (typeof saveBalancesPDF !== 'undefined') window.saveBalancesPDF = saveBalancesPDF;
 if (typeof saveStockCardPDF !== 'undefined') window.saveStockCardPDF = saveStockCardPDF;
 <\/script>
+
+    <!-- Edit Expense Modal -->
+    <div class="modal" id="editExpenseModal">
+        <div class="modal-content card" style="max-width:480px;">
+            <div class="modal-header">
+                <h3>✏️ تعديل المصروف</h3>
+                <button class="btn btn-icon-only modal-close" onclick="closeModal('editExpenseModal')">✕</button>
+            </div>
+            <form onsubmit="submitEditExpense(event)">
+                <input type="hidden" id="editExpenseId">
+                <div class="form-group">
+                    <label>التاريخ <span class="required">*</span></label>
+                    <input type="text" class="text-input date-picker" id="editExpenseDate" required>
+                </div>
+                <div class="form-group">
+                    <label>البيان / ملاحظات <span class="required">*</span></label>
+                    <input type="text" class="text-input" id="editExpenseDescription" placeholder="مثال: شراء أدوات صيانة..." required>
+                </div>
+                <div class="form-group">
+                    <label>نوع المصروف <span class="required">*</span></label>
+                    <select class="select-input" id="editExpenseType" required>
+                        <option value="إدارية">إدارية</option>
+                        <option value="موقع">موقع</option>
+                        <option value="صيانة">صيانة</option>
+                        <option value="نقل">نقل</option>
+                        <option value="نثرية">نثرية</option>
+                        <option value="أخرى">أخرى</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>المستفيد / جهة الصرف <span class="required">*</span></label>
+                    <input type="text" class="text-input" id="editExpenseBeneficiary" placeholder="اسم المستفيد..." required>
+                </div>
+                <div class="form-group">
+                    <label>المبلغ (ج.م) <span class="required">*</span></label>
+                    <input type="number" class="text-input num" id="editExpenseAmount" min="0.01" step="0.01" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-ghost" onclick="closeModal('editExpenseModal')">إلغاء</button>
+                    <button type="submit" class="btn btn-primary">💾 حفظ التعديلات</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Revenue Modal -->
+    <div class="modal" id="editRevenueModal">
+        <div class="modal-content card" style="max-width:480px;">
+            <div class="modal-header">
+                <h3>✏️ تعديل الإيراد</h3>
+                <button class="btn btn-icon-only modal-close" onclick="closeModal('editRevenueModal')">✕</button>
+            </div>
+            <form onsubmit="submitEditRevenue(event)">
+                <input type="hidden" id="editRevenueId">
+                <div class="form-group">
+                    <label>التاريخ <span class="required">*</span></label>
+                    <input type="text" class="text-input date-picker" id="editRevenueDate" required>
+                </div>
+                <div class="form-group">
+                    <label>نوع التدفق <span class="required">*</span></label>
+                    <input type="text" class="text-input" id="editRevenueFlowType" placeholder="مثال: مستخلص خرسانة..." required>
+                </div>
+                <div class="form-group">
+                    <label>اسم المشروع / المناقصة</label>
+                    <input type="text" class="text-input" id="editRevenueTender" placeholder="المناقصة / المشروع">
+                </div>
+                <div class="form-group">
+                    <label>رقم المستخلص</label>
+                    <input type="text" class="text-input" id="editRevenueExtractNo" placeholder="رقم المستخلص">
+                </div>
+                <div class="form-group">
+                    <label>الرقم المرجعي / الإيصال</label>
+                    <input type="text" class="text-input" id="editRevenueRef" placeholder="رقم الإيصال / الشيك">
+                </div>
+                <div class="form-group">
+                    <label>المبلغ المستلم (ج.م) <span class="required">*</span></label>
+                    <input type="number" class="text-input num" id="editRevenueAmount" min="0.01" step="0.01" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-ghost" onclick="closeModal('editRevenueModal')">إلغاء</button>
+                    <button type="submit" class="btn btn-primary">💾 حفظ التعديلات</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 </body></html>`);
     w.document.close();
 }
@@ -4191,6 +4624,92 @@ if (typeof saveRevenuePDF !== 'undefined') window.saveRevenuePDF = saveRevenuePD
 if (typeof saveBalancesPDF !== 'undefined') window.saveBalancesPDF = saveBalancesPDF;
 if (typeof saveStockCardPDF !== 'undefined') window.saveStockCardPDF = saveStockCardPDF;
 <\/script>
+
+    <!-- Edit Expense Modal -->
+    <div class="modal" id="editExpenseModal">
+        <div class="modal-content card" style="max-width:480px;">
+            <div class="modal-header">
+                <h3>✏️ تعديل المصروف</h3>
+                <button class="btn btn-icon-only modal-close" onclick="closeModal('editExpenseModal')">✕</button>
+            </div>
+            <form onsubmit="submitEditExpense(event)">
+                <input type="hidden" id="editExpenseId">
+                <div class="form-group">
+                    <label>التاريخ <span class="required">*</span></label>
+                    <input type="text" class="text-input date-picker" id="editExpenseDate" required>
+                </div>
+                <div class="form-group">
+                    <label>البيان / ملاحظات <span class="required">*</span></label>
+                    <input type="text" class="text-input" id="editExpenseDescription" placeholder="مثال: شراء أدوات صيانة..." required>
+                </div>
+                <div class="form-group">
+                    <label>نوع المصروف <span class="required">*</span></label>
+                    <select class="select-input" id="editExpenseType" required>
+                        <option value="إدارية">إدارية</option>
+                        <option value="موقع">موقع</option>
+                        <option value="صيانة">صيانة</option>
+                        <option value="نقل">نقل</option>
+                        <option value="نثرية">نثرية</option>
+                        <option value="أخرى">أخرى</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>المستفيد / جهة الصرف <span class="required">*</span></label>
+                    <input type="text" class="text-input" id="editExpenseBeneficiary" placeholder="اسم المستفيد..." required>
+                </div>
+                <div class="form-group">
+                    <label>المبلغ (ج.م) <span class="required">*</span></label>
+                    <input type="number" class="text-input num" id="editExpenseAmount" min="0.01" step="0.01" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-ghost" onclick="closeModal('editExpenseModal')">إلغاء</button>
+                    <button type="submit" class="btn btn-primary">💾 حفظ التعديلات</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Revenue Modal -->
+    <div class="modal" id="editRevenueModal">
+        <div class="modal-content card" style="max-width:480px;">
+            <div class="modal-header">
+                <h3>✏️ تعديل الإيراد</h3>
+                <button class="btn btn-icon-only modal-close" onclick="closeModal('editRevenueModal')">✕</button>
+            </div>
+            <form onsubmit="submitEditRevenue(event)">
+                <input type="hidden" id="editRevenueId">
+                <div class="form-group">
+                    <label>التاريخ <span class="required">*</span></label>
+                    <input type="text" class="text-input date-picker" id="editRevenueDate" required>
+                </div>
+                <div class="form-group">
+                    <label>نوع التدفق <span class="required">*</span></label>
+                    <input type="text" class="text-input" id="editRevenueFlowType" placeholder="مثال: مستخلص خرسانة..." required>
+                </div>
+                <div class="form-group">
+                    <label>اسم المشروع / المناقصة</label>
+                    <input type="text" class="text-input" id="editRevenueTender" placeholder="المناقصة / المشروع">
+                </div>
+                <div class="form-group">
+                    <label>رقم المستخلص</label>
+                    <input type="text" class="text-input" id="editRevenueExtractNo" placeholder="رقم المستخلص">
+                </div>
+                <div class="form-group">
+                    <label>الرقم المرجعي / الإيصال</label>
+                    <input type="text" class="text-input" id="editRevenueRef" placeholder="رقم الإيصال / الشيك">
+                </div>
+                <div class="form-group">
+                    <label>المبلغ المستلم (ج.م) <span class="required">*</span></label>
+                    <input type="number" class="text-input num" id="editRevenueAmount" min="0.01" step="0.01" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-ghost" onclick="closeModal('editRevenueModal')">إلغاء</button>
+                    <button type="submit" class="btn btn-primary">💾 حفظ التعديلات</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 </body></html>`);
     w.document.close();
 }
@@ -5105,6 +5624,92 @@ if (typeof saveRevenuePDF !== 'undefined') window.saveRevenuePDF = saveRevenuePD
 if (typeof saveBalancesPDF !== 'undefined') window.saveBalancesPDF = saveBalancesPDF;
 if (typeof saveStockCardPDF !== 'undefined') window.saveStockCardPDF = saveStockCardPDF;
 </script>
+
+    <!-- Edit Expense Modal -->
+    <div class="modal" id="editExpenseModal">
+        <div class="modal-content card" style="max-width:480px;">
+            <div class="modal-header">
+                <h3>✏️ تعديل المصروف</h3>
+                <button class="btn btn-icon-only modal-close" onclick="closeModal('editExpenseModal')">✕</button>
+            </div>
+            <form onsubmit="submitEditExpense(event)">
+                <input type="hidden" id="editExpenseId">
+                <div class="form-group">
+                    <label>التاريخ <span class="required">*</span></label>
+                    <input type="text" class="text-input date-picker" id="editExpenseDate" required>
+                </div>
+                <div class="form-group">
+                    <label>البيان / ملاحظات <span class="required">*</span></label>
+                    <input type="text" class="text-input" id="editExpenseDescription" placeholder="مثال: شراء أدوات صيانة..." required>
+                </div>
+                <div class="form-group">
+                    <label>نوع المصروف <span class="required">*</span></label>
+                    <select class="select-input" id="editExpenseType" required>
+                        <option value="إدارية">إدارية</option>
+                        <option value="موقع">موقع</option>
+                        <option value="صيانة">صيانة</option>
+                        <option value="نقل">نقل</option>
+                        <option value="نثرية">نثرية</option>
+                        <option value="أخرى">أخرى</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>المستفيد / جهة الصرف <span class="required">*</span></label>
+                    <input type="text" class="text-input" id="editExpenseBeneficiary" placeholder="اسم المستفيد..." required>
+                </div>
+                <div class="form-group">
+                    <label>المبلغ (ج.م) <span class="required">*</span></label>
+                    <input type="number" class="text-input num" id="editExpenseAmount" min="0.01" step="0.01" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-ghost" onclick="closeModal('editExpenseModal')">إلغاء</button>
+                    <button type="submit" class="btn btn-primary">💾 حفظ التعديلات</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Revenue Modal -->
+    <div class="modal" id="editRevenueModal">
+        <div class="modal-content card" style="max-width:480px;">
+            <div class="modal-header">
+                <h3>✏️ تعديل الإيراد</h3>
+                <button class="btn btn-icon-only modal-close" onclick="closeModal('editRevenueModal')">✕</button>
+            </div>
+            <form onsubmit="submitEditRevenue(event)">
+                <input type="hidden" id="editRevenueId">
+                <div class="form-group">
+                    <label>التاريخ <span class="required">*</span></label>
+                    <input type="text" class="text-input date-picker" id="editRevenueDate" required>
+                </div>
+                <div class="form-group">
+                    <label>نوع التدفق <span class="required">*</span></label>
+                    <input type="text" class="text-input" id="editRevenueFlowType" placeholder="مثال: مستخلص خرسانة..." required>
+                </div>
+                <div class="form-group">
+                    <label>اسم المشروع / المناقصة</label>
+                    <input type="text" class="text-input" id="editRevenueTender" placeholder="المناقصة / المشروع">
+                </div>
+                <div class="form-group">
+                    <label>رقم المستخلص</label>
+                    <input type="text" class="text-input" id="editRevenueExtractNo" placeholder="رقم المستخلص">
+                </div>
+                <div class="form-group">
+                    <label>الرقم المرجعي / الإيصال</label>
+                    <input type="text" class="text-input" id="editRevenueRef" placeholder="رقم الإيصال / الشيك">
+                </div>
+                <div class="form-group">
+                    <label>المبلغ المستلم (ج.م) <span class="required">*</span></label>
+                    <input type="number" class="text-input num" id="editRevenueAmount" min="0.01" step="0.01" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-ghost" onclick="closeModal('editRevenueModal')">إلغاء</button>
+                    <button type="submit" class="btn btn-primary">💾 حفظ التعديلات</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 </body>
 
 </html>
