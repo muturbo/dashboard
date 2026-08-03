@@ -1,0 +1,1567 @@
+{
+  "contractors": [
+    {
+      "id": 110,
+      "item": "نجارة مسلحة",
+      "name": "مصطفى محمود ع 175"
+    },
+    {
+      "id": 113,
+      "item": "نجارة مسلحة",
+      "name": "محمد حامد حسين ع 152"
+    },
+    {
+      "id": 112,
+      "item": "نجارة مسلحة",
+      "name": "محمد برعى على ع 174"
+    },
+    {
+      "id": 216,
+      "item": "نجارة مسلحة",
+      "name": "احمد حسن حسين ع 154،155،176"
+    },
+    {
+      "id": 223,
+      "item": "نجارة مسلحة",
+      "name": "احمد محمد انور ع 153"
+    },
+    {
+      "id": 224,
+      "item": "حفر",
+      "name": "محمود محمد عبدالله"
+    },
+    {
+      "id": 225,
+      "item": "اعمال فرمجه",
+      "name": "احمد ماهر احمد"
+    },
+    {
+      "id": 226,
+      "item": "توريد خرسانه جاهزه",
+      "name": "محطة بناء"
+    },
+    {
+      "id": 227,
+      "item": "توريد حديد تسليح",
+      "name": "المدينه للصلب"
+    },
+    {
+      "id": 228,
+      "item": "مساحة",
+      "name": "حسام"
+    },
+    {
+      "id": 229,
+      "item": "مساحة",
+      "name": "م/محمود"
+    },
+    {
+      "id": 230,
+      "item": "نجارة مسلحة",
+      "name": "عبدالعاطى سليم عبدالعاطى ع 151"
+    },
+    {
+      "id": 231,
+      "item": "حدادة مسلحة",
+      "name": "هشام شحاته احمد ع 151،174،175"
+    },
+    {
+      "id": 232,
+      "item": "اعمال فرمجه",
+      "name": "محمد عبدالناصر عطيه ع 155"
+    },
+    {
+      "id": 233,
+      "item": "نجارة مسلحة",
+      "name": "رومانى حنا ع 178"
+    },
+    {
+      "id": 234,
+      "item": "اختبارات",
+      "name": "م / احمد عبدالعزيز"
+    }
+  ],
+  "expenses": [
+    {
+      "amount": 100,
+      "beneficiary": "ا/ياسر",
+      "createdAt": "2026-07-22T13:15:28.926Z",
+      "date": "2026/06/26",
+      "description": "اكرامية تسيير اعمال",
+      "id": 1784726128926.173,
+      "type": "اكراميات تسيير اعمال"
+    },
+    {
+      "amount": 875,
+      "beneficiary": "صلاح السيد",
+      "createdAt": "2026-07-22T13:15:28.926Z",
+      "date": "2026/06/26",
+      "description": "مواد طلاء للكرفان",
+      "id": 1784726128926.922,
+      "type": "صيانه و اصلاحات"
+    },
+    {
+      "amount": 740,
+      "beneficiary": "محمود مبارك",
+      "createdAt": "2026-07-22T13:15:28.926Z",
+      "date": "2026/06/26",
+      "description": "شراء عدد 2*كرسى",
+      "id": 1784726128926.2336,
+      "type": "مهمات و ادوات موقع"
+    },
+    {
+      "amount": 1450,
+      "beneficiary": "شركة التعدين",
+      "createdAt": "2026-07-22T13:15:28.926Z",
+      "date": "2026/06/04",
+      "description": "سداد رسوم تصاريح حفر",
+      "id": 1784726128926.319,
+      "type": "رسوم و تراخيص حكوميه"
+    },
+    {
+      "amount": 1000,
+      "beneficiary": "م/احمد داوود",
+      "createdAt": "2026-07-22T13:15:28.926Z",
+      "date": "2026/06/05",
+      "description": "صرف يومية لودر",
+      "id": 1784726128926.3132,
+      "type": "ايجار معدات"
+    },
+    {
+      "amount": 7500,
+      "beneficiary": "شركة التعدين",
+      "createdAt": "2026-07-22T13:15:28.926Z",
+      "date": "2026/06/05",
+      "description": "سداد رسوم تصاريح حفر",
+      "id": 1784726128926.956,
+      "type": "رسوم و تراخيص حكوميه"
+    },
+    {
+      "amount": 6000,
+      "beneficiary": "سيد صلاح",
+      "createdAt": "2026-07-22T13:15:28.926Z",
+      "date": "2026/06/05",
+      "description": "نقل الكرفان الى الموقع",
+      "id": 1784726128926.2908,
+      "type": "نقل و تجهيزات"
+    },
+    {
+      "amount": 818400,
+      "beneficiary": "بنك مصر",
+      "createdAt": "2026-07-22T13:15:28.926Z",
+      "date": "2026/06/08",
+      "description": "سداد قيمة وثيقة تامين",
+      "id": 1784726128926.4856,
+      "type": "تامينات و تراخيص مشروع"
+    },
+    {
+      "amount": 140,
+      "beneficiary": "بنك مصر",
+      "createdAt": "2026-07-22T13:15:28.926Z",
+      "date": "2026/06/08",
+      "description": "رسوم اصدار وثيقة تامين",
+      "id": 1784726128926.0405,
+      "type": "تامينات و تراخيص مشروع"
+    },
+    {
+      "amount": 123173,
+      "beneficiary": "بنك مصر",
+      "createdAt": "2026-07-22T13:15:28.926Z",
+      "date": "2026/06/16",
+      "description": "عمولة اصدار خطاب ضمان نهائى",
+      "id": 1784726128926.6724,
+      "type": "مصروفات بنكيه و فوائد"
+    },
+    {
+      "amount": 512380,
+      "beneficiary": "بنك مصر",
+      "createdAt": "2026-07-22T13:15:28.926Z",
+      "date": "2026/06/16",
+      "description": "تغطية نقديه لخطاب الضمان النهائى",
+      "id": 1784726128926.8738,
+      "type": "غطاء خطاب ضمان"
+    },
+    {
+      "amount": 1000,
+      "beneficiary": "م/محمد البحيرى",
+      "createdAt": "2026-07-22T13:15:28.927Z",
+      "date": "2026/07/02",
+      "description": "بدل ساعات اضافيه للاستشارى",
+      "id": 1784726128927.8252,
+      "type": "اشراف هندسى"
+    },
+    {
+      "amount": 500,
+      "beneficiary": "م / محمد ياسر",
+      "createdAt": "2026-07-22T13:15:28.927Z",
+      "date": "2026/07/02",
+      "description": "بدل ساعات اضافيه للاستشارى",
+      "id": 1784726128927.1711,
+      "type": "اشراف هندسى"
+    },
+    {
+      "amount": 100,
+      "beneficiary": "م/احمد داوود",
+      "createdAt": "2026-07-22T13:15:28.927Z",
+      "date": "2026/07/02",
+      "description": "تصوير ورق",
+      "id": 1784726128927.2827,
+      "type": "اداوات مكتبيه و مطبوعات"
+    },
+    {
+      "amount": 307,
+      "beneficiary": "م/احمد داوود",
+      "createdAt": "2026-07-22T13:15:28.927Z",
+      "date": "2026/07/09",
+      "description": "شراء ادوات مكتبيه",
+      "id": 1784726128927.0007,
+      "type": "اداوات مكتبيه و مطبوعات"
+    },
+    {
+      "amount": 15000,
+      "beneficiary": "م/احمد داوود",
+      "createdAt": "2026-07-22T13:15:28.927Z",
+      "date": "2026/07/09",
+      "description": "صرف راتب",
+      "id": 1784726128927.4675,
+      "type": "اجور و رواتب"
+    },
+    {
+      "amount": 1500,
+      "beneficiary": "م/محمد البحيرى",
+      "createdAt": "2026-07-22T13:15:28.927Z",
+      "date": "2026/07/09",
+      "description": "بدل ساعات اضافيه للاستشارى",
+      "id": 1784726128927.037,
+      "type": "اشراف هندسى"
+    },
+    {
+      "amount": 1000,
+      "beneficiary": "م/محمد البحيرى",
+      "createdAt": "2026-07-22T13:15:28.927Z",
+      "date": "2026/07/16",
+      "description": "بدل ساعات اضافيه للاستشارى",
+      "id": 1784726128927.318,
+      "type": "اشراف هندسى"
+    },
+    {
+      "amount": 800,
+      "beneficiary": "محمود",
+      "createdAt": "2026-07-22T13:15:28.927Z",
+      "date": "2026/07/16",
+      "description": "صرف سلف اللموظفين",
+      "id": 1784726128927.6091,
+      "type": "سلف عاملين"
+    },
+    {
+      "amount": 800,
+      "beneficiary": "محمود الغفير",
+      "createdAt": "2026-08-01T18:50:44.737Z",
+      "date": "23/7/2026",
+      "description": "صرف سلف للموظفين",
+      "id": 1785610244737.9163,
+      "type": "سلف عاملين"
+    },
+    {
+      "amount": 2500,
+      "beneficiary": "م/محمد البحيرى",
+      "createdAt": "2026-08-01T18:51:10.515Z",
+      "date": "23/7/2026",
+      "description": "بدل ساعات اضافيه للاستشارى",
+      "id": 1785610270515.5403,
+      "type": "اشراف هندسى"
+    },
+    {
+      "amount": 355,
+      "beneficiary": "م/محمد البحيرى",
+      "createdAt": "2026-08-01T18:51:32.541Z",
+      "date": "23/7/2026",
+      "description": "صرف بوفيه للاستشارى",
+      "id": 1785610292541.2744,
+      "type": "بوفيه و ضيافه"
+    },
+    {
+      "amount": 990,
+      "beneficiary": "مركز البحوث",
+      "createdAt": "2026-08-01T18:52:28.867Z",
+      "date": "23/7/2026",
+      "description": "تكسير مكعبات 3*عاديات",
+      "id": 1785610348867.0952,
+      "type": "تجارب و اختبارات موقع"
+    },
+    {
+      "amount": 2000,
+      "beneficiary": "م/محمد البحيرى",
+      "createdAt": "2026-08-01T19:57:27.109Z",
+      "date": "30/7/2026",
+      "description": "بدل ساعات اضافيه للاستشارى",
+      "id": 1785614247109.6912,
+      "type": "اشراف هندسى"
+    },
+    {
+      "amount": 210,
+      "beneficiary": "م/محمد البحيرى",
+      "createdAt": "2026-08-01T19:57:48.408Z",
+      "date": "30/7/2026",
+      "description": "صرف بوفيه للاستشارى",
+      "id": 1785614268408.9565,
+      "type": "بوفيه و ضيافه"
+    },
+    {
+      "amount": 1330,
+      "beneficiary": "مركز البحوث",
+      "createdAt": "2026-08-01T19:58:56.861Z",
+      "date": "30/7/2026",
+      "description": "مكعبات 4*قزاعد",
+      "id": 1785614336861.3567,
+      "type": "اختبارات و تجارب موقع"
+    },
+    {
+      "amount": 800,
+      "beneficiary": "محمود الغفير",
+      "createdAt": "2026-08-01T20:37:20.939Z",
+      "date": "30/7/2026",
+      "description": "صرف سلف للموظفين",
+      "id": 1785616640938.017,
+      "type": "سلف عاملين"
+    },
+    {
+      "amount": 84154,
+      "beneficiary": "بنك مصر",
+      "createdAt": "2026-08-01T21:00:47.321Z",
+      "date": "30/7/2026",
+      "description": "عمولة اصدار خطاب ضمان نهائى",
+      "id": 1785618047320.655,
+      "type": "مصروفات بنكيه و فوائد"
+    },
+    {
+      "amount": 120,
+      "beneficiary": "بنك مصر",
+      "createdAt": "2026-08-01T21:01:47.381Z",
+      "date": "30/6/2026",
+      "description": "تصوير ورق",
+      "id": 1785618107381.8613,
+      "type": "مصروفات بنكيه"
+    },
+    {
+      "amount": 18000000,
+      "beneficiary": "بنك مصر",
+      "createdAt": "2026-08-01T21:08:39.030Z",
+      "date": "30/7/2026",
+      "description": "قروض طويلة الاجل",
+      "id": 1785618519030.033,
+      "type": "التزامات غير متدوله"
+    }
+  ],
+  "extracts": [
+    {
+      "contractor": "محمود محمد عبدالله",
+      "date": "2026/06/25",
+      "id": 1782706720533.5283,
+      "item": "حفر",
+      "notes": "",
+      "number": 1,
+      "rows": [
+        {
+          "buildingNo": "",
+          "currentQty": 5,
+          "deductions": 0,
+          "description": "لودر 66",
+          "disbursementPct": 100,
+          "itemPct": 100,
+          "prevQty": 0,
+          "price": 1200,
+          "rowDate": "24/6/2026",
+          "type": "تنفيذ",
+          "unit": "م³"
+        },
+        {
+          "buildingNo": "",
+          "currentQty": 2080,
+          "deductions": 0,
+          "description": "توريد احلال",
+          "disbursementPct": 100,
+          "itemPct": 100,
+          "prevQty": 0,
+          "price": 175,
+          "rowDate": "25/6/2026",
+          "type": "توريد",
+          "unit": "م³"
+        },
+        {
+          "buildingNo": "",
+          "currentQty": 7,
+          "deductions": 0,
+          "description": "لودر 66",
+          "disbursementPct": 100,
+          "itemPct": 100,
+          "prevQty": 0,
+          "price": 1200,
+          "rowDate": "25/6/2026",
+          "type": "تنفيذ",
+          "unit": "عدد"
+        },
+        {
+          "buildingNo": "",
+          "currentQty": 220,
+          "deductions": 0,
+          "description": "توريد احلال",
+          "disbursementPct": 100,
+          "itemPct": 100,
+          "prevQty": 0,
+          "price": 175,
+          "rowDate": "28/6/2026",
+          "type": "توريد",
+          "unit": "م³"
+        },
+        {
+          "buildingNo": "",
+          "currentQty": 800,
+          "deductions": 0,
+          "description": "توريد احلال",
+          "disbursementPct": 100,
+          "itemPct": 100,
+          "prevQty": 0,
+          "price": 175,
+          "rowDate": "30/6/2026",
+          "type": "توريد",
+          "unit": "م²"
+        },
+        {
+          "buildingNo": "",
+          "currentQty": 54,
+          "deductions": 0,
+          "description": "لودر 66",
+          "disbursementPct": 100,
+          "itemPct": 100,
+          "prevQty": 0,
+          "price": 1200,
+          "rowDate": "1/7/2026",
+          "type": "تنفيذ",
+          "unit": "عدد"
+        },
+        {
+          "buildingNo": "",
+          "currentQty": 2.5,
+          "deductions": 0,
+          "description": "لودر 66",
+          "disbursementPct": 100,
+          "itemPct": 100,
+          "prevQty": 0,
+          "price": 1200,
+          "rowDate": "4/7/2026",
+          "type": "تنفيذ",
+          "unit": "عدد"
+        },
+        {
+          "buildingNo": "",
+          "currentQty": 800,
+          "deductions": 0,
+          "description": "توريد احلال",
+          "disbursementPct": 100,
+          "itemPct": 100,
+          "prevQty": 0,
+          "price": 175,
+          "rowDate": "5/7/2026",
+          "type": "توريد",
+          "unit": "م³"
+        },
+        {
+          "buildingNo": "",
+          "currentQty": 5,
+          "deductions": 0,
+          "description": "لودر 66",
+          "disbursementPct": 100,
+          "itemPct": 100,
+          "prevQty": 0,
+          "price": 1200,
+          "rowDate": "5/7/2026",
+          "type": "تنفيذ",
+          "unit": "عدد"
+        },
+        {
+          "buildingNo": "",
+          "currentQty": 10,
+          "deductions": 0,
+          "description": "توريد مياه",
+          "disbursementPct": 100,
+          "itemPct": 100,
+          "prevQty": 0,
+          "price": 130,
+          "rowDate": "6/7/2026",
+          "type": "تنفيذ",
+          "unit": "عدد"
+        },
+        {
+          "buildingNo": "",
+          "currentQty": 5,
+          "deductions": 0,
+          "description": "لودر 66",
+          "disbursementPct": 100,
+          "itemPct": 100,
+          "prevQty": 0,
+          "price": 1200,
+          "rowDate": "6/7/2026",
+          "type": "تنفيذ",
+          "unit": "عدد"
+        },
+        {
+          "buildingNo": "",
+          "currentQty": 500,
+          "deductions": 0,
+          "description": "توريد احلال",
+          "disbursementPct": 100,
+          "itemPct": 100,
+          "prevQty": 0,
+          "price": 175,
+          "rowDate": "7/7/2026",
+          "type": "توريد",
+          "unit": "م²"
+        },
+        {
+          "buildingNo": "",
+          "currentQty": 5,
+          "deductions": 0,
+          "description": "لودر 66",
+          "disbursementPct": 100,
+          "itemPct": 100,
+          "prevQty": 0,
+          "price": 1200,
+          "rowDate": "7/7/2026",
+          "type": "تنفيذ",
+          "unit": "عدد"
+        },
+        {
+          "buildingNo": "",
+          "currentQty": 4.5,
+          "deductions": 0,
+          "description": "لودر 66",
+          "disbursementPct": 100,
+          "itemPct": 100,
+          "prevQty": 0,
+          "price": 1200,
+          "rowDate": "8/7/2026",
+          "type": "تنفيذ",
+          "unit": "عدد"
+        },
+        {
+          "buildingNo": "",
+          "currentQty": 600,
+          "deductions": 0,
+          "description": "توريد احلال",
+          "disbursementPct": 100,
+          "itemPct": 100,
+          "prevQty": 0,
+          "price": 175,
+          "rowDate": "11/7/2026",
+          "type": "توريد",
+          "unit": "م³"
+        },
+        {
+          "buildingNo": "",
+          "currentQty": 26,
+          "deductions": 0,
+          "description": "لودر 66",
+          "disbursementPct": 100,
+          "itemPct": 100,
+          "prevQty": 0,
+          "price": 1200,
+          "rowDate": "15/7/2026",
+          "type": "تنفيذ",
+          "unit": "عدد"
+        },
+        {
+          "buildingNo": "",
+          "currentQty": 6,
+          "deductions": 0,
+          "description": "توريد مياه",
+          "disbursementPct": 100,
+          "itemPct": 100,
+          "prevQty": 0,
+          "price": 130,
+          "rowDate": "15/7/2026",
+          "type": "توريد",
+          "unit": "عدد"
+        },
+        {
+          "buildingNo": "",
+          "currentQty": 1420,
+          "deductions": 0,
+          "description": "توريد احلال",
+          "disbursementPct": 100,
+          "itemPct": 100,
+          "prevQty": 0,
+          "price": 175,
+          "rowDate": "15/7/2026",
+          "type": "توريد",
+          "unit": "م²"
+        },
+        {
+          "buildingNo": "",
+          "currentQty": 800,
+          "deductions": 0,
+          "description": "توريد احلال",
+          "disbursementPct": 100,
+          "itemPct": 100,
+          "prevQty": 0,
+          "price": 175,
+          "rowDate": "19/7/2026",
+          "type": "توريد",
+          "unit": "م³"
+        },
+        {
+          "buildingNo": "",
+          "currentQty": 26,
+          "deductions": 0,
+          "description": "لودر 66",
+          "disbursementPct": 100,
+          "itemPct": 100,
+          "prevQty": 0,
+          "price": 1200,
+          "rowDate": "21/7/2026",
+          "type": "تنفيذ",
+          "unit": "عدد"
+        },
+        {
+          "buildingNo": "",
+          "currentQty": 2,
+          "deductions": 0,
+          "description": "توريد مياه",
+          "disbursementPct": 100,
+          "itemPct": 100,
+          "prevQty": 0,
+          "price": 130,
+          "rowDate": "21/7/2026",
+          "type": "توريد",
+          "unit": "عدد"
+        },
+        {
+          "buildingNo": "",
+          "currentQty": 2,
+          "deductions": 0,
+          "description": "توريد مياه",
+          "disbursementPct": 100,
+          "itemPct": 100,
+          "prevQty": 0,
+          "price": 130,
+          "rowDate": "29/7/2026",
+          "type": "تنفيذ",
+          "unit": "عدد"
+        },
+        {
+          "buildingNo": "",
+          "currentQty": 2,
+          "deductions": 0,
+          "description": "لودر 66",
+          "disbursementPct": 100,
+          "itemPct": 100,
+          "prevQty": 0,
+          "price": 1200,
+          "rowDate": "29/7/2026",
+          "type": "تنفيذ",
+          "unit": "عدد"
+        },
+        {
+          "buildingNo": "",
+          "currentQty": 4670,
+          "deductions": 0,
+          "description": "حفر",
+          "disbursementPct": 100,
+          "itemPct": 100,
+          "prevQty": 0,
+          "price": 160,
+          "rowDate": "1/8/2026",
+          "type": "تنفيذ",
+          "unit": "م³"
+        },
+        {
+          "buildingNo": "",
+          "currentQty": 1,
+          "deductions": 0,
+          "description": "هراس",
+          "disbursementPct": 100,
+          "itemPct": 100,
+          "prevQty": 0,
+          "price": 30000,
+          "rowDate": "1/8/2026",
+          "type": "تنفيذ",
+          "unit": "مقطوعية"
+        }
+      ]
+    },
+    {
+      "contractor": "مصطفى محمود ع 175",
+      "date": "2026/07/07",
+      "id": 1783426022735.9897,
+      "item": "نجارة مسلحة",
+      "notes": "",
+      "number": 1,
+      "rows": [
+        {
+          "buildingNo": "175",
+          "currentQty": 1,
+          "deductions": 0,
+          "description": "صب قاعده عاديه",
+          "disbursementPct": 100,
+          "itemPct": 100,
+          "prevQty": 0,
+          "price": 15000,
+          "rowDate": "11/7/2026",
+          "type": "تنفيذ",
+          "unit": "مقطوعية"
+        },
+        {
+          "buildingNo": "175",
+          "currentQty": 160,
+          "deductions": 0,
+          "description": "صب قاعجه مسلحه",
+          "disbursementPct": 65,
+          "itemPct": 100,
+          "prevQty": 0,
+          "price": 1000,
+          "rowDate": "26/7/2026",
+          "type": "تنفيذ",
+          "unit": "م³"
+        }
+      ]
+    },
+    {
+      "contractor": "احمد ماهر احمد",
+      "date": "2026/07/08",
+      "id": 1783670306785.9666,
+      "item": "اعمال فرمجه",
+      "notes": "",
+      "number": 1,
+      "rows": [
+        {
+          "buildingNo": "",
+          "currentQty": 3,
+          "deductions": 0,
+          "description": "صب لبشه عاديه",
+          "disbursementPct": 100,
+          "itemPct": 100,
+          "prevQty": 0,
+          "price": 900,
+          "rowDate": "8/7/2026",
+          "type": "تنفيذ",
+          "unit": "عدد"
+        }
+      ]
+    },
+    {
+      "contractor": "محمد برعى على ع 174",
+      "date": "2026/07/11",
+      "id": 1783763223446.652,
+      "item": "نجارة مسلحة",
+      "notes": "",
+      "number": 1,
+      "rows": [
+        {
+          "buildingNo": "174",
+          "currentQty": 1,
+          "deductions": 0,
+          "description": "صب قاعده عاديه",
+          "disbursementPct": 100,
+          "itemPct": 100,
+          "prevQty": 0,
+          "price": 15000,
+          "rowDate": "4/7/2026",
+          "type": "تنفيذ",
+          "unit": "مقطوعية"
+        },
+        {
+          "buildingNo": "174",
+          "currentQty": 160,
+          "deductions": 0,
+          "description": "قاعده مسلحه",
+          "disbursementPct": 65,
+          "itemPct": 100,
+          "prevQty": 0,
+          "price": 1000,
+          "rowDate": "1/8/2026",
+          "type": "تنفيذ",
+          "unit": "م³"
+        }
+      ]
+    },
+    {
+      "contractor": "محمد حامد حسين ع 152",
+      "date": "2026/07/11",
+      "id": 1783763299400.9888,
+      "item": "نجارة مسلحة",
+      "notes": "",
+      "number": 1,
+      "rows": [
+        {
+          "buildingNo": "152",
+          "currentQty": 1,
+          "deductions": 5250,
+          "description": "صب قاعده عاديه",
+          "disbursementPct": 100,
+          "itemPct": 100,
+          "prevQty": 0,
+          "price": 15000,
+          "rowDate": "11/7/2026",
+          "type": "تنفيذ",
+          "unit": "مقطوعية"
+        }
+      ]
+    },
+    {
+      "contractor": "احمد حسن حسين ع 154،155،176",
+      "date": "2026/08/01",
+      "id": 1785589057755.205,
+      "item": "نجارة مسلحة",
+      "notes": "",
+      "number": 1,
+      "rows": [
+        {
+          "buildingNo": "",
+          "currentQty": 0,
+          "deductions": 0,
+          "description": "",
+          "disbursementPct": 100,
+          "itemPct": 100,
+          "prevQty": 0,
+          "price": 0,
+          "rowDate": "",
+          "type": "تنفيذ",
+          "unit": "م²"
+        }
+      ]
+    },
+    {
+      "contractor": "احمد حسن حسين ع 154،155،176",
+      "date": "",
+      "id": 1785589057771.521,
+      "item": "نجارة مسلحة",
+      "notes": "",
+      "number": 2,
+      "rows": [
+        {
+          "buildingNo": "155",
+          "currentQty": 1,
+          "deductions": 0,
+          "description": "قاعد عاديه",
+          "disbursementPct": 100,
+          "itemPct": 100,
+          "prevQty": 0,
+          "price": 15000,
+          "rowDate": "15/7/2026",
+          "type": "تنفيذ",
+          "unit": "مقطوعية"
+        },
+        {
+          "buildingNo": "154",
+          "currentQty": 1,
+          "deductions": 0,
+          "description": "قاعد عاديه",
+          "disbursementPct": 100,
+          "itemPct": 100,
+          "prevQty": 0,
+          "price": 15000,
+          "rowDate": "22/7/2026",
+          "type": "تنفيذ",
+          "unit": "مقطوعية"
+        },
+        {
+          "buildingNo": "155",
+          "currentQty": 160,
+          "deductions": 0,
+          "description": "قاعده مسلحه",
+          "disbursementPct": 65,
+          "itemPct": 100,
+          "prevQty": 0,
+          "price": 1000,
+          "rowDate": "26/7/2026",
+          "type": "تنفيذ",
+          "unit": "م³"
+        },
+        {
+          "buildingNo": "176",
+          "currentQty": 1,
+          "deductions": 0,
+          "description": "قاعد عاديه",
+          "disbursementPct": 100,
+          "itemPct": 100,
+          "prevQty": 0,
+          "price": 15000,
+          "rowDate": "30/7/2026",
+          "type": "تنفيذ",
+          "unit": "مقطوعية"
+        }
+      ]
+    },
+    {
+      "contractor": "عبدالعاطى سليم عبدالعاطى ع 151",
+      "date": "2026/08/01",
+      "id": 1785589297166.7751,
+      "item": "نجارة مسلحة",
+      "notes": "",
+      "number": 1,
+      "rows": [
+        {
+          "buildingNo": "151",
+          "currentQty": 1,
+          "deductions": 0,
+          "description": "قاعده عاديه",
+          "disbursementPct": 100,
+          "itemPct": 100,
+          "prevQty": 0,
+          "price": 15000,
+          "rowDate": "22/7/2026",
+          "type": "تنفيذ",
+          "unit": "مقطوعية"
+        }
+      ]
+    },
+    {
+      "contractor": "احمد محمد انور ع 153",
+      "date": "2026/08/01",
+      "id": 1785589352402.4229,
+      "item": "نجارة مسلحة",
+      "notes": "",
+      "number": 1,
+      "rows": [
+        {
+          "buildingNo": "153",
+          "currentQty": 1,
+          "deductions": 0,
+          "description": "قاعده عاديه",
+          "disbursementPct": 100,
+          "itemPct": 100,
+          "prevQty": 0,
+          "price": 15000,
+          "rowDate": "26/7/2026",
+          "type": "تنفيذ",
+          "unit": "مقطوعية"
+        }
+      ]
+    },
+    {
+      "contractor": "هشام شحاته احمد ع 151،174،175",
+      "date": "2026/08/01",
+      "id": 1785589578910.7512,
+      "item": "حدادة مسلحة",
+      "notes": "",
+      "number": 1,
+      "rows": [
+        {
+          "buildingNo": "155",
+          "currentQty": 160,
+          "deductions": 0,
+          "description": "قاعده مسلحه",
+          "disbursementPct": 65,
+          "itemPct": 100,
+          "prevQty": 0,
+          "price": 300,
+          "rowDate": "26/7/2026",
+          "type": "تنفيذ",
+          "unit": "م³"
+        },
+        {
+          "buildingNo": "175",
+          "currentQty": 160,
+          "deductions": 0,
+          "description": "قاعده مسلحه",
+          "disbursementPct": 65,
+          "itemPct": 100,
+          "prevQty": 0,
+          "price": 300,
+          "rowDate": "26/7/2026",
+          "type": "تنفيذ",
+          "unit": "م³"
+        },
+        {
+          "buildingNo": "174",
+          "currentQty": 160,
+          "deductions": 0,
+          "description": "قاعده مسلحه",
+          "disbursementPct": 65,
+          "itemPct": 100,
+          "prevQty": 0,
+          "price": 300,
+          "rowDate": "1/8/2026",
+          "type": "تنفيذ",
+          "unit": "م³"
+        }
+      ]
+    },
+    {
+      "contractor": "محمد عبدالناصر عطيه ع 155",
+      "date": "2026/08/01",
+      "id": 1785589818715.6763,
+      "item": "اعمال فرمجه",
+      "notes": "",
+      "number": 1,
+      "rows": [
+        {
+          "buildingNo": "",
+          "currentQty": 7,
+          "deductions": 0,
+          "description": "7*قواعد",
+          "disbursementPct": 100,
+          "itemPct": 100,
+          "prevQty": 0,
+          "price": 700,
+          "rowDate": "30/7/2026",
+          "type": "تنفيذ",
+          "unit": "عدد"
+        }
+      ]
+    },
+    {
+      "contractor": "رومانى حنا ع 178",
+      "date": "2026/08/03",
+      "id": 1785732018665.3826,
+      "item": "نجارة مسلحة",
+      "notes": "",
+      "number": 1,
+      "rows": [
+        {
+          "buildingNo": "178",
+          "currentQty": 1,
+          "deductions": 0,
+          "description": "قاعده عاديه",
+          "disbursementPct": 100,
+          "itemPct": 100,
+          "prevQty": 0,
+          "price": 15000,
+          "rowDate": "1/8/2026",
+          "type": "تنفيذ",
+          "unit": "مقطوعية"
+        }
+      ]
+    }
+  ],
+  "items": [
+    "مساحة",
+    "اختبارات",
+    "حفر",
+    "لوادر",
+    "نجارة مسلحة",
+    "اعمال فرمجه",
+    "حدادة مسلحة",
+    "عزل",
+    "كهرباء",
+    "مباني",
+    "نجارة باب وشباك",
+    "سباكة",
+    "بياض",
+    "بلاط موزايكو",
+    "سيراميك",
+    "بازلت",
+    "قرميد",
+    "UPVC",
+    "كريتال",
+    "نقاشة",
+    "أسطورجي",
+    "تدبيش",
+    "إنترلوك",
+    "بلدوره",
+    "غرف تفتيش",
+    "مطابق",
+    "خرسانة أرضيات",
+    "توريد رمل",
+    "توريد مياه",
+    "توريد خرسانه جاهزه",
+    "توريد حديد تسليح",
+    "توريد اسمنت",
+    "توريد طوب اسمنتى",
+    "توريد طوب طفلى",
+    "توريد بلاط مازيكو",
+    "توريد بلدوره",
+    "توريد انترلوك",
+    "توريدات سباكه",
+    "توريدات كهربائيه",
+    "توريد دهانات خارجيه",
+    "توريدات سيراميك",
+    "توريدات عزل",
+    "توريد فوم",
+    "توريدات اوكر"
+  ],
+  "payments": [
+    {
+      "amount": 50000,
+      "checkNo": "4562/4128076150",
+      "contractor": "محمود محمد عبدالله",
+      "createdAt": "2026-07-22T12:56:23.276Z",
+      "date": "2026/06/18",
+      "id": 1784724983276.6719,
+      "item": "حفر"
+    },
+    {
+      "amount": 10000,
+      "checkNo": "4585",
+      "contractor": "مصطفى محمود ع 175",
+      "createdAt": "2026-07-22T12:56:23.276Z",
+      "date": "2026/06/26",
+      "id": 1784724983276.491,
+      "item": "نجارة مسلحة"
+    },
+    {
+      "amount": 200000,
+      "checkNo": "4576/4128076161",
+      "contractor": "محمود محمد عبدالله",
+      "createdAt": "2026-07-22T12:56:23.276Z",
+      "date": "2026/06/26",
+      "id": 1784724983276.2324,
+      "item": "حفر"
+    },
+    {
+      "amount": 3000,
+      "checkNo": "تحويل",
+      "contractor": "حسام",
+      "createdAt": "2026-07-22T12:56:23.276Z",
+      "date": "2026/06/11",
+      "id": 1784724983276.3496,
+      "item": "مساحة"
+    },
+    {
+      "amount": 4000,
+      "checkNo": "تحويل",
+      "contractor": "حسام",
+      "createdAt": "2026-07-22T12:56:23.276Z",
+      "date": "2026/04/30",
+      "id": 1784724983276.508,
+      "item": "مساحة"
+    },
+    {
+      "amount": 5000,
+      "checkNo": "تحويل",
+      "contractor": "م/محمود",
+      "createdAt": "2026-07-22T12:56:23.276Z",
+      "date": "2026/06/05",
+      "id": 1784724983276.906,
+      "item": "مساحة"
+    },
+    {
+      "amount": 150000,
+      "checkNo": "4128076171/5495",
+      "contractor": "محمود محمد عبدالله",
+      "createdAt": "2026-07-22T12:56:23.276Z",
+      "date": "2026/07/02",
+      "id": 1784724983276.3794,
+      "item": "حفر"
+    },
+    {
+      "amount": 10000,
+      "checkNo": "تحويل",
+      "contractor": "مصطفى محمود ع 175",
+      "createdAt": "2026-07-22T12:56:23.276Z",
+      "date": "2026/07/02",
+      "id": 1784724983276.0288,
+      "item": "نجارة مسلحة"
+    },
+    {
+      "amount": 250000,
+      "checkNo": "100005870902/10456",
+      "contractor": "محمود محمد عبدالله",
+      "createdAt": "2026-07-22T12:56:23.276Z",
+      "date": "2026/07/09",
+      "id": 1784724983276.8745,
+      "item": "حفر"
+    },
+    {
+      "amount": 10000,
+      "checkNo": "تحويل",
+      "contractor": "مصطفى محمود ع 175",
+      "createdAt": "2026-07-22T12:56:23.276Z",
+      "date": "2026/07/09",
+      "id": 1784724983276.6716,
+      "item": "نجارة مسلحة"
+    },
+    {
+      "amount": 10000,
+      "checkNo": "تحويل",
+      "contractor": "محمد برعى على ع 174",
+      "createdAt": "2026-07-22T12:56:23.276Z",
+      "date": "2026/07/16",
+      "id": 1784724983276.6978,
+      "item": "نجارة مسلحة"
+    },
+    {
+      "amount": 10000,
+      "checkNo": "تحويل",
+      "contractor": "احمد حسن حسين ع 154،155،176",
+      "createdAt": "2026-07-22T12:56:23.276Z",
+      "date": "2026/07/16",
+      "id": 1784724983276.567,
+      "item": "نجارة مسلحة"
+    },
+    {
+      "amount": 9750,
+      "checkNo": "تحويل",
+      "contractor": "محمد حامد حسين ع 152",
+      "createdAt": "2026-07-22T12:56:23.276Z",
+      "date": "2026/07/16",
+      "id": 1784724983276.7458,
+      "item": "نجارة مسلحة"
+    },
+    {
+      "amount": 150000,
+      "checkNo": "105870904/10648",
+      "contractor": "محمود محمد عبدالله",
+      "createdAt": "2026-07-22T12:56:23.276Z",
+      "date": "2026/07/16",
+      "id": 1784724983276.975,
+      "item": "حفر"
+    },
+    {
+      "amount": 5000,
+      "checkNo": "تحويل",
+      "contractor": "حسام",
+      "createdAt": "2026-07-22T12:56:23.276Z",
+      "date": "2026/07/16",
+      "id": 1784724983276.9001,
+      "item": "مساحة"
+    },
+    {
+      "amount": 2000,
+      "checkNo": "",
+      "contractor": "احمد ماهر احمد",
+      "createdAt": "2026-07-22T12:57:15.531Z",
+      "date": "2026/07/9",
+      "id": 1784725035531.7861,
+      "item": "اعمال فرمجه",
+      "notes": "تحويل انستا"
+    },
+    {
+      "amount": 20000,
+      "checkNo": "تحويل انستاباى",
+      "contractor": "مصطفى محمود ع 175",
+      "createdAt": "2026-07-28T11:04:11.836Z",
+      "date": "2026/07/23",
+      "id": 1785236651836.7637,
+      "item": "نجارة مسلحة",
+      "notes": ""
+    },
+    {
+      "amount": 20000,
+      "checkNo": "تحويل انستاباى",
+      "contractor": "محمد برعى على ع 174",
+      "createdAt": "2026-07-28T11:05:09.172Z",
+      "date": "2026/07/23",
+      "id": 1785236709172.706,
+      "item": "نجارة مسلحة",
+      "notes": ""
+    },
+    {
+      "amount": 20000,
+      "checkNo": "تحويل انستاباى",
+      "contractor": "احمد حسن حسين ع 154،155،176",
+      "createdAt": "2026-07-28T11:05:29.412Z",
+      "date": "2026/07/23",
+      "id": 1785236729412.4587,
+      "item": "نجارة مسلحة",
+      "notes": ""
+    },
+    {
+      "amount": 10000,
+      "checkNo": "تحويل انستاباى",
+      "contractor": "عبدالعاطى سليم عبدالعاطى ع 151",
+      "createdAt": "2026-07-28T11:06:02.794Z",
+      "date": "2026/07/23",
+      "id": 1785236762794.0547,
+      "item": "نجارة مسلحة",
+      "notes": ""
+    },
+    {
+      "amount": 20000,
+      "checkNo": "تحويل انستاباى",
+      "contractor": "هشام شحاته احمد ع 151،174،175",
+      "createdAt": "2026-07-28T11:06:23.333Z",
+      "date": "2026/07/23",
+      "id": 1785236783333.6023,
+      "item": "حدادة مسلحة",
+      "notes": ""
+    },
+    {
+      "amount": 700,
+      "checkNo": "تحويل انستاباى",
+      "contractor": "احمد ماهر احمد",
+      "createdAt": "2026-07-28T11:06:51.522Z",
+      "date": "2026/07/23",
+      "id": 1785236811522.484,
+      "item": "اعمال فرمجه",
+      "notes": ""
+    },
+    {
+      "amount": 250000,
+      "checkNo": "100008258922/10487",
+      "contractor": "محمود محمد عبدالله",
+      "createdAt": "2026-07-28T11:09:31.133Z",
+      "date": "2026/07/23",
+      "id": 1785236971133.9585,
+      "item": "حفر",
+      "notes": ""
+    },
+    {
+      "amount": 18000,
+      "checkNo": "",
+      "contractor": "م / احمد عبدالعزيز",
+      "createdAt": "2026-07-28T11:09:50.755Z",
+      "date": "2026/07/23",
+      "id": 1785236990755.252,
+      "item": "اختبارات",
+      "notes": ""
+    },
+    {
+      "amount": 1000000,
+      "checkNo": "تحويل بنكى (ائتمان)",
+      "contractor": "محطة بناء",
+      "createdAt": "2026-07-28T11:10:27.297Z",
+      "date": "2026/07/23",
+      "id": 1785237027297.22,
+      "item": "توريد خرسانه جاهزه",
+      "notes": ""
+    },
+    {
+      "amount": 20000,
+      "checkNo": "5214",
+      "contractor": "محمد برعى على ع 174",
+      "createdAt": "2026-08-01T19:54:40.860Z",
+      "date": "2026/07/30",
+      "id": 1785614080860.6665,
+      "item": "نجارة مسلحة",
+      "notes": ""
+    },
+    {
+      "amount": 20000,
+      "checkNo": "تحويل انستاباى",
+      "contractor": "احمد محمد انور ع 153",
+      "createdAt": "2026-08-01T19:55:42.120Z",
+      "date": "2026/07/30",
+      "id": 1785614142120.6875,
+      "item": "نجارة مسلحة",
+      "notes": ""
+    },
+    {
+      "amount": 20000,
+      "checkNo": "تحويل انستاباى",
+      "contractor": "عبدالعاطى سليم عبدالعاطى ع 151",
+      "createdAt": "2026-08-01T19:56:19.164Z",
+      "date": "2026/07/30",
+      "id": 1785614179164.2358,
+      "item": "نجارة مسلحة",
+      "notes": ""
+    },
+    {
+      "amount": 3000,
+      "checkNo": "تحويل انستاباى",
+      "contractor": "محمد عبدالناصر عطيه ع 155",
+      "createdAt": "2026-08-01T19:56:52.996Z",
+      "date": "2026/07/30",
+      "id": 1785614212996.9343,
+      "item": "اعمال فرمجه",
+      "notes": ""
+    },
+    {
+      "amount": 250000,
+      "checkNo": "100008258932/10498",
+      "contractor": "محمود محمد عبدالله",
+      "createdAt": "2026-08-01T20:00:24.404Z",
+      "date": "2026/07/30",
+      "id": 1785614424404.9058,
+      "item": "حفر",
+      "notes": ""
+    },
+    {
+      "amount": 50000,
+      "checkNo": "100008258946/5215",
+      "contractor": "مصطفى محمود ع 175",
+      "createdAt": "2026-08-01T20:01:33.230Z",
+      "date": "2026/07/30",
+      "id": 1785614493230.712,
+      "item": "نجارة مسلحة",
+      "notes": ""
+    },
+    {
+      "amount": 30000,
+      "checkNo": "10000825947/5218",
+      "contractor": "احمد حسن حسين ع 154،155،176",
+      "createdAt": "2026-08-01T20:02:34.588Z",
+      "date": "2026/07/30",
+      "id": 1785614554587.8643,
+      "item": "نجارة مسلحة",
+      "notes": ""
+    },
+    {
+      "amount": 50000,
+      "checkNo": "100008258945/5220",
+      "contractor": "هشام شحاته احمد ع 151،174،175",
+      "createdAt": "2026-08-01T20:03:24.359Z",
+      "date": "2026/07/30",
+      "id": 1785614604359.6592,
+      "item": "حدادة مسلحة",
+      "notes": ""
+    },
+    {
+      "amount": 2000000,
+      "checkNo": "تحويل بنكى (ائتمان)",
+      "contractor": "المدينه للصلب",
+      "createdAt": "2026-08-01T20:04:08.567Z",
+      "date": "2026/07/30",
+      "id": 1785614648567.7727,
+      "item": "توريد حديد تسليح",
+      "notes": ""
+    },
+    {
+      "amount": 500000,
+      "checkNo": "100008915861/5213",
+      "contractor": "محطة بناء",
+      "createdAt": "2026-08-01T20:04:54.156Z",
+      "date": "2026/07/30",
+      "id": 1785614694156.2546,
+      "item": "توريد خرسانه جاهزه",
+      "notes": ""
+    }
+  ],
+  "supplierExtracts": [
+    {
+      "date": "2026/07/07",
+      "id": 1783429484314.2952,
+      "item": "توريد خرسانه جاهزه",
+      "notes": "* فى 25/6/202 (مسلسل 1)  يوجد فرق 1م3 بين المورد و الشركه بتكلفه اجماليه 2030 جنيه",
+      "number": 1,
+      "rows": [
+        {
+          "content": "250",
+          "description": "قاعده عاديه ع 175 محتوي 350",
+          "discounts": 0,
+          "element": "قاعده عاديه ع 175 ",
+          "invoiceNo": "",
+          "price": 2030,
+          "qty": 180,
+          "rowDate": "25/6/2026",
+          "strength": "180",
+          "unit": "م³"
+        },
+        {
+          "content": "250",
+          "description": "اجمالى قواعد عادية 336م",
+          "discounts": 0,
+          "element": "2*قاعد عاديه",
+          "invoiceNo": "",
+          "price": 2030,
+          "qty": 336,
+          "rowDate": "5/7/2026",
+          "strength": "180",
+          "unit": "م³"
+        },
+        {
+          "content": "250",
+          "element": "قاعده عاديه ع 152",
+          "price": 2030,
+          "qty": 152,
+          "rowDate": "13/7/2026",
+          "strength": "180"
+        },
+        {
+          "content": "250",
+          "element": "قاعده عاديه ع 154",
+          "price": 2030,
+          "qty": 167,
+          "rowDate": "22/7/2026",
+          "strength": "180"
+        },
+        {
+          "content": "250",
+          "element": "قاعده عاديه ع 151",
+          "price": 2030,
+          "qty": 167,
+          "rowDate": "22/7/2026",
+          "strength": "180"
+        },
+        {
+          "content": "350",
+          "element": "قاعده مسلحه ع 175",
+          "price": 2430,
+          "qty": 163,
+          "rowDate": "2026/7/26",
+          "strength": "250"
+        },
+        {
+          "content": "350",
+          "element": "قاعده مسلحه ع 155",
+          "price": 2430,
+          "qty": 163,
+          "rowDate": "2026/7/26",
+          "strength": "250"
+        },
+        {
+          "content": "250",
+          "element": "قاعده عاديه ع 153",
+          "price": 2030,
+          "qty": 167,
+          "rowDate": "2026/7/26",
+          "strength": "180"
+        },
+        {
+          "content": "250",
+          "element": "قاعده عاديه ع 176",
+          "price": 2030,
+          "qty": 171,
+          "rowDate": "30/7/2026",
+          "strength": "180"
+        },
+        {
+          "content": "250",
+          "element": "قاعده عاديه ع 178",
+          "price": 2030,
+          "qty": 178,
+          "rowDate": "2026/08/01",
+          "strength": "180"
+        },
+        {
+          "content": "350",
+          "element": "قاعده مسلحه ع 155",
+          "price": 2430,
+          "qty": 174,
+          "rowDate": "2026/08/01",
+          "strength": "250"
+        }
+      ],
+      "supplier": "محطة بناء"
+    },
+    {
+      "date": "2026/07/19",
+      "id": 1784455733001.2988,
+      "item": "توريد حديد تسليح",
+      "notes": "",
+      "number": 1,
+      "rows": [
+        {
+          "description": "توريد حديد ",
+          "discounts": 0,
+          "invoiceNo": "٩٨١٥",
+          "price": 36500,
+          "qty": 55.16,
+          "rowDate": "١٥/٧/٢٠٢٦",
+          "unit": "طن"
+        }
+      ],
+      "supplier": "المدينه للصلب"
+    }
+  ],
+  "supplyItemsList": [
+    "توريد رمل",
+    "توريد مياه",
+    "توريد خرسانه جاهزه",
+    "توريد حديد تسليح",
+    "توريد اسمنت",
+    "توريد طوب اسمنتى",
+    "توريد طوب طفلى",
+    "توريد بلاط مازيكو",
+    "توريد بلدوره",
+    "توريد انترلوك",
+    "توريدات سباكه",
+    "توريدات كهربائيه",
+    "توريد دهانات خارجيه",
+    "توريدات سيراميك",
+    "توريدات عزل",
+    "توريد فوم",
+    "توريدات اوكر",
+    "توريد رخام"
+  ]
+}
