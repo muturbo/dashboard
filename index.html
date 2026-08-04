@@ -2470,6 +2470,44 @@ function printHTMLContent(html, documentTitle) {
     font-size: 0.85rem !important;
 }
 
+
+/* Compact & perfectly centered extract table layout without giant gaps */
+.data-table.extract-table {
+    width: auto !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    table-layout: fixed !important;
+    border-collapse: collapse !important;
+}
+.data-table.extract-table th {
+    text-align: center !important;
+    vertical-align: middle !important;
+    padding: 8px 4px !important;
+    font-size: 0.82rem !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
+}
+.data-table.extract-table td {
+    text-align: center !important;
+    vertical-align: middle !important;
+    padding: 3px 2px !important;
+}
+.data-table.extract-table td input.extract-input,
+.data-table.extract-table td select.extract-select {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    text-align: center !important;
+    margin: 0 auto !important;
+    padding: 4px 2px !important;
+    height: 32px !important;
+    font-size: 0.82rem !important;
+}
+.data-table.extract-table td.amount-cell {
+    text-align: center !important;
+    font-weight: 700 !important;
+    font-size: 0.85rem !important;
+}
+
 </style></head><body>${html}<script>
 // EXPLICIT GLOBAL WINDOW BINDINGS FOR ALL PDF BUTTONS
 if (typeof saveExtractPDF !== 'undefined') window.saveExtractPDF = saveExtractPDF;
@@ -2629,16 +2667,16 @@ function renderCombinedSupExtract(){
     if (tableHeader) {
         if (isReadyMix) {
             tableHeader.innerHTML = `<tr>
-                <th style="width:45px;">مسلسل</th>
-                <th style="width:140px;">تاريخ الصب</th>
-                <th style="width:auto;">العنصر</th>
-                <th style="width:75px;">المحتوى</th>
-                <th style="width:75px;">الجهد</th>
-                <th style="width:100px;">كمية الشركة</th>
-                <th style="width:100px;">كمية المورد</th>
-                <th style="width:95px;">السعر</th>
-                <th style="width:115px;">القيمة</th>
-                <th style="width:90px;">إجراء</th>
+                <th style="width:40px;">م</th>
+                <th style="width:130px;">تاريخ الصب</th>
+                <th style="width:150px;">العنصر</th>
+                <th style="width:65px;">المحتوى</th>
+                <th style="width:65px;">الجهد</th>
+                <th style="width:90px;">كمية الشركة</th>
+                <th style="width:90px;">كمية المورد</th>
+                <th style="width:85px;">السعر</th>
+                <th style="width:105px;">القيمة</th>
+                <th style="width:75px;">إجراء</th>
             </tr>`;
         } else {
             tableHeader.innerHTML = `<tr>
@@ -2950,6 +2988,44 @@ function printHTMLContent(html, documentTitle) {
     font-size: 0.85rem !important;
 }
 
+
+/* Compact & perfectly centered extract table layout without giant gaps */
+.data-table.extract-table {
+    width: auto !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    table-layout: fixed !important;
+    border-collapse: collapse !important;
+}
+.data-table.extract-table th {
+    text-align: center !important;
+    vertical-align: middle !important;
+    padding: 8px 4px !important;
+    font-size: 0.82rem !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
+}
+.data-table.extract-table td {
+    text-align: center !important;
+    vertical-align: middle !important;
+    padding: 3px 2px !important;
+}
+.data-table.extract-table td input.extract-input,
+.data-table.extract-table td select.extract-select {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    text-align: center !important;
+    margin: 0 auto !important;
+    padding: 4px 2px !important;
+    height: 32px !important;
+    font-size: 0.82rem !important;
+}
+.data-table.extract-table td.amount-cell {
+    text-align: center !important;
+    font-weight: 700 !important;
+    font-size: 0.85rem !important;
+}
+
 </style></head><body>${html}<script>
 // EXPLICIT GLOBAL WINDOW BINDINGS FOR ALL PDF BUTTONS
 if (typeof saveExtractPDF !== 'undefined') window.saveExtractPDF = saveExtractPDF;
@@ -3242,16 +3318,16 @@ function renderSupExtract(){
     if (tableHeader) {
         if (isReadyMix) {
             tableHeader.innerHTML = `<tr>
-                <th style="width:45px;">مسلسل</th>
-                <th style="width:110px;">تاريخ الصب</th>
-                <th style="width:auto;">العنصر</th>
-                <th style="width:75px;">المحتوى</th>
-                <th style="width:75px;">الجهد</th>
-                <th style="width:100px;">كمية الشركة</th>
-                <th style="width:100px;">كمية المورد</th>
-                <th style="width:95px;">السعر</th>
-                <th style="width:115px;">القيمة</th>
-                <th style="width:105px;">إجراء</th>
+                <th style="width:40px;">م</th>
+                <th style="width:100px;">تاريخ الصب</th>
+                <th style="width:150px;">العنصر</th>
+                <th style="width:65px;">المحتوى</th>
+                <th style="width:65px;">الجهد</th>
+                <th style="width:90px;">كمية الشركة</th>
+                <th style="width:90px;">كمية المورد</th>
+                <th style="width:85px;">السعر</th>
+                <th style="width:105px;">القيمة</th>
+                <th style="width:75px;">إجراء</th>
             </tr>`;
         } else {
             tableHeader.innerHTML = `<tr>
@@ -3760,6 +3836,44 @@ function _old_printExpenses(){
     font-size: 0.85rem !important;
 }
 
+
+/* Compact & perfectly centered extract table layout without giant gaps */
+.data-table.extract-table {
+    width: auto !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    table-layout: fixed !important;
+    border-collapse: collapse !important;
+}
+.data-table.extract-table th {
+    text-align: center !important;
+    vertical-align: middle !important;
+    padding: 8px 4px !important;
+    font-size: 0.82rem !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
+}
+.data-table.extract-table td {
+    text-align: center !important;
+    vertical-align: middle !important;
+    padding: 3px 2px !important;
+}
+.data-table.extract-table td input.extract-input,
+.data-table.extract-table td select.extract-select {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    text-align: center !important;
+    margin: 0 auto !important;
+    padding: 4px 2px !important;
+    height: 32px !important;
+    font-size: 0.82rem !important;
+}
+.data-table.extract-table td.amount-cell {
+    text-align: center !important;
+    font-weight: 700 !important;
+    font-size: 0.85rem !important;
+}
+
 </style></head><body>${html}<script>setTimeout(()=>window.print(),500)<\/script>
 <script>setTimeout(()=>window.print(),500)<\/script><script>
 // EXPLICIT GLOBAL WINDOW BINDINGS FOR ALL PDF BUTTONS
@@ -3920,6 +4034,44 @@ function _old_printRevenue(){
     padding: 4px 2px !important;
     height: 34px !important;
     font-size: 0.85rem !important;
+}
+.data-table.extract-table td.amount-cell {
+    text-align: center !important;
+    font-weight: 700 !important;
+    font-size: 0.85rem !important;
+}
+
+
+/* Compact & perfectly centered extract table layout without giant gaps */
+.data-table.extract-table {
+    width: auto !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    table-layout: fixed !important;
+    border-collapse: collapse !important;
+}
+.data-table.extract-table th {
+    text-align: center !important;
+    vertical-align: middle !important;
+    padding: 8px 4px !important;
+    font-size: 0.82rem !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
+}
+.data-table.extract-table td {
+    text-align: center !important;
+    vertical-align: middle !important;
+    padding: 3px 2px !important;
+}
+.data-table.extract-table td input.extract-input,
+.data-table.extract-table td select.extract-select {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    text-align: center !important;
+    margin: 0 auto !important;
+    padding: 4px 2px !important;
+    height: 32px !important;
+    font-size: 0.82rem !important;
 }
 .data-table.extract-table td.amount-cell {
     text-align: center !important;
@@ -4786,6 +4938,44 @@ function printStockCard() {
     padding: 4px 2px !important;
     height: 34px !important;
     font-size: 0.85rem !important;
+}
+.data-table.extract-table td.amount-cell {
+    text-align: center !important;
+    font-weight: 700 !important;
+    font-size: 0.85rem !important;
+}
+
+
+/* Compact & perfectly centered extract table layout without giant gaps */
+.data-table.extract-table {
+    width: auto !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    table-layout: fixed !important;
+    border-collapse: collapse !important;
+}
+.data-table.extract-table th {
+    text-align: center !important;
+    vertical-align: middle !important;
+    padding: 8px 4px !important;
+    font-size: 0.82rem !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
+}
+.data-table.extract-table td {
+    text-align: center !important;
+    vertical-align: middle !important;
+    padding: 3px 2px !important;
+}
+.data-table.extract-table td input.extract-input,
+.data-table.extract-table td select.extract-select {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    text-align: center !important;
+    margin: 0 auto !important;
+    padding: 4px 2px !important;
+    height: 32px !important;
+    font-size: 0.82rem !important;
 }
 .data-table.extract-table td.amount-cell {
     text-align: center !important;
