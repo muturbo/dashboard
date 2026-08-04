@@ -3062,7 +3062,8 @@ function renderSupExtract(){
                 <th>العنصر</th>
                 <th>المحتوى</th>
                 <th>الجهد</th>
-                <th>الكمية</th>
+                <th>كمية المورد</th>
+                <th>كمية الشركة</th>
                 <th>السعر</th>
                 <th>القيمة</th>
                 <th style="width:45px;">إجراء</th>
@@ -3086,7 +3087,7 @@ function renderSupExtract(){
     const tfootRow = gi('supExtractTable').querySelector('tfoot tr');
     if (tfootRow) {
         if (isReadyMix) {
-            tfootRow.innerHTML = `<td colspan="7"><strong>إجمالي القيمة للمورد</strong></td><td class="amount-cell" id="supExtractGrandTotal">0</td><td></td>`;
+            tfootRow.innerHTML = `<td colspan="8"><strong>إجمالي القيمة للمورد</strong></td><td class="amount-cell" id="supExtractGrandTotal">0</td><td></td>`;
         } else {
             tfootRow.innerHTML = `<td colspan="8"><strong>إجمالي المستحق للمورد</strong></td><td class="amount-cell" id="supExtractGrandTotal">0</td><td></td>`;
         }
@@ -3158,7 +3159,7 @@ function addSupExtractRow(){
     if(!ex.rows) ex.rows = [];
     const isReadyMix = isReadyMixItem(ex.item);
     if(isReadyMix) {
-        ex.rows.push({ rowDate: today(), element: '', content: '', strength: '', qty: 0, price: 0 });
+        ex.rows.push({ rowDate: today(), element: '', content: '', strength: '', supplierQty: 0, qty: 0, price: 0 });
     } else {
         ex.rows.push({ rowDate: today(), description: '', unit: 'م³', invoiceNo: '', qty: 0, price: 0, discounts: 0 });
     }
@@ -3273,7 +3274,7 @@ function printSupExtract(){
     const td='padding:2.5px 4px;border:1px solid #ccc;text-align:center;font-size:11px;';
 
     const headers = isReadyMix ?
-        ['م','تاريخ الصب','العنصر','المحتوى','الجهد','الكمية','السعر','القيمة'] :
+        ['م','تاريخ الصب','العنصر','المحتوى','الجهد','كمية المورد','كمية الشركة','السعر','القيمة'] :
         ['م','التاريخ','البيان','الوحدة','رقم الفاتورة','الكمية','السعر','خصومات','إجمالي المستحق'];
 
     const html=`<div style="font-family:Cairo,sans-serif;direction:rtl;padding:20px;color:#333;">
@@ -3291,7 +3292,7 @@ function printSupExtract(){
             <tbody>${ex.rows.map((r,i)=>{
                 if (isReadyMix) {
                     const rowTotal=(r.qty||0)*(r.price||0);
-                    return `<tr>${[i+1, fmtDate(r.rowDate), r.element||r.description||'—', toAr(r.content||'—'), toAr(r.strength||'—'), fmtNum(r.qty||0), fmtNum(r.price||0), fmtNum(rowTotal)].map(c=>`<td style="${td}">${c}</td>`).join('')}</tr>`;
+                    return `<tr>${[i+1, fmtDate(r.rowDate), r.element||r.description||'—', toAr(r.content||'—'), toAr(r.strength||'—'), fmtNum(r.supplierQty||0), fmtNum(r.qty||0), fmtNum(r.price||0), fmtNum(rowTotal)].map(c=>`<td style="${td}">${c}</td>`).join('')}</tr>`;
                 } else {
                     const rowTotal=(r.qty||0)*(r.price||0)-(r.discounts||0);
                     return `<tr>${[i+1, fmtDate(r.rowDate), r.description||'—', r.unit, r.invoiceNo||'—', fmtNum(r.qty||0), fmtNum(r.price||0), fmtNum(r.discounts||0), fmtNum(rowTotal)].map(c=>`<td style="${td}">${c}</td>`).join('')}</tr>`;
@@ -4920,7 +4921,7 @@ function exportSupExtractToExcel() {
     if(isReadyMix) {
         data = [
             ['مستخلص خرسانة جاهزة رقم:', ex.number, 'المورد:', ex.supplier, 'البند:', ex.item, 'التاريخ:', (ex.date || '').replace(/-/g, '/')],
-            ['مسلسل', 'تاريخ الصب', 'العنصر', 'المحتوى', 'الجهد', 'الكمية', 'السعر', 'القيمة (ج.م)']
+            ['مسلسل', 'تاريخ الصب', 'العنصر', 'المحتوى', 'الجهد', 'كمية المورد', 'كمية الشركة', 'السعر', 'القيمة (ج.م)']
         ];
         ex.rows.forEach((r, i) => {
             const rowNum = i + 3;
@@ -4930,14 +4931,15 @@ function exportSupExtractToExcel() {
                 r.element || r.description || '-',
                 r.content || '-',
                 r.strength || '-',
+                r.supplierQty || 0,
                 r.qty || 0,
                 r.price || 0,
-                { f: `F${rowNum}*G${rowNum}` } // Formula Qty * Price
+                { f: `G${rowNum}*H${rowNum}` } // Formula Company Qty * Price
             ]);
         });
         if(ex.rows.length > 0) {
             const lastRow = ex.rows.length + 2;
-            data.push(['إجمالي القيمة للمورد', '', '', '', '', '', '', { f: `SUM(H3:H${lastRow})` }]);
+            data.push(['إجمالي القيمة للمورد', '', '', '', '', '', '', '', { f: `SUM(I3:I${lastRow})` }]);
         }
     } else {
         data = [
