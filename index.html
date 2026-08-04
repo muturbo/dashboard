@@ -2543,7 +2543,8 @@ function renderCombinedSupExtract(){
                 <th>العنصر</th>
                 <th>المحتوى</th>
                 <th>الجهد</th>
-                <th>الكمية</th>
+                <th>كمية الشركة</th>
+                <th>كمية المورد</th>
                 <th>السعر</th>
                 <th>القيمة</th>
                 <th style="width:70px;">الإجراء</th>
@@ -2575,9 +2576,10 @@ function renderCombinedSupExtract(){
                     <td>${r.element || r.description || '—'}</td>
                     <td>${r.content || '—'}</td>
                     <td>${r.strength || '—'}</td>
-                    <td class="num">${fmtNum(r.qty || 0)}</td>
+                    <td class="num font-bold">${fmtNum(r.qty || 0)}</td>
+                    <td class="num">${fmtNum(r.supplierQty || 0)}</td>
                     <td class="amount-cell">${fmtNum(r.price || 0)}</td>
-                    <td class="amount-cell calculated">${fmtNum(rowTotal)}</td>
+                    <td class="amount-cell calculated font-bold">${fmtNum(rowTotal)}</td>
                     <td><span class="text-muted" style="font-size:0.75rem; color:#888;">مجمع</span></td>
                 </tr>`;
             } else {
@@ -3114,6 +3116,7 @@ function renderSupExtract(){
                 <td><input type="text" class="extract-input" placeholder="المحتوى" value="${r.content||''}" onchange="updateSupExtractRow(${origIdx},'content',this.value)"></td>
                 <td><input type="text" class="extract-input" placeholder="الجهد" value="${r.strength||''}" onchange="updateSupExtractRow(${origIdx},'strength',this.value)"></td>
                 <td><input type="number" class="extract-input num qty-cell" value="${r.qty||0}" min="0" step="0.01" oninput="updateSupExtractRow(${origIdx},'qty',parseFloat(this.value)||0,this)" onchange="updateSupExtractRow(${origIdx},'qty',parseFloat(this.value)||0,this);save();"></td>
+                <td><input type="number" class="extract-input num supplier-qty-cell" value="${r.supplierQty||0}" min="0" step="0.01" oninput="updateSupExtractRow(${origIdx},'supplierQty',parseFloat(this.value)||0,this)" onchange="updateSupExtractRow(${origIdx},'supplierQty',parseFloat(this.value)||0,this);save();"></td>
                 <td><input type="number" class="extract-input num price-cell" value="${r.price||0}" min="0" step="0.01" oninput="updateSupExtractRow(${origIdx},'price',parseFloat(this.value)||0,this)" onchange="updateSupExtractRow(${origIdx},'price',parseFloat(this.value)||0,this);save();"></td>
                 <td class="amount-cell calculated">${fmtNum(rowTotal)}</td>
                 <td class="action-buttons"><button class="btn btn-reorder" onclick="moveSupExtractRow(${origIdx},-1)" ${origIdx===0?'disabled':''}>▲</button><button class="btn btn-reorder" onclick="moveSupExtractRow(${origIdx},1)" ${origIdx===ex.rows.length-1?'disabled':''}>▼</button><button class="btn btn-icon-only btn-delete" onclick="removeSupExtractRow(${origIdx})">🗑️</button></td>
