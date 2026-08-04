@@ -2431,6 +2431,45 @@ function printHTMLContent(html, documentTitle) {
     font-weight: 700 !important;
 }
 
+
+/* Mandatory table-layout: fixed for 100% pixel-perfect column alignment between TH and TD */
+.data-table.extract-table {
+    width: 100% !important;
+    table-layout: fixed !important;
+    border-collapse: collapse !important;
+}
+.data-table.extract-table th {
+    text-align: center !important;
+    vertical-align: middle !important;
+    padding: 8px 4px !important;
+    font-size: 0.85rem !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+.data-table.extract-table td {
+    text-align: center !important;
+    vertical-align: middle !important;
+    padding: 4px 2px !important;
+    overflow: hidden !important;
+}
+.data-table.extract-table td input.extract-input,
+.data-table.extract-table td select.extract-select {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    text-align: center !important;
+    margin: 0 !important;
+    padding: 4px 2px !important;
+    height: 34px !important;
+    font-size: 0.85rem !important;
+}
+.data-table.extract-table td.amount-cell {
+    text-align: center !important;
+    font-weight: 700 !important;
+    font-size: 0.85rem !important;
+}
+
 </style></head><body>${html}<script>
 // EXPLICIT GLOBAL WINDOW BINDINGS FOR ALL PDF BUTTONS
 if (typeof saveExtractPDF !== 'undefined') window.saveExtractPDF = saveExtractPDF;
@@ -2590,16 +2629,16 @@ function renderCombinedSupExtract(){
     if (tableHeader) {
         if (isReadyMix) {
             tableHeader.innerHTML = `<tr>
-                <th style="width:3%;">م</th>
-                <th style="width:13%;">تاريخ الصب</th>
-                <th style="width:22%;">العنصر</th>
-                <th style="width:8%;">المحتوى</th>
-                <th style="width:8%;">الجهد</th>
-                <th style="width:10%;">كمية الشركة</th>
-                <th style="width:10%;">كمية المورد</th>
-                <th style="width:9%;">السعر</th>
-                <th style="width:11%;">القيمة</th>
-                <th style="width:6%;">إجراء</th>
+                <th style="width:45px;">مسلسل</th>
+                <th style="width:140px;">تاريخ الصب</th>
+                <th style="width:auto;">العنصر</th>
+                <th style="width:75px;">المحتوى</th>
+                <th style="width:75px;">الجهد</th>
+                <th style="width:100px;">كمية الشركة</th>
+                <th style="width:100px;">كمية المورد</th>
+                <th style="width:95px;">السعر</th>
+                <th style="width:115px;">القيمة</th>
+                <th style="width:90px;">إجراء</th>
             </tr>`;
         } else {
             tableHeader.innerHTML = `<tr>
@@ -2870,6 +2909,45 @@ function printHTMLContent(html, documentTitle) {
 .data-table.extract-table td.amount-cell {
     text-align: center !important;
     font-weight: 700 !important;
+}
+
+
+/* Mandatory table-layout: fixed for 100% pixel-perfect column alignment between TH and TD */
+.data-table.extract-table {
+    width: 100% !important;
+    table-layout: fixed !important;
+    border-collapse: collapse !important;
+}
+.data-table.extract-table th {
+    text-align: center !important;
+    vertical-align: middle !important;
+    padding: 8px 4px !important;
+    font-size: 0.85rem !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+.data-table.extract-table td {
+    text-align: center !important;
+    vertical-align: middle !important;
+    padding: 4px 2px !important;
+    overflow: hidden !important;
+}
+.data-table.extract-table td input.extract-input,
+.data-table.extract-table td select.extract-select {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    text-align: center !important;
+    margin: 0 !important;
+    padding: 4px 2px !important;
+    height: 34px !important;
+    font-size: 0.85rem !important;
+}
+.data-table.extract-table td.amount-cell {
+    text-align: center !important;
+    font-weight: 700 !important;
+    font-size: 0.85rem !important;
 }
 
 </style></head><body>${html}<script>
@@ -3164,16 +3242,16 @@ function renderSupExtract(){
     if (tableHeader) {
         if (isReadyMix) {
             tableHeader.innerHTML = `<tr>
-                <th style="width:3%;">م</th>
-                <th style="width:11%;">تاريخ الصب</th>
-                <th style="width:24%;">العنصر</th>
-                <th style="width:8%;">المحتوى</th>
-                <th style="width:8%;">الجهد</th>
-                <th style="width:10%;">كمية الشركة</th>
-                <th style="width:10%;">كمية المورد</th>
-                <th style="width:9%;">السعر</th>
-                <th style="width:11%;">القيمة</th>
-                <th style="width:6%;">إجراء</th>
+                <th style="width:45px;">مسلسل</th>
+                <th style="width:110px;">تاريخ الصب</th>
+                <th style="width:auto;">العنصر</th>
+                <th style="width:75px;">المحتوى</th>
+                <th style="width:75px;">الجهد</th>
+                <th style="width:100px;">كمية الشركة</th>
+                <th style="width:100px;">كمية المورد</th>
+                <th style="width:95px;">السعر</th>
+                <th style="width:115px;">القيمة</th>
+                <th style="width:105px;">إجراء</th>
             </tr>`;
         } else {
             tableHeader.innerHTML = `<tr>
@@ -3643,6 +3721,45 @@ function _old_printExpenses(){
     font-weight: 700 !important;
 }
 
+
+/* Mandatory table-layout: fixed for 100% pixel-perfect column alignment between TH and TD */
+.data-table.extract-table {
+    width: 100% !important;
+    table-layout: fixed !important;
+    border-collapse: collapse !important;
+}
+.data-table.extract-table th {
+    text-align: center !important;
+    vertical-align: middle !important;
+    padding: 8px 4px !important;
+    font-size: 0.85rem !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+.data-table.extract-table td {
+    text-align: center !important;
+    vertical-align: middle !important;
+    padding: 4px 2px !important;
+    overflow: hidden !important;
+}
+.data-table.extract-table td input.extract-input,
+.data-table.extract-table td select.extract-select {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    text-align: center !important;
+    margin: 0 !important;
+    padding: 4px 2px !important;
+    height: 34px !important;
+    font-size: 0.85rem !important;
+}
+.data-table.extract-table td.amount-cell {
+    text-align: center !important;
+    font-weight: 700 !important;
+    font-size: 0.85rem !important;
+}
+
 </style></head><body>${html}<script>setTimeout(()=>window.print(),500)<\/script>
 <script>setTimeout(()=>window.print(),500)<\/script><script>
 // EXPLICIT GLOBAL WINDOW BINDINGS FOR ALL PDF BUTTONS
@@ -3769,6 +3886,45 @@ function _old_printRevenue(){
 .data-table.extract-table td.amount-cell {
     text-align: center !important;
     font-weight: 700 !important;
+}
+
+
+/* Mandatory table-layout: fixed for 100% pixel-perfect column alignment between TH and TD */
+.data-table.extract-table {
+    width: 100% !important;
+    table-layout: fixed !important;
+    border-collapse: collapse !important;
+}
+.data-table.extract-table th {
+    text-align: center !important;
+    vertical-align: middle !important;
+    padding: 8px 4px !important;
+    font-size: 0.85rem !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+.data-table.extract-table td {
+    text-align: center !important;
+    vertical-align: middle !important;
+    padding: 4px 2px !important;
+    overflow: hidden !important;
+}
+.data-table.extract-table td input.extract-input,
+.data-table.extract-table td select.extract-select {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    text-align: center !important;
+    margin: 0 !important;
+    padding: 4px 2px !important;
+    height: 34px !important;
+    font-size: 0.85rem !important;
+}
+.data-table.extract-table td.amount-cell {
+    text-align: center !important;
+    font-weight: 700 !important;
+    font-size: 0.85rem !important;
 }
 
 </style></head><body>${html}<script>setTimeout(()=>window.print(),500)<\/script>
@@ -4596,6 +4752,45 @@ function printStockCard() {
 .data-table.extract-table td.amount-cell {
     text-align: center !important;
     font-weight: 700 !important;
+}
+
+
+/* Mandatory table-layout: fixed for 100% pixel-perfect column alignment between TH and TD */
+.data-table.extract-table {
+    width: 100% !important;
+    table-layout: fixed !important;
+    border-collapse: collapse !important;
+}
+.data-table.extract-table th {
+    text-align: center !important;
+    vertical-align: middle !important;
+    padding: 8px 4px !important;
+    font-size: 0.85rem !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+.data-table.extract-table td {
+    text-align: center !important;
+    vertical-align: middle !important;
+    padding: 4px 2px !important;
+    overflow: hidden !important;
+}
+.data-table.extract-table td input.extract-input,
+.data-table.extract-table td select.extract-select {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    text-align: center !important;
+    margin: 0 !important;
+    padding: 4px 2px !important;
+    height: 34px !important;
+    font-size: 0.85rem !important;
+}
+.data-table.extract-table td.amount-cell {
+    text-align: center !important;
+    font-weight: 700 !important;
+    font-size: 0.85rem !important;
 }
 
 </style></head><body>${html}<script>setTimeout(()=>window.print(),500)<\/script>
