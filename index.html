@@ -1485,12 +1485,22 @@ async function loadFromServer(){
 
             if (Array.isArray(data.items) && data.items.length > 0) items = data.items;
             if (Array.isArray(data.contractors) && data.contractors.length > 0) contractors = data.contractors;
-            if (Array.isArray(data.payments)) payments = data.payments;
-            if (Array.isArray(data.extracts)) extracts = data.extracts;
-            if (Array.isArray(data.supplierExtracts)) supplierExtracts = data.supplierExtracts;
-            if (Array.isArray(data.inventory)) inventory = data.inventory;
-            if (Array.isArray(data.supplyItemsList)) supplyItemsList = data.supplyItemsList;
-            if (Array.isArray(data.expenses)) expenses = data.expenses;
+            if (Array.isArray(data.payments) && data.payments.length > 0) payments = data.payments;
+            if (Array.isArray(data.extracts) && data.extracts.length > 0) extracts = data.extracts;
+            if (Array.isArray(data.supplierExtracts) && data.supplierExtracts.length > 0) supplierExtracts = data.supplierExtracts;
+            if (Array.isArray(data.inventory) && data.inventory.length > 0) inventory = data.inventory;
+            if (Array.isArray(data.supplyItemsList) && data.supplyItemsList.length > 0) supplyItemsList = data.supplyItemsList;
+            if (Array.isArray(data.expenses) && data.expenses.length > 0) expenses = data.expenses;
+
+            // FAILSAFE: If any array is still empty, restore from EMBEDDED_BACKUP_DATA
+            if (typeof EMBEDDED_BACKUP_DATA !== 'undefined' && EMBEDDED_BACKUP_DATA) {
+                if (!Array.isArray(contractors) || contractors.length === 0) contractors = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.contractors || []));
+                if (!Array.isArray(payments) || payments.length === 0) payments = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.payments || []));
+                if (!Array.isArray(items) || items.length === 0) items = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.items || []));
+                if (!Array.isArray(extracts) || extracts.length === 0) extracts = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.extracts || []));
+                if (!Array.isArray(supplierExtracts) || supplierExtracts.length === 0) supplierExtracts = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.supplierExtracts || []));
+                if (!Array.isArray(expenses) || expenses.length === 0) expenses = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.expenses || []));
+            }
             if (Array.isArray(data.revenue)) revenue = data.revenue;
 
             sanitizeRows();
