@@ -715,7 +715,7 @@
             <div class="card">
                 <div class="table-wrapper">
                     <table class="data-table" id="expensesTable">
-                        <thead><tr><th>م</th><th>تاريخ الصرف</th><th>بيان المصروف</th><th>نوع المصروف</th><th>اسم المستفيد</th><th>القيمة</th><th>حذف</th></tr></thead>
+                        <thead><tr><th>م</th><th>تاريخ الصرف</th><th>بيان المصروف</th><th>نوع المصروف</th><th>اسم المستفيد</th><th>القيمة</th><th>تعديل / حذف</th></tr></thead>
                         <tbody id="expensesBody"></tbody>
                     </table>
                 </div>
@@ -3594,8 +3594,14 @@ function openEditExpenseModal(target) {
         showToast('⚠️ تعذر فتح التعديل: المصروف غير موجود', 'error');
         return;
     }
+    
+    // Enable inline editing as primary direct edit mode
+    const idx = expenses.indexOf(exp);
+    editExpenseInline(idx);
+    
+    // Also populate modal as secondary option
     const setV = (elemId, val) => { const el = gi(elemId); if (el) el.value = val !== undefined && val !== null ? val : ''; };
-    setV('editExpenseIndex', expenses.indexOf(exp));
+    setV('editExpenseIndex', idx);
     setV('editExpenseId', exp.id || '');
     setV('editExpenseDate', formatDateDMY(exp.date));
     setV('editExpenseDescription', exp.description || '');
@@ -3691,6 +3697,57 @@ function submitEditRevenue(e) {
     showToast('✅ تم تعديل الإيراد بنجاح', 'success');
 }
 
+let editingExpenseIndex = -1;
+
+function editExpenseInline(idx) {
+    editingExpenseIndex = idx;
+    renderExpenses();
+}
+
+function cancelEditExpenseInline() {
+    editingExpenseIndex = -1;
+    renderExpenses();
+}
+
+function saveExpenseInline(idx) {
+    if (!expenses || !expenses[idx]) return;
+    const dateEl = gi('inline_exp_date_' + idx);
+    const descEl = gi('inline_exp_desc_' + idx);
+    const typeEl = gi('inline_exp_type_' + idx);
+    const benEl = gi('inline_exp_ben_' + idx);
+    const amtEl = gi('inline_exp_amt_' + idx);
+    
+    if (!dateEl || !descEl || !typeEl || !benEl || !amtEl) return;
+    
+    const date = dateEl.value.trim();
+    const desc = descEl.value.trim();
+    const type = typeEl.value.trim();
+    const ben = benEl.value.trim();
+    const amt = parseFloat(amtEl.value);
+    
+    if (!date || !desc || !type || !ben || isNaN(amt) || amt <= 0) {
+        showToast('⚠️ يرجى ملء كافة البيانات المطلوبة للتعديل', 'error');
+        return;
+    }
+    
+    expenses[idx].date = formatDateDMY(date);
+    expenses[idx].description = desc;
+    expenses[idx].type = type;
+    expenses[idx].beneficiary = ben;
+    expenses[idx].amount = amt;
+    expenses[idx].updatedAt = new Date().toISOString();
+    
+    editingExpenseIndex = -1;
+    save();
+    renderExpenses();
+    renderOverview();
+    renderFinancialSummary();
+    showToast('✅ تم تعديل المصروف بنجاح', 'success');
+}
+
+window.editExpenseInline = editExpenseInline;
+window.cancelEditExpenseInline = cancelEditExpenseInline;
+window.saveExpenseInline = saveExpenseInline;
 window.openEditExpenseModal = openEditExpenseModal;
 window.submitEditExpense = submitEditExpense;
 window.openEditRevenueModal = openEditRevenueModal;
@@ -3722,8 +3779,32 @@ function renderExpenses(){
         } else {
             tb.innerHTML = fil.map((r,i) => {
                 const realIdx = expenses.indexOf(r);
-                const itemKey = r.id || realIdx;
-                return `<tr style="animation-delay:${Math.min(i*0.02,0.5)}s"><td>${toAr(i+1)}</td><td class="date-cell">${fmtDate(r.date)}</td><td><strong>${r.description||'—'}</strong></td><td>${r.type||'—'}</td><td>${r.beneficiary||'—'}</td><td class="amount-cell">${fmtCur(r.amount)}</td><td><button class="btn btn-icon-only btn-edit" onclick="openEditExpenseModal(${realIdx})" title="تعديل" style="margin-left:4px;">✏️</button><button class="btn btn-icon-only btn-delete" onclick="confirmDeleteExpense(${realIdx})" title="حذف">🗑️</button></td></tr>`;
+                if (typeof editingExpenseIndex !== 'undefined' && editingExpenseIndex === realIdx) {
+                    return `<tr style="background:#fff9c4;">
+                        <td>${toAr(i+1)}</td>
+                        <td><input type="text" class="extract-input" id="inline_exp_date_${realIdx}" value="${formatDateDMY(r.date)}" style="width:90px;text-align:center;"></td>
+                        <td><input type="text" class="extract-input" id="inline_exp_desc_${realIdx}" value="${r.description||''}" style="width:140px;"></td>
+                        <td><input type="text" class="extract-input" id="inline_exp_type_${realIdx}" value="${r.type||''}" style="width:100px;"></td>
+                        <td><input type="text" class="extract-input" id="inline_exp_ben_${realIdx}" value="${r.beneficiary||''}" style="width:120px;"></td>
+                        <td><input type="number" class="extract-input num" id="inline_exp_amt_${realIdx}" value="${r.amount||''}" style="width:80px;text-align:center;"></td>
+                        <td style="white-space:nowrap;text-align:center;">
+                            <button type="button" class="btn btn-sm btn-success" onclick="saveExpenseInline(${realIdx})" title="حفظ التعديل" style="padding:3px 8px;margin-left:4px;font-size:12px;">💾 حفظ</button>
+                            <button type="button" class="btn btn-sm btn-ghost" onclick="cancelEditExpenseInline()" title="إلغاء" style="padding:3px 6px;font-size:12px;">✕</button>
+                        </td>
+                    </tr>`;
+                }
+                return `<tr style="animation-delay:${Math.min(i*0.02,0.5)}s">
+                    <td>${toAr(i+1)}</td>
+                    <td class="date-cell">${fmtDate(r.date)}</td>
+                    <td><strong>${r.description||'—'}</strong></td>
+                    <td>${r.type||'—'}</td>
+                    <td>${r.beneficiary||'—'}</td>
+                    <td class="amount-cell">${fmtCur(r.amount)}</td>
+                    <td style="white-space:nowrap;text-align:center;">
+                        <button type="button" class="btn btn-icon-only btn-edit" onclick="openEditExpenseModal(${realIdx})" title="تعديل المصروف" style="margin-left:4px;">✏️</button>
+                        <button type="button" class="btn btn-icon-only btn-delete" onclick="confirmDeleteExpense(${realIdx})" title="حذف المصروف">🗑️</button>
+                    </td>
+                </tr>`;
             }).join('');
         }
     }
@@ -4555,7 +4636,58 @@ if (typeof updateSupExtractRow !== 'undefined') window.updateSupExtractRow = upd
 if (typeof printSupExtract !== 'undefined') window.printSupExtract = printSupExtract;
 if (typeof printPayments !== 'undefined') window.printPayments = printPayments;if (typeof savePaymentsPDF !== 'undefined') window.savePaymentsPDF = savePaymentsPDF;if (typeof onPaymentItemFilterChange !== 'undefined') window.onPaymentItemFilterChange = onPaymentItemFilterChange;
 if (typeof printBalances !== 'undefined') window.printBalances = printBalances;if (typeof saveBalancesPDF !== 'undefined') window.saveBalancesPDF = saveBalancesPDF;
-if (typeof openEditExpenseModal !== 'undefined') window.openEditExpenseModal = openEditExpenseModal;if (typeof submitEditExpense !== 'undefined') window.submitEditExpense = submitEditExpense;if (typeof submitAddExpense !== 'undefined') window.submitAddExpense = submitAddExpense;if (typeof confirmDeleteExpense !== 'undefined') window.confirmDeleteExpense = confirmDeleteExpense;if (typeof printExpenses !== 'undefined') window.printExpenses = printExpenses;if (typeof saveExpensesPDF !== 'undefined') window.saveExpensesPDF = saveExpensesPDF;
+if (typeof openEditExpenseModal !== 'undefined') let editingExpenseIndex = -1;
+
+function editExpenseInline(idx) {
+    editingExpenseIndex = idx;
+    renderExpenses();
+}
+
+function cancelEditExpenseInline() {
+    editingExpenseIndex = -1;
+    renderExpenses();
+}
+
+function saveExpenseInline(idx) {
+    if (!expenses || !expenses[idx]) return;
+    const dateEl = gi('inline_exp_date_' + idx);
+    const descEl = gi('inline_exp_desc_' + idx);
+    const typeEl = gi('inline_exp_type_' + idx);
+    const benEl = gi('inline_exp_ben_' + idx);
+    const amtEl = gi('inline_exp_amt_' + idx);
+    
+    if (!dateEl || !descEl || !typeEl || !benEl || !amtEl) return;
+    
+    const date = dateEl.value.trim();
+    const desc = descEl.value.trim();
+    const type = typeEl.value.trim();
+    const ben = benEl.value.trim();
+    const amt = parseFloat(amtEl.value);
+    
+    if (!date || !desc || !type || !ben || isNaN(amt) || amt <= 0) {
+        showToast('⚠️ يرجى ملء كافة البيانات المطلوبة للتعديل', 'error');
+        return;
+    }
+    
+    expenses[idx].date = formatDateDMY(date);
+    expenses[idx].description = desc;
+    expenses[idx].type = type;
+    expenses[idx].beneficiary = ben;
+    expenses[idx].amount = amt;
+    expenses[idx].updatedAt = new Date().toISOString();
+    
+    editingExpenseIndex = -1;
+    save();
+    renderExpenses();
+    renderOverview();
+    renderFinancialSummary();
+    showToast('✅ تم تعديل المصروف بنجاح', 'success');
+}
+
+window.editExpenseInline = editExpenseInline;
+window.cancelEditExpenseInline = cancelEditExpenseInline;
+window.saveExpenseInline = saveExpenseInline;
+window.openEditExpenseModal = openEditExpenseModal;if (typeof submitEditExpense !== 'undefined') window.submitEditExpense = submitEditExpense;if (typeof submitAddExpense !== 'undefined') window.submitAddExpense = submitAddExpense;if (typeof confirmDeleteExpense !== 'undefined') window.confirmDeleteExpense = confirmDeleteExpense;if (typeof printExpenses !== 'undefined') window.printExpenses = printExpenses;if (typeof saveExpensesPDF !== 'undefined') window.saveExpensesPDF = saveExpensesPDF;
 if (typeof submitAddRevenue !== 'undefined') window.submitAddRevenue = submitAddRevenue;if (typeof confirmDeleteRevenue !== 'undefined') window.confirmDeleteRevenue = confirmDeleteRevenue;if (typeof printRevenue !== 'undefined') window.printRevenue = printRevenue;if (typeof saveRevenuePDF !== 'undefined') window.saveRevenuePDF = saveRevenuePDF;
 
 // ========================================
