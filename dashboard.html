@@ -3602,7 +3602,15 @@ function openEditExpenseModal(target) {
     setV('editExpenseType', exp.type || '');
     setV('editExpenseBeneficiary', exp.beneficiary || '');
     setV('editExpenseAmount', exp.amount || '');
+    
     openModal('editExpenseModal');
+    const modal = gi('editExpenseModal');
+    if (modal) {
+        modal.classList.add('active');
+        modal.style.display = 'flex';
+        modal.style.opacity = '1';
+        modal.style.zIndex = '999999';
+    }
 }
 
 function submitEditExpense(e) {
@@ -4547,7 +4555,7 @@ if (typeof updateSupExtractRow !== 'undefined') window.updateSupExtractRow = upd
 if (typeof printSupExtract !== 'undefined') window.printSupExtract = printSupExtract;
 if (typeof printPayments !== 'undefined') window.printPayments = printPayments;if (typeof savePaymentsPDF !== 'undefined') window.savePaymentsPDF = savePaymentsPDF;if (typeof onPaymentItemFilterChange !== 'undefined') window.onPaymentItemFilterChange = onPaymentItemFilterChange;
 if (typeof printBalances !== 'undefined') window.printBalances = printBalances;if (typeof saveBalancesPDF !== 'undefined') window.saveBalancesPDF = saveBalancesPDF;
-if (typeof submitAddExpense !== 'undefined') window.submitAddExpense = submitAddExpense;if (typeof confirmDeleteExpense !== 'undefined') window.confirmDeleteExpense = confirmDeleteExpense;if (typeof printExpenses !== 'undefined') window.printExpenses = printExpenses;if (typeof saveExpensesPDF !== 'undefined') window.saveExpensesPDF = saveExpensesPDF;
+if (typeof openEditExpenseModal !== 'undefined') window.openEditExpenseModal = openEditExpenseModal;if (typeof submitEditExpense !== 'undefined') window.submitEditExpense = submitEditExpense;if (typeof submitAddExpense !== 'undefined') window.submitAddExpense = submitAddExpense;if (typeof confirmDeleteExpense !== 'undefined') window.confirmDeleteExpense = confirmDeleteExpense;if (typeof printExpenses !== 'undefined') window.printExpenses = printExpenses;if (typeof saveExpensesPDF !== 'undefined') window.saveExpensesPDF = saveExpensesPDF;
 if (typeof submitAddRevenue !== 'undefined') window.submitAddRevenue = submitAddRevenue;if (typeof confirmDeleteRevenue !== 'undefined') window.confirmDeleteRevenue = confirmDeleteRevenue;if (typeof printRevenue !== 'undefined') window.printRevenue = printRevenue;if (typeof saveRevenuePDF !== 'undefined') window.saveRevenuePDF = saveRevenuePDF;
 
 // ========================================
