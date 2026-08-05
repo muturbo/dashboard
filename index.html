@@ -3580,17 +3580,24 @@ function printSupExtract(){
 // ========================================
 // EDIT EXPENSE & REVENUE HANDLERS
 // ========================================
-function openEditExpenseModal(id) {
+function openEditExpenseModal(target) {
     if (!expenses || !expenses.length) return;
-    let exp = expenses.find(x => String(x.id) === String(id));
-    if (!exp && typeof id === 'number') exp = expenses[id];
-    if (!exp) exp = expenses.find(x => x.id == id);
+    let exp = null;
+    if (typeof target === 'number' && expenses[target]) {
+        exp = expenses[target];
+    } else {
+        exp = expenses.find(x => String(x.id) === String(target)) || expenses.find(x => x.id == target);
+        if (!exp && !isNaN(parseInt(target)) && expenses[parseInt(target)]) {
+            exp = expenses[parseInt(target)];
+        }
+    }
     if (!exp) {
         showToast('⚠️ تعذر فتح التعديل: المصروف غير موجود', 'error');
         return;
     }
-    const setV = (elemId, val) => { const el = gi(elemId); if (el) el.value = val || ''; };
-    setV('editExpenseId', exp.id);
+    const setV = (elemId, val) => { const el = gi(elemId); if (el) el.value = val !== undefined && val !== null ? val : ''; };
+    setV('editExpenseIndex', expenses.indexOf(exp));
+    setV('editExpenseId', exp.id || '');
     setV('editExpenseDate', formatDateDMY(exp.date));
     setV('editExpenseDescription', exp.description || '');
     setV('editExpenseType', exp.type || '');
@@ -3601,9 +3608,15 @@ function openEditExpenseModal(id) {
 
 function submitEditExpense(e) {
     if (e && e.preventDefault) e.preventDefault();
+    const idxStr = gv('editExpenseIndex');
     const id = gv('editExpenseId');
-    let exp = expenses.find(x => String(x.id) === String(id));
-    if (!exp) exp = expenses.find(x => x.id == id);
+    let exp = null;
+    if (idxStr !== '' && !isNaN(parseInt(idxStr)) && expenses[parseInt(idxStr)]) {
+        exp = expenses[parseInt(idxStr)];
+    }
+    if (!exp && id) {
+        exp = expenses.find(x => String(x.id) === String(id));
+    }
     if (!exp) {
         showToast('⚠️ تعذر الحفظ: المصروف غير موجود', 'error');
         return;
@@ -3619,7 +3632,9 @@ function submitEditExpense(e) {
     exp.type = type;
     exp.beneficiary = beneficiary;
     exp.amount = amount;
+    if (!exp.id) exp.id = 'exp_' + Date.now();
     exp.updatedAt = new Date().toISOString();
+
     save();
     renderExpenses();
     renderOverview();
@@ -3698,13 +3713,27 @@ function renderExpenses(){
         if (!fil.length) {
             tb.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:#888;">لا توجد مصروفات مسجلة</td></tr>';
         } else {
-            tb.innerHTML = fil.map((r,i) => `<tr style="animation-delay:${Math.min(i*0.02,0.5)}s"><td>${toAr(i+1)}</td><td class="date-cell">${fmtDate(r.date)}</td><td><strong>${r.description||'—'}</strong></td><td>${r.type||'—'}</td><td>${r.beneficiary||'—'}</td><td class="amount-cell">${fmtCur(r.amount)}</td><td><button class="btn btn-icon-only btn-edit" onclick="openEditExpenseModal('${r.id}')" title="تعديل" style="margin-left:4px;">✏️</button><button class="btn btn-icon-only btn-delete" onclick="confirmDeleteExpense('${r.id}')" title="حذف">🗑️</button></td></tr>`).join('');
+            tb.innerHTML = fil.map((r,i) => {
+                const realIdx = expenses.indexOf(r);
+                const itemKey = r.id || realIdx;
+                return `<tr style="animation-delay:${Math.min(i*0.02,0.5)}s"><td>${toAr(i+1)}</td><td class="date-cell">${fmtDate(r.date)}</td><td><strong>${r.description||'—'}</strong></td><td>${r.type||'—'}</td><td>${r.beneficiary||'—'}</td><td class="amount-cell">${fmtCur(r.amount)}</td><td><button class="btn btn-icon-only btn-edit" onclick="openEditExpenseModal(${realIdx})" title="تعديل" style="margin-left:4px;">✏️</button><button class="btn btn-icon-only btn-delete" onclick="confirmDeleteExpense(${realIdx})" title="حذف">🗑️</button></td></tr>`;
+            }).join('');
         }
     }
 }
 
-function confirmDeleteExpense(id){
-    deleteTarget = id; deleteType = 'expense';
+function confirmDeleteExpense(target){
+    let exp = null;
+    if (typeof target === 'number' && expenses[target]) {
+        exp = expenses[target];
+    } else {
+        exp = expenses.find(x => String(x.id) === String(target)) || expenses.find(x => x.id == target);
+        if (!exp && !isNaN(parseInt(target)) && expenses[parseInt(target)]) {
+            exp = expenses[parseInt(target)];
+        }
+    }
+    deleteTarget = exp ? (exp.id || expenses.indexOf(exp)) : target;
+    deleteType = 'expense';
     const txt = gi('deleteModalText');
     if (txt) txt.innerHTML = 'هل تريد حذف هذا المصروف؟';
     openModal('deleteModal');
@@ -5950,6 +5979,7 @@ if (typeof saveStockCardPDF !== 'undefined') window.saveStockCardPDF = saveStock
             </div>
             <form onsubmit="submitEditExpense(event)">
                 <input type="hidden" id="editExpenseId">
+                <input type="hidden" id="editExpenseIndex">
                 <div class="form-group">
                     <label>التاريخ <span class="required">*</span></label>
                     <input type="text" class="text-input date-picker" id="editExpenseDate" required>
