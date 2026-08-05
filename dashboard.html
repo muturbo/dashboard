@@ -107,49 +107,49 @@
                 <div class="stat-card" style="--accent:#00d2ff;--accent-rgb:0,210,255;">
                     <div class="stat-icon-wrap"><span>👷</span></div>
                     <div class="stat-info">
-                        <span class="stat-value" id="statContractors">0</span>
+                        <span class="stat-value" id="statContractors">١٤</span>
                         <span class="stat-label">إجمالي المقاولين</span>
                     </div><div class="stat-decoration"></div>
                 </div>
                 <div class="stat-card" style="--accent:#7c4dff;--accent-rgb:124,77,255;">
                     <div class="stat-icon-wrap"><span>🚚</span></div>
                     <div class="stat-info">
-                        <span class="stat-value" id="statSuppliers">0</span>
+                        <span class="stat-value" id="statSuppliers">٢</span>
                         <span class="stat-label">إجمالي الموردين</span>
                     </div><div class="stat-decoration"></div>
                 </div>
                 <div class="stat-card" style="--accent:#00e676;--accent-rgb:0,230,118;">
                     <div class="stat-icon-wrap"><span>💸💵</span></div>
                     <div class="stat-info">
-                        <span class="stat-value" id="statContractorPaid">٠ ج.م</span>
+                        <span class="stat-value" id="statContractorPaid">١,٦٨٠,٤٥٠ ج.م</span>
                         <span class="stat-label">مدفوعات المقاولين</span>
                     </div><div class="stat-decoration"></div>
                 </div>
                 <div class="stat-card" style="--accent:#00bfa5;--accent-rgb:0,191,165;">
                     <div class="stat-icon-wrap"><span>🚚💵</span></div>
                     <div class="stat-info">
-                        <span class="stat-value" id="statSupplierPaid">٠ ج.م</span>
+                        <span class="stat-value" id="statSupplierPaid">٣,٥٠٠,٠٠٠ ج.م</span>
                         <span class="stat-label">مدفوعات الموردين</span>
                     </div><div class="stat-decoration"></div>
                 </div>
                 <div class="stat-card" style="--accent:#7c4dff;--accent-rgb:124,77,255;">
                     <div class="stat-icon-wrap"><span>💵</span></div>
                     <div class="stat-info">
-                        <span class="stat-value" id="statTotalPaid">٠ ج.م</span>
+                        <span class="stat-value" id="statTotalPaid">٥,١٨٠,٤٥٠ ج.م</span>
                         <span class="stat-label">إجمالي المدفوعات</span>
                     </div><div class="stat-decoration"></div>
                 </div>
                 <div class="stat-card" style="--accent:#ff5252;--accent-rgb:255,82,82;">
                     <div class="stat-icon-wrap"><span>📉</span></div>
                     <div class="stat-info">
-                        <span class="stat-value" id="statOutstanding">٠ ج.م</span>
+                        <span class="stat-value" id="statOutstanding">٦,١٥٠,٥٣٥ ج.م</span>
                         <span class="stat-label">الارصده الدائنه المستحقه</span>
                     </div><div class="stat-decoration"></div>
                 </div>
                 <div class="stat-card" style="--accent:#ff9100;--accent-rgb:255,145,0;">
                     <div class="stat-icon-wrap"><span>📈</span></div>
                     <div class="stat-info">
-                        <span class="stat-value" id="statExpenses">٠ ج.م</span>
+                        <span class="stat-value" id="statExpenses">١٤,٠٨٥,٢٢٤ ج.م</span>
                         <span class="stat-label">مصروفات العمليات</span>
                     </div><div class="stat-decoration"></div>
                 </div>
@@ -2181,12 +2181,14 @@ function renderOverview(){
     const supEl=gi('statSupplierPaid');if(supEl)supEl.textContent=fmtCur(supPayTotal);
     // Grand total
     const tp=ctrPayTotal+supPayTotal;
-    gi('statTotalPaid').textContent=fmtCur(tp);
+    const stp=gi('statTotalPaid');if(stp)stp.textContent=fmtCur(tp);
     // Recent 5
     const recent=[...payments].sort((a,b)=>parseDateValue(b.date)-parseDateValue(a.date)).slice(0,5);
     const tb=gi('recentBody'),em=gi('recentEmpty');
-    if(!recent.length){tb.innerHTML='';show('recentEmpty');hide('recentTable');}
-    else{hide('recentEmpty');show('recentTable');tb.innerHTML=recent.map((p,i)=>`<tr style="animation-delay:${i*0.05}s"><td>${p.contractor}</td><td>${itemBadge(p.item)}</td><td class="amount-cell">${fmtCur(p.amount)}</td><td class="date-cell">${fmtDate(p.date)}</td></tr>`).join('');}
+    if(tb){
+        if(!recent.length){tb.innerHTML='';show('recentEmpty');hide('recentTable');}
+        else{hide('recentEmpty');show('recentTable');tb.innerHTML=recent.map((p,i)=>`<tr style="animation-delay:${i*0.05}s"><td>${p.contractor}</td><td>${itemBadge(p.item)}</td><td class="amount-cell">${fmtCur(p.amount)}</td><td class="date-cell">${fmtDate(p.date)}</td></tr>`).join('');}
+    }
     const expTotal=expenses.reduce((s,x)=>s+x.amount,0);
     const revTotal=revenue.reduce((s,x)=>s+x.amount,0);
     const ovE=gi('statExpenses');if(ovE)ovE.textContent=fmtCur(expTotal);
