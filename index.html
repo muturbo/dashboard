@@ -1282,7 +1282,7 @@ function sanitizeRows(){
     if(extracts && Array.isArray(extracts)) extracts.forEach(ex=>{if(!Array.isArray(ex.rows))ex.rows=[];});
     const fixD = (s) => s ? String(s).replace(/-/g, '/') : s;
     if(payments && Array.isArray(payments)) payments.forEach(p => { if(p.date) p.date = fixD(p.date); });
-    if(expenses && Array.isArray(expenses)) expenses.forEach(e => { if(e.date) e.date = fixD(e.date); });
+    if(expenses && Array.isArray(expenses)) expenses.forEach((e, idx) => { if(e.date) e.date = fixD(e.date); if(!e.id) e.id = 'exp_' + (Date.now() + idx); });
     if(revenue && Array.isArray(revenue)) revenue.forEach(r => { if(r.date) r.date = fixD(r.date); });
     if(extracts && Array.isArray(extracts)) extracts.forEach(ex => {
         if(ex.date) ex.date = fixD(ex.date);
@@ -3581,30 +3581,40 @@ function printSupExtract(){
 // EDIT EXPENSE & REVENUE HANDLERS
 // ========================================
 function openEditExpenseModal(id) {
-    const exp = expenses.find(x => String(x.id) === String(id));
-    if (!exp) return;
+    if (!expenses || !expenses.length) return;
+    let exp = expenses.find(x => String(x.id) === String(id));
+    if (!exp && typeof id === 'number') exp = expenses[id];
+    if (!exp) exp = expenses.find(x => x.id == id);
+    if (!exp) {
+        showToast('⚠️ تعذر فتح التعديل: المصروف غير موجود', 'error');
+        return;
+    }
     const setV = (elemId, val) => { const el = gi(elemId); if (el) el.value = val || ''; };
     setV('editExpenseId', exp.id);
-    setV('editExpenseDate', exp.date);
-    setV('editExpenseDescription', exp.description);
-    setV('editExpenseType', exp.type);
-    setV('editExpenseBeneficiary', exp.beneficiary);
-    setV('editExpenseAmount', exp.amount);
+    setV('editExpenseDate', formatDateDMY(exp.date));
+    setV('editExpenseDescription', exp.description || '');
+    setV('editExpenseType', exp.type || '');
+    setV('editExpenseBeneficiary', exp.beneficiary || '');
+    setV('editExpenseAmount', exp.amount || '');
     openModal('editExpenseModal');
 }
 
 function submitEditExpense(e) {
     if (e && e.preventDefault) e.preventDefault();
     const id = gv('editExpenseId');
-    const exp = expenses.find(x => String(x.id) === String(id));
-    if (!exp) return;
-    const date = gv('editExpenseDate'), desc = gv('editExpenseDescription').trim(), type = gv('editExpenseType');
+    let exp = expenses.find(x => String(x.id) === String(id));
+    if (!exp) exp = expenses.find(x => x.id == id);
+    if (!exp) {
+        showToast('⚠️ تعذر الحفظ: المصروف غير موجود', 'error');
+        return;
+    }
+    const date = gv('editExpenseDate'), desc = gv('editExpenseDescription').trim(), type = gv('editExpenseType').trim();
     const beneficiary = gv('editExpenseBeneficiary').trim(), amount = parseFloat(gv('editExpenseAmount'));
-    if (!date || !desc || !type || !beneficiary || !amount || amount <= 0) {
+    if (!date || !desc || !type || !beneficiary || isNaN(amount) || amount <= 0) {
         showToast('⚠️ أكمل جميع البيانات المطلوبة للتعديل', 'error');
         return;
     }
-    exp.date = date;
+    exp.date = formatDateDMY(date);
     exp.description = desc;
     exp.type = type;
     exp.beneficiary = beneficiary;
@@ -5950,14 +5960,7 @@ if (typeof saveStockCardPDF !== 'undefined') window.saveStockCardPDF = saveStock
                 </div>
                 <div class="form-group">
                     <label>نوع المصروف <span class="required">*</span></label>
-                    <select class="select-input" id="editExpenseType" required>
-                        <option value="إدارية">إدارية</option>
-                        <option value="موقع">موقع</option>
-                        <option value="صيانة">صيانة</option>
-                        <option value="نقل">نقل</option>
-                        <option value="نثرية">نثرية</option>
-                        <option value="أخرى">أخرى</option>
-                    </select>
+                    <input type="text" class="text-input" id="editExpenseType" placeholder="نوع المصروف (مثال: إدارية، صيانة...)" required>
                 </div>
                 <div class="form-group">
                     <label>المستفيد / جهة الصرف <span class="required">*</span></label>
