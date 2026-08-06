@@ -1312,8 +1312,6 @@ body {
   .table-wrapper, .item-group-body {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    margin: 0 -14px;
-    padding: 0 14px;
   }
   
   .data-table {
@@ -1450,3 +1448,13 @@ body {
 .status-dot.green { background: #00e676; box-shadow: 0 0 10px #00e676; }
 .status-dot.red { background: #ff5252; box-shadow: 0 0 10px #ff5252; }
 .status-dot.yellow { background: #ff9100; box-shadow: 0 0 10px #ff9100; }
+
+
+.empty-group-msg {
+  padding: 24px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+  background: #fafafa;
+}
