@@ -2873,7 +2873,7 @@ function renderExtract(){
         <td><input type="text" class="extract-input" value="${r.buildingNo||''}" onchange="updateExtractRow(${origIdx},'buildingNo',this.value)"></td>
         <td><input type="text" class="extract-input wide" value="${r.description||''}" onchange="updateExtractRow(${origIdx},'description',this.value)"></td>
         <td><select class="extract-select" onchange="updateExtractRow(${origIdx},'unit',this.value)">${UNITS.map(u=>`<option${r.unit===u?' selected':''}>${u}</option>`).join('')}</select></td>
-        <td><input type="text" class="extract-input" value="${r.type||''}" onchange="updateExtractRow(${origIdx},'type',this.value)"></td>
+        <td><select class="extract-select" onchange="updateExtractRow(${origIdx},'type',this.value)">${(WORK_TYPES.includes(r.type) || !r.type ? WORK_TYPES : [r.type, ...WORK_TYPES]).map(t => `<option value="${t}"${(r.type || 'تنفيذ') === t ? ' selected' : ''}>${t}</option>`).join('')}</select></td>
         <td><input type="number" class="extract-input num price-cell" value="${r.price||0}" min="0" step="0.01" onchange="updateExtractRow(${origIdx},'price',parseFloat(this.value)||0)"></td>
         <td><input type="number" class="extract-input num" value="${r.itemPct||100}" min="0" max="100" step="1" onchange="updateExtractRow(${origIdx},'itemPct',parseFloat(this.value)||100)"></td>
         <td><input type="number" class="extract-input num" value="${r.prevQty||0}" min="0" step="0.01" onchange="updateExtractRow(${origIdx},'prevQty',parseFloat(this.value)||0)"></td>
