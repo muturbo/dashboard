@@ -2151,7 +2151,76 @@ function renderFinancialSummary(){
 }
 
 function renderStatement(){
-    console.log('[DEBUG] renderStatement called');
+    const item=gv('statementItem'),ctr=gv('statementContractor');
+    const contentEl=gi('statementContent'), noSelEl=gi('noStatementSelected');
+    const printBtn=gi('printStatement'), pdfBtn=gi('pdfStatement');
+    
+    if(!item||!ctr){
+        if(contentEl)contentEl.style.display='none';
+        if(noSelEl)noSelEl.style.display='block';
+        if(printBtn)printBtn.style.display='none';
+        if(pdfBtn)pdfBtn.style.display='none';
+        return;
+    }
+    
+    if(contentEl)contentEl.style.display='block';
+    if(noSelEl)noSelEl.style.display='none';
+    if(printBtn)printBtn.style.display='inline-flex';
+    if(pdfBtn)pdfBtn.style.display='inline-flex';
+    
+    const nameEl=gi('statementName');if(nameEl)nameEl.textContent=ctr;
+    const badgeEl=gi('statementItemBadge');if(badgeEl)badgeEl.textContent=item;
+    const df=gv('statementDateFrom'), dt=gv('statementDateTo'), so=gv('statementSortOrder')||'desc';
+    
+    let cp=payments.filter(p=>p.contractor===ctr&&p.item===item&&(!df||p.date>=df)&&(!dt||p.date<=dt));
+    cp.sort((a,b)=> so==='desc' ? parseDateValue(b.date)-parseDateValue(a.date) : parseDateValue(a.date)-parseDateValue(b.date));
+    
+    const total=cp.reduce((s,p)=>s+p.amount,0);
+    const totEl=gi('statementTotal');if(totEl)totEl.textContent=fmtCur(total);
+    const cntEl=gi('statementPayCount');if(cntEl)cntEl.textContent=toAr(cp.length);
+    
+    const tb=gi('statementBody'), em=gi('statementEmpty'), tbl=gi('statementTable');
+    if(!cp.length){
+        if(tb)tb.innerHTML='';
+        if(em)em.style.display='block';
+        if(tbl)tbl.style.display='none';
+    } else {
+        if(em)em.style.display='none';
+        if(tbl)tbl.style.display='table';
+        if(tb)tb.innerHTML=cp.map((p,i)=>`<tr style="animation-delay:${i*0.02}s">
+            <td>${toAr(i+1)}</td>
+            <td class="amount-cell">${fmtCur(p.amount)}</td>
+            <td class="date-cell">${fmtDate(p.date)}</td>
+            <td>${p.checkNo?toAr(p.checkNo):'—'}</td>
+            <td>${p.notes||'—'}</td>
+        </tr>`).join('');
+    }
+}
+
+function viewStatement(item,ctr){
+    if(typeof showSection==='function')showSection('statement');
+    else if(typeof navigateTo==='function')navigateTo('statement');
+    const itemEl=gi('statementItem');
+    if(itemEl)itemEl.value=item;
+    if(typeof fillContractorDD==='function')fillContractorDD('statementContractor',item);
+    setTimeout(()=>{
+        const ctrEl=gi('statementContractor');
+        if(ctrEl)ctrEl.value=ctr;
+        renderStatement();
+    },50);
+}
+
+function saveStatementPDF(){
+    const item=gv('statementItem'),ctr=gv('statementContractor');
+    if(!item||!ctr)return;
+    const title=`كشف حساب - ${ctr} (${item})`;
+    const content=gi('statementContent');
+    if(!content)return;
+    if(typeof printHTMLContent==='function'){
+        printHTMLContent(content.innerHTML, title);
+    } else {
+        window.print();
+    }
 }
 
 function renderOverview(){
@@ -2236,13 +2305,14 @@ function renderContractors(){
         totalShown+=ctrs.length;
         const color=getColor(item);
         const isFirst=ii===0,isLast=ii===displayItems.length-1;
-        const tableBodyHtml = ctrs.length ? `<table class="data-table"><thead><tr><th style="width:40px">م</th><th>اسم المقاول</th><th>إجمالي المدفوع</th><th style="width:180px">إجراء</th></tr></thead>
+        const tableBodyHtml = ctrs.length ? `<table class="data-table"><thead><tr><th style="width:40px">م</th><th>اسم المقاول</th><th>إجمالي المدفوع</th><th style="width:220px">إجراء</th></tr></thead>
                 <tbody>${ctrs.map((c,ci)=>{
                     const t=totals[c.name+'|'+c.item]||0;
                     return `<tr style="animation-delay:${ci*0.02}s"><td>${toAr(ci+1)}</td><td><strong>${c.name}</strong></td><td class="amount-cell">${fmtCur(t)}</td>
                     <td class="action-buttons">
                         <button class="btn btn-reorder" onclick="moveContractor('${esc(c.name)}','${esc(c.item)}',-1)" title="⬆️" ${ci===0?'disabled':''}>▲</button>
                         <button class="btn btn-reorder" onclick="moveContractor('${esc(c.name)}','${esc(c.item)}',1)" title="⬇️" ${ci===ctrs.length-1?'disabled':''}>▼</button>
+                        <button class="btn btn-icon-only btn-view" onclick="viewStatement('${esc(c.item)}','${esc(c.name)}')" title="كشف حساب">📜</button>
                         <button class="btn btn-icon-only btn-view" onclick="openEditContractor('${esc(c.name)}','${esc(c.item)}')" title="تعديل">✏️</button>
                         <button class="btn btn-icon-only btn-delete" onclick="confirmDeleteContractor('${esc(c.name)}','${esc(c.item)}')" title="حذف">🗑️</button>
                     </td></tr>`;
@@ -3035,13 +3105,14 @@ function renderSuppliers(){
         totalShown+=sups.length;
         const color=getColor(item);
         const isFirst=ii===0, isLast=ii===supItems.length-1;
-        const tableBodyHtml = sups.length ? `<table class="data-table"><thead><tr><th style="width:40px">م</th><th>اسم المورد</th><th>إجمالي المدفوع</th><th style="width:180px">إجراء</th></tr></thead>
+        const tableBodyHtml = sups.length ? `<table class="data-table"><thead><tr><th style="width:40px">م</th><th>اسم المورد</th><th>إجمالي المدفوع</th><th style="width:220px">إجراء</th></tr></thead>
                 <tbody>${sups.map((s,ci)=>{
                     const t=totals[s.name+'|'+s.item]||0;
                     return `<tr style="animation-delay:${ci*0.02}s"><td>${toAr(ci+1)}</td><td><strong>${s.name}</strong></td><td class="amount-cell">${fmtCur(t)}</td>
                     <td class="action-buttons">
                         <button class="btn btn-reorder" onclick="moveContractor('${esc(s.name)}','${esc(s.item)}',-1)" title="⬆️" ${ci===0?'disabled':''}>▲</button>
                         <button class="btn btn-reorder" onclick="moveContractor('${esc(s.name)}','${esc(s.item)}',1)" title="⬇️" ${ci===sups.length-1?'disabled':''}>▼</button>
+                        <button class="btn btn-icon-only btn-view" onclick="viewStatement('${esc(s.item)}','${esc(s.name)}')" title="كشف حساب">📜</button>
                         <button class="btn btn-icon-only btn-view" onclick="openEditContractor('${esc(s.name)}','${esc(s.item)}')" title="تعديل">✏️</button>
                         <button class="btn btn-icon-only btn-delete" onclick="confirmDeleteContractor('${esc(s.name)}','${esc(s.item)}')" title="حذف">🗑️</button>
                     </td></tr>`;
