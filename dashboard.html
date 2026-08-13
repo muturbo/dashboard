@@ -1402,6 +1402,9 @@ async function saveToServer(){
             console.warn('saveToServer Anti-Wipe Guard: Aborting save. Attempted to overwrite with empty data.');
             return;
         }
+        _localSaveInProgress=true;
+        if(_localSaveTimeout) clearTimeout(_localSaveTimeout);
+        _localSaveTimeout=setTimeout(()=>{_localSaveInProgress=false;},5000);
         const data={items,contractors,payments,extracts,supplierExtracts,supplyItemsList,expenses,revenue,inventory};
         await fetch(FIREBASE_URL+'/data.json',{
             method:'PUT',
@@ -1517,6 +1520,7 @@ async function loadFromServer(){
 // Auto-sync: check for changes from other devices
 async function autoSync(){
     if(!isServerMode)return;
+    if(_localSaveInProgress){return;}
     try{
         const res=await fetch(FIREBASE_URL+'/data.json');
         if(!res.ok)return;
@@ -1537,11 +1541,22 @@ async function autoSync(){
             saveToCache();
             populateDropdowns();
             if (typeof contractors !== 'undefined') window.contractors = contractors;
-    if (typeof payments !== 'undefined') window.payments = payments;
-    if (typeof items !== 'undefined') window.items = items;
-    renderAll();
+            if (typeof payments !== 'undefined') window.payments = payments;
+            if (typeof items !== 'undefined') window.items = items;
+            
+            // Smart re-render: only re-render sections NOT currently being edited
+            const activeEl = document.activeElement;
+            const isEditing = activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'SELECT' || activeEl.tagName === 'TEXTAREA');
+            
+            if(!isEditing){
+                renderAll();
+            } else {
+                // Only update overview stats silently without touching current section
+                if(typeof renderOverview === 'function') try{renderOverview();}catch(e){}
+                if(typeof renderBalances === 'function') try{renderBalances();}catch(e){}
+            }
+            
             showSyncStatus('synced');
-            showToast('🔄 تم تحديث البيانات من جهاز آخر','info');
         }
     }catch(err){showSyncStatus('error');}
 }
@@ -1562,8 +1577,12 @@ function showSyncStatus(status){
 // Save everywhere
 function save(){
     saveToCache();
-    saveToServer();
     if(typeof renderBalances==='function') try{renderBalances();}catch(e){}
+    // Debounce server saves to prevent lag
+    if(window._serverSaveTimer) clearTimeout(window._serverSaveTimer);
+    window._serverSaveTimer=setTimeout(()=>{
+        saveToServer();
+    },600);
 }
 
 function initDefaults(){
@@ -2905,8 +2924,29 @@ function addExtractRow(){
 function updateExtractRow(idx,field,val){
     const ex=extracts.find(x=>String(x.id)===String(currentExtractId));if(!ex||!ex.rows[idx])return;
     ex.rows[idx][field]=val;
-    save();renderExtract();
-    renderBalance(ex.item,ex.contractor);
+    
+    // Immediately recalculate totals in the DOM without full re-render
+    const row = ex.rows[idx];
+    const totalQty=(row.prevQty||0)+(row.currentQty||0);
+    const gross=totalQty*(row.price||0)*((row.itemPct||100)/100)*((row.disbursementPct||100)/100);
+    const rowTotal=gross-(row.deductions||0);
+    
+    // Update the grand total display
+    let grandTotal=0;
+    ex.rows.forEach(r=>{
+        const tq=(r.prevQty||0)+(r.currentQty||0);
+        const g=tq*(r.price||0)*((r.itemPct||100)/100)*((r.disbursementPct||100)/100);
+        grandTotal+=g-(r.deductions||0);
+    });
+    const gtEl=gi('extractGrandTotal');if(gtEl)gtEl.textContent=fmtNum(grandTotal);
+    
+    // Debounced save - wait 800ms after last change before saving to server
+    if(window._extractSaveTimer) clearTimeout(window._extractSaveTimer);
+    saveToCache();
+    window._extractSaveTimer=setTimeout(()=>{
+        saveToServer();
+        renderBalance(ex.item,ex.contractor);
+    },800);
 }
 function removeExtractRow(idx){
     const ex=extracts.find(x=>String(x.id)===String(currentExtractId));if(!ex)return;
