@@ -3840,8 +3840,10 @@ function calcBalances(){
         if(!seen[key]) seen[key]={name:ex.contractor,item:ex.item,type:'contractor',extractTotal:0,paidTotal:0};
         ex.rows.forEach(r=>{
             const qty=(parseFloat(r.currentQty)||0)+(parseFloat(r.prevQty)||0);
-            const gross=qty*(parseFloat(r.price)||0);
-            seen[key].extractTotal+=gross-(parseFloat(r.deductions)||0);
+            const itemPct = (r.itemPct !== undefined && r.itemPct !== null) ? (parseFloat(r.itemPct)/100) : 1;
+            const disbPct = (r.disbursementPct !== undefined && r.disbursementPct !== null) ? (parseFloat(r.disbursementPct)/100) : 1;
+            const gross = qty * (parseFloat(r.price)||0) * itemPct * disbPct;
+            seen[key].extractTotal += gross - (parseFloat(r.deductions)||0);
         });
     });
     // Supplier extracts - group by supplier+item
@@ -3849,14 +3851,14 @@ function calcBalances(){
         const key=ex.supplier+'||'+ex.item;
         if(!seen[key]) seen[key]={name:ex.supplier,item:ex.item,type:'supplier',extractTotal:0,paidTotal:0};
         ex.rows.forEach(r=>{
-            seen[key].extractTotal+=(parseFloat(r.qty)||0)*(parseFloat(r.price)||0)-(parseFloat(r.discounts)||0);
+            seen[key].extractTotal += (parseFloat(r.qty)||0)*(parseFloat(r.price)||0)-(parseFloat(r.discounts)||0);
         });
     });
     // Calculate paid totals
     Object.values(seen).forEach(entry=>{
-        entry.paidTotal=payments.filter(p=>p.contractor===entry.name&&p.item===entry.item).reduce((s,p)=>s+p.amount,0);
-        entry.remaining=entry.extractTotal-entry.paidTotal;
-        if(entry.remaining>0) results.push(entry);
+        entry.paidTotal = payments.filter(p=>p.contractor===entry.name&&p.item===entry.item).reduce((s,p)=>s+p.amount,0);
+        entry.remaining = entry.extractTotal - entry.paidTotal;
+        if(entry.remaining > 0) results.push(entry);
     });
     return results;
 }
