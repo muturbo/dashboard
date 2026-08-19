@@ -2623,7 +2623,7 @@ function onPaymentItemFilterChange(){
 // ========================================
 // SEAMLESS PRINT & PRINT PREVIEW ENGINE
 // ========================================
-function printHTMLContent(html, documentTitle) {
+function printHTMLContent(html, documentTitle, orientation) {
     let oldFrame = document.getElementById('seamlessPrintIframe');
     if (oldFrame && oldFrame.parentNode) oldFrame.parentNode.removeChild(oldFrame);
 
@@ -2642,7 +2642,7 @@ function printHTMLContent(html, documentTitle) {
 
     const doc = iframe.contentWindow.document;
     doc.open();
-    doc.write(`<!DOCTYPE html><html dir="rtl"><head><title>${documentTitle || 'طباعة'}</title><style>@page{size:landscape;margin:4mm 6mm 4mm 6mm}@media print{body{margin:0;-webkit-print-color-adjust:exact;font-family:'Cairo',sans-serif;}table{width:100%!important;border-collapse:collapse;page-break-inside:auto;margin-top:4px!important;margin-bottom:4px!important;}tr{page-break-inside:avoid;page-break-after:auto;}thead{display:table-header-group;}tfoot{display:table-footer-group;}th{padding:3px 5px!important;font-size:10px!important;font-weight:700!important;background:#e0e0e0!important;border:1px solid #888!important;}td{padding:2.5px 4px!important;font-size:9px!important;border:1px solid #bbb!important;line-height:1.15!important;}}
+    doc.write(`<!DOCTYPE html><html dir="rtl"><head><title>${documentTitle || 'طباعة'}</title><style>@page{size:${orientation||'landscape'};margin:4mm 6mm 4mm 6mm}@media print{body{margin:0;-webkit-print-color-adjust:exact;font-family:'Cairo',sans-serif;}table{width:100%!important;border-collapse:collapse;page-break-inside:auto;margin-top:4px!important;margin-bottom:4px!important;}tr{page-break-inside:avoid;page-break-after:auto;}thead{display:table-header-group;}tfoot{display:table-footer-group;}th{padding:3px 5px!important;font-size:10px!important;font-weight:700!important;background:#e0e0e0!important;border:1px solid #888!important;}td{padding:2.5px 4px!important;font-size:9px!important;border:1px solid #bbb!important;line-height:1.15!important;}}
 /* STRICT MODAL HIDDEN RULES */
 .modal {
     display: none !important;
@@ -3232,8 +3232,8 @@ function printExtract(){
         grandTotal+=tq*(r.price||0)*((r.itemPct||100)/100)*((r.disbursementPct||100)/100)-(r.deductions||0);
     });
     const totalPaid=payments.filter(p=>p.contractor===ex.contractor&&p.item===ex.item).reduce((s,p)=>s+p.amount,0);
-    const th='padding:3px 5px;border:1px solid #999;text-align:center;font-size:12px;';
-    const td='padding:2.5px 4px;border:1px solid #ccc;text-align:center;font-size:11px;';
+    const th='padding:2px 3px;border:1px solid #999;text-align:center;font-size:9px;font-weight:bold;';
+    const td='padding:2px 3px;border:1px solid #ccc;text-align:center;font-size:8px;';
     const headers=['م','التاريخ','رقم العمارة','بيان الأعمال','الوحدة','النوع','السعر','نسبة البند%','كمية سابقة','كمية حالية','مجموع الكميات','نسبة الصرف%','الاستقطاعات','إجمالي المستحق'];
     const html=`<div style="font-family:Cairo,sans-serif;direction:rtl;padding:20px;color:#333;"><div style="text-align:center;margin-bottom:10px;"><img src="${COMPANY_LOGO}" style="height:45px;" alt="logo"></div>
         <h2 style="text-align:center;margin:0 0 2px;color:#555;font-size:15px;">شركة الرحاب للمقاولات العمومية (ورثة سيد تهامي)</h2>
@@ -3259,8 +3259,27 @@ function printExtract(){
             <tr><td style="padding:4px 6px;border:1px solid #ccc;background:#e3f2fd;font-weight:bold;">الباقي للمقاول</td><td style="padding:4px 6px;border:1px solid #ccc;text-align:center;font-weight:bold;">${fmtCur(grandTotal-totalPaid)}</td></tr>
         </table>
         ${ex.notes?`<p style="margin-top:16px;padding:10px;background:#f5f5f5;border-radius:8px;"><strong>ملاحظات:</strong> ${ex.notes}</p>`:''}
+    
+        <div style="margin-top:30px;page-break-inside:avoid;">
+            <table style="width:100%;border-collapse:collapse;font-size:13px;margin-top:20px;">
+                <tr>
+                    <td style="text-align:center;padding:8px 10px;border:1px solid #ccc;font-weight:bold;background:#f5f5f5;width:20%;">إعداد</td>
+                    <td style="text-align:center;padding:8px 10px;border:1px solid #ccc;font-weight:bold;background:#f5f5f5;width:20%;">المراجعة</td>
+                    <td style="text-align:center;padding:8px 10px;border:1px solid #ccc;font-weight:bold;background:#f5f5f5;width:20%;">المدير المالي</td>
+                    <td style="text-align:center;padding:8px 10px;border:1px solid #ccc;font-weight:bold;background:#f5f5f5;width:20%;">المقاول</td>
+                    <td style="text-align:center;padding:8px 10px;border:1px solid #ccc;font-weight:bold;background:#f5f5f5;width:20%;">يعتمد</td>
+                </tr>
+                <tr>
+                    <td style="text-align:center;padding:25px 10px;border:1px solid #ccc;">&nbsp;</td>
+                    <td style="text-align:center;padding:25px 10px;border:1px solid #ccc;">&nbsp;</td>
+                    <td style="text-align:center;padding:25px 10px;border:1px solid #ccc;">&nbsp;</td>
+                    <td style="text-align:center;padding:25px 10px;border:1px solid #ccc;">&nbsp;</td>
+                    <td style="text-align:center;padding:25px 10px;border:1px solid #ccc;">&nbsp;</td>
+                </tr>
+            </table>
+        </div>
     </div>`;
-    printHTMLContent(html, `مستخلص رقم ${ex.number} - ${ex.contractor}`);
+    printHTMLContent(html, `مستخلص رقم ${ex.number} - ${ex.contractor}`, 'portrait');
 }
 
 // ========================================
