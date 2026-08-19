@@ -1399,24 +1399,70 @@ async function saveToServer(){
         let _hadData = false;
         try { if(typeof lastSyncHash !== 'undefined' && lastSyncHash){ let _old = JSON.parse(lastSyncHash); if((_old.contractors && _old.contractors.length > 0) || (_old.payments && _old.payments.length > 0)) _hadData = true; } } catch(e){}
         if (_hadData && (!contractors || contractors.length === 0) && (!payments || payments.length === 0)) {
-            console.warn('saveToServer Anti-Wipe Guard: Aborting save. Attempted to overwrite with empty data.');
+            console.warn('saveToServer Anti-Wipe Guard: Aborting save.');
             return;
         }
         _localSaveInProgress=true;
         if(_localSaveTimeout) clearTimeout(_localSaveTimeout);
         _localSaveTimeout=setTimeout(()=>{_localSaveInProgress=false;},5000);
         const data={items,contractors,payments,extracts,supplierExtracts,supplyItemsList,expenses,revenue,inventory};
-        await fetch(FIREBASE_URL+'/data.json',{
-            method:'PUT',
-            headers:{'Content-Type':'application/json'},
-            body:JSON.stringify(data)
-        });
-        lastSyncHash=JSON.stringify(data);
-        isServerMode=true;
-        showSyncStatus('synced');
+        const jsonStr = JSON.stringify(data);
+        let saved = false;
+
+        // Method 1: fetch (works on HTTP/HTTPS)
+        if(!saved){
+            try{
+                const res = await fetch(FIREBASE_URL+'/data.json',{
+                    method:'PUT',
+                    headers:{'Content-Type':'application/json'},
+                    body:jsonStr
+                });
+                if(res.ok){ saved=true; console.log('[SAVE] fetch PUT success'); }
+            }catch(fetchErr){
+                console.warn('[SAVE] fetch PUT failed:', fetchErr.message);
+            }
+        }
+
+        // Method 2: XMLHttpRequest (works on file:// in most browsers)
+        if(!saved){
+            try{
+                saved = await new Promise((resolve)=>{
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('PUT', FIREBASE_URL+'/data.json', true);
+                    xhr.setRequestHeader('Content-Type','application/json');
+                    xhr.onreadystatechange = function(){
+                        if(xhr.readyState===4){
+                            if(xhr.status>=200 && xhr.status<300){
+                                console.log('[SAVE] XHR PUT success');
+                                resolve(true);
+                            } else {
+                                console.warn('[SAVE] XHR PUT failed, status:', xhr.status);
+                                resolve(false);
+                            }
+                        }
+                    };
+                    xhr.onerror = function(){ console.warn('[SAVE] XHR error'); resolve(false); };
+                    xhr.timeout = 10000;
+                    xhr.ontimeout = function(){ console.warn('[SAVE] XHR timeout'); resolve(false); };
+                    xhr.send(jsonStr);
+                });
+            }catch(xhrErr){
+                console.warn('[SAVE] XHR exception:', xhrErr.message);
+            }
+        }
+
+        if(saved){
+            lastSyncHash=jsonStr;
+            isServerMode=true;
+            showSyncStatus('synced');
+        } else {
+            console.error('[SAVE] All save methods failed! Data saved to cache only.');
+            showSyncStatus('error');
+            showToast('⚠️ فشل حفظ البيانات على السيرفر - البيانات محفوظة محلياً فقط', 'error');
+        }
     }catch(err){
-        console.warn('saveToServer warning:', err);
-        showSyncStatus('synced');
+        console.error('saveToServer critical error:', err);
+        showSyncStatus('error');
     }
 }
 
@@ -1575,10 +1621,10 @@ function showSyncStatus(status){
 }
 
 // Save everywhere
-function save(){
+async function save(){
     saveToCache();
     if(typeof renderBalances==='function') try{renderBalances();}catch(e){}
-    saveToServer();
+    await saveToServer();
 }
 
 function initDefaults(){
@@ -3023,11 +3069,11 @@ function calcExtractTotals(ex){
     gi('extractGrandTotal').textContent=fmtNum(grandTotal);
 }
 
-function addExtractRow(){
+async function addExtractRow(){
     const ex=extracts.find(x=>String(x.id)===String(currentExtractId));if(!ex)return;
     ex.rows.push({rowDate:'',buildingNo:'',description:'',type:'تنفيذ',unit:'م²',price:0,itemPct:100,prevQty:0,currentQty:0,disbursementPct:100,deductions:0});
     saveToCache();
-    saveToServer();
+    await saveToServer();
     renderExtract();
 }
 function updateExtractRow(idx,field,val){
@@ -3072,9 +3118,9 @@ function updateExtractRow(idx,field,val){
         saveToServer();
     },1200);
 }
-function removeExtractRow(idx){
+async function removeExtractRow(idx){
     const ex=extracts.find(x=>String(x.id)===String(currentExtractId));if(!ex)return;
-    ex.rows.splice(idx,1);save();renderExtract();
+    ex.rows.splice(idx,1);saveToCache(); await saveToServer();renderExtract();
     renderBalance(ex.item,ex.contractor);
 }
 
