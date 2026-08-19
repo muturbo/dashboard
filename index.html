@@ -1901,25 +1901,87 @@ function submitAddItem(e){
     showToast(`✅ تمت إضافة بند "${name}"`,'success');
 }
 
-function openEditContractor(id){
-    const c=contractors.find(x=>x.id===id);if(!c)return;
-    editTarget=id; gi('editContractorName').value=c.name; gi('editContractorCurrentItem').textContent=c.item;
+function openEditContractor(nameOrId, item){
+    let c = null;
+    if (item !== undefined && item !== null && item !== '') {
+        c = contractors.find(x => x.name === nameOrId && x.item === item);
+    }
+    if (!c) {
+        c = contractors.find(x => String(x.id) === String(nameOrId)) || contractors.find(x => x.name === nameOrId);
+    }
+    if(!c) {
+        console.warn('Contractor not found for edit:', nameOrId, item);
+        showToast('لم يتم العثور على المقاول/المورد', 'error');
+        return;
+    }
+    editTarget = { id: c.id, name: c.name, item: c.item };
+    const nameEl = gi('editContractorName');
+    if(nameEl) nameEl.value = c.name;
+    const itemEl = gi('editContractorCurrentItem');
+    if(itemEl) itemEl.textContent = c.item;
     openModal('editContractorModal');
 }
 function submitEditContractor(e){
-    e.preventDefault();if(!editTarget)return;
-    const nn=gv('editContractorName').trim();if(!nn){showToast('يرجى إدخال الاسم','error');return;}
-    const c=contractors.find(x=>x.id===editTarget);if(!c)return;
-    const old=c.name; c.name=nn;
-    payments.forEach(p=>{if(p.contractor===old&&p.item===c.item)p.contractor=nn;});
-    extracts.forEach(ex=>{if(ex.contractor===old&&ex.item===c.item)ex.contractor=nn;});
+    if(e) e.preventDefault();
+    if(!editTarget) return;
+    const nn = gv('editContractorName').trim();
+    if(!nn){ showToast('يرجى إدخال الاسم', 'error'); return; }
+    
+    const targetObj = typeof editTarget === 'object' ? editTarget : { id: editTarget };
+    let c = null;
+    if(targetObj.name && targetObj.item) {
+        c = contractors.find(x => x.name === targetObj.name && x.item === targetObj.item);
+    }
+    if(!c && targetObj.id !== undefined) {
+        c = contractors.find(x => String(x.id) === String(targetObj.id));
+    }
+    if(!c) {
+        c = contractors.find(x => x.name === targetObj.name);
+    }
+    if(!c) {
+        showToast('لم يتم العثور على المقاول/المورد', 'error');
+        return;
+    }
+    
+    const oldName = c.name;
+    const item = c.item;
+    
+    if(oldName === nn) {
+        closeModal('editContractorModal');
+        editTarget = null;
+        return;
+    }
+    
+    if(contractors.some(x => x !== c && x.name === nn && x.item === item)) {
+        showToast('⚠️ هذا الاسم موجود بالفعل في نفس البند', 'error');
+        return;
+    }
+    
+    c.name = nn;
+    payments.forEach(p => { if(p.contractor === oldName && p.item === item) p.contractor = nn; });
+    extracts.forEach(ex => { if(ex.contractor === oldName && ex.item === item) ex.contractor = nn; });
+    if(typeof supplierExtracts !== 'undefined' && Array.isArray(supplierExtracts)){
+        supplierExtracts.forEach(ex => {
+            if((ex.supplier === oldName || ex.contractor === oldName) && ex.item === item) {
+                if(ex.supplier) ex.supplier = nn;
+                if(ex.contractor) ex.contractor = nn;
+            }
+        });
+    }
+    if(typeof inventory !== 'undefined' && Array.isArray(inventory)){
+        inventory.forEach(inv => { if(inv.supplier === oldName && inv.item === item) inv.supplier = nn; });
+    }
+    
     save();
     if (typeof contractors !== 'undefined') window.contractors = contractors;
     if (typeof payments !== 'undefined') window.payments = payments;
     if (typeof items !== 'undefined') window.items = items;
     renderAll();
-    showSyncStatus('synced');populateDropdowns();closeModal('editContractorModal');editTarget=null;
-    showToast(`✅ تم تعديل الاسم إلى "${nn}"`,'success');
+    showSyncStatus('synced');
+    populateDropdowns();
+    closeModal('editContractorModal');
+    editTarget = null;
+    showToast(`✅ تم تعديل الاسم إلى "${nn}"`, 'success');
 }
 
 function openEditItem(oldName){
@@ -1927,20 +1989,41 @@ function openEditItem(oldName){
     openModal('editItemModal');
 }
 function submitEditItem(e){
-    e.preventDefault();if(!editItemTarget)return;
-    const nn=gv('editItemNewName').trim();if(!nn){showToast('يرجى إدخال الاسم','error');return;}
-    if(nn!==editItemTarget&&items.includes(nn)){showToast('⚠️ البند موجود','error');return;}
-    const idx=items.indexOf(editItemTarget);if(idx>-1)items[idx]=nn;
-    contractors.forEach(c=>{if(c.item===editItemTarget)c.item=nn;});
-    payments.forEach(p=>{if(p.item===editItemTarget)p.item=nn;});
-    extracts.forEach(ex=>{if(ex.item===editItemTarget)ex.item=nn;});
+    if(e) e.preventDefault();
+    if(!editItemTarget) return;
+    const nn = gv('editItemNewName').trim();
+    if(!nn){ showToast('يرجى إدخال الاسم', 'error'); return; }
+    if(nn !== editItemTarget && items.includes(nn)){ showToast('⚠️ البند موجود', 'error'); return; }
+    const oldItem = editItemTarget;
+    const idx = items.indexOf(oldItem);
+    if(idx > -1) items[idx] = nn;
+    if(typeof supplyItemsList !== 'undefined' && Array.isArray(supplyItemsList)){
+        const sIdx = supplyItemsList.indexOf(oldItem);
+        if(sIdx > -1) supplyItemsList[sIdx] = nn;
+    }
+    if(typeof DEFAULT_SUPPLY_ITEMS !== 'undefined' && Array.isArray(DEFAULT_SUPPLY_ITEMS)){
+        const dIdx = DEFAULT_SUPPLY_ITEMS.indexOf(oldItem);
+        if(dIdx > -1) DEFAULT_SUPPLY_ITEMS[dIdx] = nn;
+    }
+    contractors.forEach(c => { if(c.item === oldItem) c.item = nn; });
+    payments.forEach(p => { if(p.item === oldItem) p.item = nn; });
+    extracts.forEach(ex => { if(ex.item === oldItem) ex.item = nn; });
+    if(typeof supplierExtracts !== 'undefined' && Array.isArray(supplierExtracts)){
+        supplierExtracts.forEach(ex => { if(ex.item === oldItem) ex.item = nn; });
+    }
+    if(typeof inventory !== 'undefined' && Array.isArray(inventory)){
+        inventory.forEach(inv => { if(inv.item === oldItem) inv.item = nn; });
+    }
     save();
     if (typeof contractors !== 'undefined') window.contractors = contractors;
     if (typeof payments !== 'undefined') window.payments = payments;
     if (typeof items !== 'undefined') window.items = items;
     renderAll();
-    showSyncStatus('synced');populateDropdowns();closeModal('editItemModal');editItemTarget=null;
-    showToast(`✅ تم تعديل البند إلى "${nn}"`,'success');
+    showSyncStatus('synced');
+    populateDropdowns();
+    closeModal('editItemModal');
+    editItemTarget = null;
+    showToast(`✅ تم تعديل البند إلى "${nn}"`, 'success');
 }
 
 // ========================================
@@ -1952,22 +2035,51 @@ function moveItem(item,dir){
     [items[idx],items[newIdx]]=[items[newIdx],items[idx]];
     save();renderContractors();populateDropdowns();
 }
-function moveContractor(id,dir){
-    const c=contractors.find(x=>x.id===id);if(!c)return;
-    const group=contractors.filter(x=>x.item===c.item);
-    const others=contractors.filter(x=>x.item!==c.item);
-    const idx=group.findIndex(x=>x.id===id);
-    const newIdx=idx+dir;if(newIdx<0||newIdx>=group.length)return;
-    [group[idx],group[newIdx]]=[group[newIdx],group[idx]];
-    // Rebuild contractors maintaining item order
-    contractors=[];
-    items.forEach(it=>{
-        const g=it===c.item?group:others.filter(x=>x.item===it);
-        // Actually let me rebuild properly
+function moveContractor(nameOrId, itemOrDir, possibleDir){
+    let name = '', item = '', dir = 0;
+    if (typeof possibleDir === 'number') {
+        name = nameOrId;
+        item = itemOrDir;
+        dir = possibleDir;
+    } else if (typeof itemOrDir === 'number') {
+        const c = contractors.find(x => String(x.id) === String(nameOrId)) || contractors.find(x => x.name === nameOrId);
+        if(!c) return;
+        name = c.name;
+        item = c.item;
+        dir = itemOrDir;
+    } else {
+        return;
+    }
+    
+    const group = contractors.filter(x => x.item === item);
+    const idx = group.findIndex(x => x.name === name);
+    if(idx < 0) return;
+    const newIdx = idx + dir;
+    if(newIdx < 0 || newIdx >= group.length) return;
+    [group[idx], group[newIdx]] = [group[newIdx], group[idx]];
+    
+    const otherContractors = contractors.filter(x => x.item !== item);
+    let newContractors = [];
+    items.forEach(it => {
+        if(it === item) {
+            newContractors.push(...group);
+        } else {
+            newContractors.push(...otherContractors.filter(x => x.item === it));
+        }
     });
-    // Simpler: just swap in the full array
-    contractors=rebuildContractors(c.item,group);
-    save();renderContractors();
+    otherContractors.forEach(c => {
+        if(!items.includes(c.item) && !newContractors.some(x => x.name === c.name && x.item === c.item)) {
+            newContractors.push(c);
+        }
+    });
+    contractors = newContractors;
+    save();
+    if (typeof contractors !== 'undefined') window.contractors = contractors;
+    if(isSupplyItem(item)) {
+        if(typeof renderSuppliers === 'function') renderSuppliers();
+    } else {
+        if(typeof renderContractors === 'function') renderContractors();
+    }
 }
 function rebuildContractors(changedItem,changedGroup){
     const result=[];
@@ -1981,10 +2093,19 @@ function rebuildContractors(changedItem,changedGroup){
 // ========================================
 // DELETE
 // ========================================
-function confirmDeleteContractor(id){
-    deleteTarget=id;deleteType='contractor';
-    const c=contractors.find(x=>x.id===id);
-    gi('deleteModalText').innerHTML=`هل تريد حذف المقاول <strong>"${c?c.name:''}"</strong> وجميع دفعاته؟`;
+function confirmDeleteContractor(nameOrId, item){
+    let c = null;
+    if (item !== undefined && item !== null && item !== '') {
+        c = contractors.find(x => x.name === nameOrId && x.item === item);
+    }
+    if (!c) {
+        c = contractors.find(x => String(x.id) === String(nameOrId)) || contractors.find(x => x.name === nameOrId);
+    }
+    deleteTarget = c ? { id: c.id, name: c.name, item: c.item } : { name: nameOrId, item: item };
+    deleteType = isSupplyItem(item || (c ? c.item : '')) ? 'supplier' : 'contractor';
+    const cName = c ? c.name : (typeof nameOrId === 'string' ? nameOrId : '');
+    const textEl = gi('deleteModalText');
+    if(textEl) textEl.innerHTML = `هل تريد حذف المقاول/المورد <strong>"${cName}"</strong> وجميع مستخلصاته ودفعاته؟`;
     openModal('deleteModal');
 }
 function confirmDeletePayment(id){
@@ -2007,96 +2128,85 @@ function initModals(){
     if(btnConfirm) {
         btnConfirm.onclick = function() {
             if(!deleteTarget) { closeModal('deleteModal'); return; }
-            const targetStr = String(deleteTarget);
             
             if(deleteType === 'payment') {
+                const targetStr = String(deleteTarget);
                 payments = payments.filter(p => String(p.id) !== targetStr);
                 save();
+                if(typeof payments !== 'undefined') window.payments = payments;
+                renderAll();
+                closeModal('deleteModal');
+                deleteTarget = null;
                 showToast('🗑️ تم حذف الدفعة بنجاح', 'info');
             }
             else if(deleteType === 'contractor' || deleteType === 'supplier') {
-                const c = contractors.find(x => String(x.id) === targetStr);
-                if(c) {
-                    payments = payments.filter(p => !(p.contractor === c.name && p.item === c.item));
-                    extracts = extracts.filter(ex => !(ex.contractor === c.name && ex.item === c.item));
-                    if(typeof supplierExtracts !== 'undefined') {
-                        supplierExtracts = supplierExtracts.filter(ex => !(ex.contractor === c.name && ex.item === c.item));
-                    }
-                    contractors = contractors.filter(x => String(x.id) !== targetStr);
-                    save();
-                    populateDropdowns();
-                    showToast(`🗑️ تم حذف ${c.name}`, 'info');
+                let targetName = '', targetItem = '', targetId = null;
+                if(typeof deleteTarget === 'object' && deleteTarget !== null) {
+                    targetName = deleteTarget.name;
+                    targetItem = deleteTarget.item;
+                    targetId = deleteTarget.id;
                 } else {
-                    contractors = contractors.filter(x => String(x.id) !== targetStr);
-                    save();
-                    populateDropdowns();
-                    showToast('🗑️ تم الحذف بنجاح', 'info');
+                    const targetStr = String(deleteTarget);
+                    const c = contractors.find(x => String(x.id) === targetStr || x.name === targetStr);
+                    if(c) { targetName = c.name; targetItem = c.item; targetId = c.id; }
+                    else { targetName = targetStr; }
                 }
+                
+                if(targetName && targetItem) {
+                    payments = payments.filter(p => !(p.contractor === targetName && p.item === targetItem));
+                    extracts = extracts.filter(ex => !(ex.contractor === targetName && ex.item === targetItem));
+                    if(typeof supplierExtracts !== 'undefined' && Array.isArray(supplierExtracts)) {
+                        supplierExtracts = supplierExtracts.filter(ex => !((ex.supplier === targetName || ex.contractor === targetName) && ex.item === targetItem));
+                    }
+                    contractors = contractors.filter(x => !(x.name === targetName && x.item === targetItem));
+                } else if(targetId !== null && targetId !== undefined) {
+                    const c = contractors.find(x => String(x.id) === String(targetId));
+                    if(c) {
+                        payments = payments.filter(p => !(p.contractor === c.name && p.item === c.item));
+                        extracts = extracts.filter(ex => !(ex.contractor === c.name && ex.item === c.item));
+                        if(typeof supplierExtracts !== 'undefined' && Array.isArray(supplierExtracts)) {
+                            supplierExtracts = supplierExtracts.filter(ex => !((ex.supplier === c.name || ex.contractor === c.name) && ex.item === c.item));
+                        }
+                    }
+                    contractors = contractors.filter(x => String(x.id) !== String(targetId));
+                }
+                save();
+                if (typeof contractors !== 'undefined') window.contractors = contractors;
+                if (typeof payments !== 'undefined') window.payments = payments;
+                renderAll();
+                populateDropdowns();
+                closeModal('deleteModal');
+                deleteTarget = null;
+                showToast(`🗑️ تم الحذف بنجاح`, 'info');
             }
             else if(deleteType === 'item') {
-                contractors = contractors.filter(c => c.item !== deleteTarget);
-                payments = payments.filter(p => p.item !== deleteTarget);
-                extracts = extracts.filter(ex => ex.item !== deleteTarget);
-                if(typeof supplierExtracts !== 'undefined') supplierExtracts = supplierExtracts.filter(ex => ex.item !== deleteTarget);
-                items = items.filter(i => i !== deleteTarget);
-                save();
-                populateDropdowns();
-                showToast(`🗑️ تم حذف البند "${deleteTarget}"`, 'info');
-            }
-            else if(deleteType === 'expense') {
-                expenses = expenses.filter(e => String(e.id) !== targetStr);
-                save();
-                showToast('🗑️ تم حذف المصروف', 'info');
-            }
-            else if(deleteType === 'revenue') {
-                revenue = revenue.filter(r => String(r.id) !== targetStr);
-                save();
-                showToast('🗑️ تم حذف الإيراد', 'info');
-            }
-            else if(deleteType === 'extract') {
-                extracts = extracts.filter(ex => String(ex.id) !== targetStr);
-                save();
-                currentExtractId = null;
-                hide('extractContent');
-                show('extractEmpty');
-                showToast('🗑️ تم حذف المستخلص', 'info');
-            }
-            else if(deleteType === 'supExtract') {
-                if(typeof supplierExtracts !== 'undefined') supplierExtracts = supplierExtracts.filter(ex => String(ex.id) !== targetStr);
-                save();
-                currentSupExtractId = null;
-                hide('supExtractContent');
-                show('supExtractEmpty');
-                showToast('🗑️ تم حذف المستخلص', 'info');
-            }
-            else if(deleteType === 'inventoryProduct') {
-                if(typeof inventory !== 'undefined') inventory = inventory.filter(p => String(p.id) !== targetStr);
-                save();
-                hide('inventoryCardContent');
-                show('noInventorySelected');
-                const prodSel = gi('inventoryProductSelect');
-                if(prodSel) { prodSel.innerHTML = '<option value="">اختر الصنف...</option>'; }
-                showToast('🗑️ تم حذف كارت الصنف', 'info');
-            }
-            else if(deleteType === 'inventoryMovement') {
-                if(typeof inventory !== 'undefined') {
-                    const prod = inventory.find(p => p.id === deleteTarget.prodId || String(p.id) === String(deleteTarget.prodId));
-                    if(prod && prod.transactions) {
-                        prod.transactions = prod.transactions.filter(t => String(t.id) !== String(deleteTarget.txId));
-                        save();
-                        showToast('🗑️ تم حذف الحركة', 'info');
-                    }
+                const name = typeof deleteTarget === 'object' ? deleteTarget.name : String(deleteTarget);
+                items = items.filter(i => i !== name);
+                if(typeof supplyItemsList !== 'undefined' && Array.isArray(supplyItemsList)) {
+                    supplyItemsList = supplyItemsList.filter(i => i !== name);
                 }
+                if(typeof DEFAULT_SUPPLY_ITEMS !== 'undefined' && Array.isArray(DEFAULT_SUPPLY_ITEMS)) {
+                    DEFAULT_SUPPLY_ITEMS = DEFAULT_SUPPLY_ITEMS.filter(i => i !== name);
+                }
+                contractors = contractors.filter(c => c.item !== name);
+                payments = payments.filter(p => p.item !== name);
+                extracts = extracts.filter(ex => ex.item !== name);
+                if(typeof supplierExtracts !== 'undefined' && Array.isArray(supplierExtracts)) {
+                    supplierExtracts = supplierExtracts.filter(ex => ex.item !== name);
+                }
+                if(typeof inventory !== 'undefined' && Array.isArray(inventory)) {
+                    inventory = inventory.filter(inv => inv.item !== name);
+                }
+                save();
+                if (typeof contractors !== 'undefined') window.contractors = contractors;
+                if (typeof payments !== 'undefined') window.payments = payments;
+                if (typeof items !== 'undefined') window.items = items;
+                renderAll();
+                populateDropdowns();
+                closeModal('deleteModal');
+                deleteTarget = null;
+                showToast(`🗑️ تم حذف بند "${name}"`, 'info');
             }
-
-            if (typeof contractors !== 'undefined') window.contractors = contractors;
-            if (typeof payments !== 'undefined') window.payments = payments;
-            if (typeof items !== 'undefined') window.items = items;
-            renderAll();
-            showSyncStatus('synced');
-            closeModal('deleteModal');
-            deleteTarget = null;
-            deleteType = '';
         };
     }
 
@@ -4265,7 +4375,13 @@ function showToast(msg,type='info'){const c=gi('toastContainer'),t=document.crea
 
 // Global
 if (typeof navigateTo !== 'undefined') window.navigateTo = navigateTo;if (typeof saveAllData !== 'undefined') window.saveAllData = saveAllData;if (typeof openModal !== 'undefined') window.openModal = openModal;
-if (typeof openEditContractor !== 'undefined') window.openEditContractor = openEditContractor;if (typeof openEditItem !== 'undefined') window.openEditItem = openEditItem;
+if (typeof openEditContractor !== 'undefined') window.openEditContractor = openEditContractor;
+if (typeof submitEditContractor !== 'undefined') window.submitEditContractor = submitEditContractor;
+if (typeof openEditItem !== 'undefined') window.openEditItem = openEditItem;
+if (typeof submitEditItem !== 'undefined') window.submitEditItem = submitEditItem;
+if (typeof confirmDeleteContractor !== 'undefined') window.confirmDeleteContractor = confirmDeleteContractor;
+if (typeof moveContractor !== 'undefined') window.moveContractor = moveContractor;
+if (typeof moveItem !== 'undefined') window.moveItem = moveItem;if (typeof openEditItem !== 'undefined') window.openEditItem = openEditItem;
 if (typeof confirmDeleteContractor !== 'undefined') window.confirmDeleteContractor = confirmDeleteContractor;if (typeof confirmDeletePayment !== 'undefined') window.confirmDeletePayment = confirmDeletePayment;if (typeof confirmDeleteItem !== 'undefined') window.confirmDeleteItem = confirmDeleteItem;
 if (typeof moveItem !== 'undefined') window.moveItem = moveItem;if (typeof moveContractor !== 'undefined') window.moveContractor = moveContractor;
 if (typeof viewStatement !== 'undefined') window.viewStatement = viewStatement;
