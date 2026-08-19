@@ -879,6 +879,19 @@
             "rowDate": "16/8/2026",
             "type": "تنفيذ",
             "unit": "م³"
+          },
+          {
+            "buildingNo": "176",
+            "currentQty": 34,
+            "deductions": 0,
+            "description": "اعمدة الارضى",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1000,
+            "rowDate": "19/8/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
           }
         ]
       },
@@ -1076,6 +1089,19 @@
             "prevQty": 0,
             "price": 300,
             "rowDate": "16/8/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "176",
+            "currentQty": 34,
+            "deductions": 0,
+            "description": "اعمدة الارضى",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "19/8/2026",
             "type": "تنفيذ",
             "unit": "م³"
           }
@@ -1423,6 +1449,19 @@
         "number": 1,
         "rows": [
           {
+            "buildingNo": "",
+            "currentQty": 0,
+            "deductions": 0,
+            "description": "",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 0,
+            "rowDate": "",
+            "type": "تنفيذ",
+            "unit": "م²"
+          },
+          {
             "buildingNo": "155",
             "currentQty": 1,
             "deductions": 0,
@@ -1501,15 +1540,15 @@
             "unit": "مقطوعية"
           },
           {
-            "buildingNo": "151",
+            "buildingNo": "176",
             "currentQty": 1,
             "deductions": 0,
-            "description": "قاعده مسلحه",
+            "description": "اعمدة الارضى",
             "disbursementPct": 100,
             "itemPct": 100,
             "prevQty": 0,
             "price": 950,
-            "rowDate": "16/8/2026",
+            "rowDate": "19/8/2026",
             "type": "تنفيذ",
             "unit": "مقطوعية"
           }
@@ -2317,6 +2356,16 @@
             "price": 2430,
             "qty": 167,
             "rowDate": "16/8/2026",
+            "strength": "250",
+            "supplierQty": 0
+          },
+          {
+            "content": "350",
+            "element": "اعمدة ارضى ع 176",
+            "price": 2430,
+            "productCode": "",
+            "qty": 38,
+            "rowDate": "2026/08/19",
             "strength": "250",
             "supplierQty": 0
           }
