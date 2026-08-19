@@ -520,24 +520,24 @@
                         <table class="data-table extract-table" id="supExtractTable">
                             <thead>
                                 <tr>
-                                    <th style="width:40px;">مسلسل</th>
-                                    <th>التاريخ</th>
-                                    <th>كود الصنف</th>
-                                    <th>البيان</th>
-                                    <th>الوحدة</th>
-                                    <th>رقم الفاتورة</th>
-                                    <th>الكمية</th>
-                                    <th>السعر</th>
-                                    <th>خصومات</th>
-                                    <th>إجمالي المستحق</th>
-                                    <th style="width:45px;">إجراء</th>
+                                    <th style="width:45px; text-align:center;">م</th>
+                                    <th style="width:115px; text-align:center;">التاريخ</th>
+                                    <th style="width:100px; text-align:center;">كود الصنف</th>
+                                    <th style="min-width:180px; text-align:right;">بيان المادة / الصنف</th>
+                                    <th style="width:90px; text-align:center;">الوحدة</th>
+                                    <th style="width:95px; text-align:center;">رقم الفاتورة</th>
+                                    <th style="width:85px; text-align:center;">الكمية</th>
+                                    <th style="width:90px; text-align:center;">السعر</th>
+                                    <th style="width:85px; text-align:center;">خصومات</th>
+                                    <th style="width:115px; text-align:center;">إجمالي المستحق</th>
+                                    <th style="width:75px; text-align:center;">إجراء</th>
                                 </tr>
                             </thead>
                             <tbody id="supExtractBody"></tbody>
                             <tfoot>
                                 <tr class="total-row">
-                                    <td colspan="9"><strong>إجمالي المستحق للمورد</strong></td>
-                                    <td class="amount-cell" id="supExtractGrandTotal">٠</td>
+                                    <td colspan="9" style="text-align:right; font-weight:700;"><strong>إجمالي المستحق للمورد</strong></td>
+                                    <td class="amount-cell" id="supExtractGrandTotal" style="text-align:center; font-weight:700;">٠</td>
                                     <td></td>
                                 </tr>
                             </tfoot>
@@ -2948,30 +2948,30 @@ function renderCombinedSupExtract(){
     if (tableHeader) {
         if (isReadyMix) {
             tableHeader.innerHTML = `<tr>
-                <th style="width:40px;">م</th>
-                <th style="width:130px;">تاريخ الصب</th>
-                <th style="width:150px;">العنصر</th>
-                <th style="width:65px;">المحتوى</th>
-                <th style="width:65px;">الجهد</th>
-                <th style="width:90px;">كمية الشركة</th>
-                <th style="width:90px;">كمية المورد</th>
-                <th style="width:85px;">السعر</th>
-                <th style="width:105px;">القيمة</th>
-                <th style="width:75px;">إجراء</th>
+                <th style="width:45px; text-align:center;">م</th>
+                <th style="width:130px; text-align:center;">تاريخ الصب</th>
+                <th style="min-width:140px; text-align:right;">العنصر</th>
+                <th style="width:75px; text-align:center;">المحتوى</th>
+                <th style="width:75px; text-align:center;">الجهد</th>
+                <th style="width:90px; text-align:center;">كمية الشركة</th>
+                <th style="width:90px; text-align:center;">كمية المورد</th>
+                <th style="width:90px; text-align:center;">السعر</th>
+                <th style="width:115px; text-align:center;">القيمة</th>
+                <th style="width:75px; text-align:center;">إجراء</th>
             </tr>`;
         } else {
             tableHeader.innerHTML = `<tr>
-                <th style="width:40px;">مسلسل</th>
-                <th style="width:130px;">التاريخ</th>
-                <th style="width:90px;">كود الصنف</th>
-                <th>البيان</th>
-                <th style="width:80px;">الوحدة</th>
-                <th style="width:90px;">رقم الفاتورة</th>
-                <th style="width:80px;">الكمية</th>
-                <th style="width:80px;">السعر</th>
-                <th style="width:80px;">خصومات</th>
-                <th style="width:100px;">إجمالي المستحق</th>
-                <th style="width:70px;">الإجراء</th>
+                <th style="width:45px; text-align:center;">م</th>
+                <th style="width:130px; text-align:center;">التاريخ</th>
+                <th style="width:100px; text-align:center;">كود الصنف</th>
+                <th style="min-width:180px; text-align:right;">بيان المادة / الصنف</th>
+                <th style="width:90px; text-align:center;">الوحدة</th>
+                <th style="width:95px; text-align:center;">رقم الفاتورة</th>
+                <th style="width:85px; text-align:center;">الكمية</th>
+                <th style="width:90px; text-align:center;">السعر</th>
+                <th style="width:85px; text-align:center;">خصومات</th>
+                <th style="width:115px; text-align:center;">إجمالي المستحق</th>
+                <th style="width:75px; text-align:center;">الإجراء</th>
             </tr>`;
         }
     }
@@ -2982,33 +2982,33 @@ function renderCombinedSupExtract(){
             if (isReadyMix) {
                 const rowTotal = (r.qty || 0) * (r.price || 0);
                 return `<tr>
-                    <td>${toAr(i+1)}</td>
-                    <td><span class="badge badge-info" style="font-size:0.75rem; background:#e3f2fd; color:#1976d2; padding:2px 6px; border-radius:4px;">مستخلص ${r.extractNumber}</span> ${formatDateDMY(r.rowDate || r.date)}</td>
-                    <td>${r.element || r.description || '—'}</td>
-                    <td>${r.content || '—'}</td>
-                    <td>${r.strength || '—'}</td>
-                    <td class="num font-bold">${fmtNum(r.qty || 0)}</td>
-                    <td class="num">${fmtNum(r.supplierQty || 0)}</td>
-                    <td class="amount-cell">${fmtNum(r.price || 0)}</td>
-                    <td class="amount-cell calculated font-bold">${fmtNum(rowTotal)}</td>
-                    <td class="action-buttons">
+                    <td style="text-align:center; font-weight:600;">${toAr(i+1)}</td>
+                    <td style="text-align:center;"><span class="badge badge-info" style="font-size:0.75rem; background:#e3f2fd; color:#1976d2; padding:2px 6px; border-radius:4px;">مستخلص ${r.extractNumber}</span> ${formatDateDMY(r.rowDate || r.date)}</td>
+                    <td style="text-align:right;">${r.element || r.description || '—'}</td>
+                    <td style="text-align:center;">${r.content || '—'}</td>
+                    <td style="text-align:center;">${r.strength || '—'}</td>
+                    <td class="num font-bold" style="text-align:center;">${fmtNum(r.qty || 0)}</td>
+                    <td class="num" style="text-align:center;">${fmtNum(r.supplierQty || 0)}</td>
+                    <td class="amount-cell" style="text-align:center;">${fmtNum(r.price || 0)}</td>
+                    <td class="amount-cell calculated font-bold" style="text-align:center;">${fmtNum(rowTotal)}</td>
+                    <td class="action-buttons" style="justify-content:center;">
                         <button class="btn btn-icon-only btn-delete" onclick="deleteRowFromCombined(${r.extractNumber}, '${esc(r.rowDate || r.date || '')}', '${esc(r.description || r.element || '')}', ${r.qty || 0})" title="حذف من المستخلص الأصلي">🗑️</button>
                     </td>
                 </tr>`;
             } else {
                 const rowTotal = (r.qty || 0) * (r.price || 0) - (r.discounts || 0);
                 return `<tr>
-                    <td>${toAr(i+1)}</td>
-                    <td><span class="badge badge-info" style="font-size:0.75rem; background:#e3f2fd; color:#1976d2; padding:2px 6px; border-radius:4px;">مستخلص ${r.extractNumber}</span> ${formatDateDMY(r.rowDate || r.date)}</td>
-                    <td>${r.productCode || r.code || '—'}</td>
-                    <td>${r.description || '—'}</td>
-                    <td>${r.unit || '—'}</td>
-                    <td>${r.invoiceNo || '—'}</td>
-                    <td class="num font-bold">${fmtNum(r.qty || 0)}</td>
-                    <td class="amount-cell">${fmtNum(r.price || 0)}</td>
-                    <td class="amount-cell text-danger">${(r.discounts || 0) > 0 ? '-' + fmtNum(r.discounts) : '٠'}</td>
-                    <td class="amount-cell calculated font-bold">${fmtNum(rowTotal)}</td>
-                    <td class="action-buttons">
+                    <td style="text-align:center; font-weight:600;">${toAr(i+1)}</td>
+                    <td style="text-align:center;"><span class="badge badge-info" style="font-size:0.75rem; background:#e3f2fd; color:#1976d2; padding:2px 6px; border-radius:4px;">مستخلص ${r.extractNumber}</span> ${formatDateDMY(r.rowDate || r.date)}</td>
+                    <td style="text-align:center;">${r.productCode || r.code || '—'}</td>
+                    <td style="text-align:right;">${r.description || '—'}</td>
+                    <td style="text-align:center;">${r.unit || '—'}</td>
+                    <td style="text-align:center;">${r.invoiceNo || '—'}</td>
+                    <td class="num font-bold" style="text-align:center;">${fmtNum(r.qty || 0)}</td>
+                    <td class="amount-cell" style="text-align:center;">${fmtNum(r.price || 0)}</td>
+                    <td class="amount-cell text-danger" style="text-align:center;">${(r.discounts || 0) > 0 ? '-' + fmtNum(r.discounts) : '٠'}</td>
+                    <td class="amount-cell calculated font-bold" style="text-align:center;">${fmtNum(rowTotal)}</td>
+                    <td class="action-buttons" style="justify-content:center;">
                         <button class="btn btn-icon-only btn-delete" onclick="deleteRowFromCombined(${r.extractNumber}, '${esc(r.rowDate || r.date || '')}', '${esc(r.description || '')}', ${r.qty || 0})" title="حذف من المستخلص الأصلي">🗑️</button>
                     </td>
                 </tr>`;
@@ -3028,9 +3028,9 @@ function renderCombinedSupExtract(){
     const tfootRow = gi('supExtractTable') ? gi('supExtractTable').querySelector('tfoot tr') : null;
     if (tfootRow) {
         if (isReadyMix) {
-            tfootRow.innerHTML = `<td colspan="8"><strong>إجمالي القيمة لكافة المستخلصات</strong></td><td class="amount-cell">${fmtNum(grandTotal)}</td><td></td>`;
+            tfootRow.innerHTML = `<td colspan="8" style="text-align:right; font-weight:700;"><strong>إجمالي القيمة لكافة المستخلصات</strong></td><td class="amount-cell" style="text-align:center; font-weight:700;">${fmtNum(grandTotal)}</td><td></td>`;
         } else {
-            tfootRow.innerHTML = `<td colspan="9"><strong>إجمالي المستحق لكافة المستخلصات</strong></td><td class="amount-cell">${fmtNum(grandTotal)}</td><td></td>`;
+            tfootRow.innerHTML = `<td colspan="9" style="text-align:right; font-weight:700;"><strong>إجمالي المستحق لكافة المستخلصات</strong></td><td class="amount-cell" style="text-align:center; font-weight:700;">${fmtNum(grandTotal)}</td><td></td>`;
         }
     }
 }
@@ -3481,30 +3481,30 @@ function renderSupExtract(){
     if (tableHeader) {
         if (isReadyMix) {
             tableHeader.innerHTML = `<tr>
-                <th style="width:40px;">م</th>
-                <th style="width:100px;">تاريخ الصب</th>
-                <th style="width:150px;">العنصر</th>
-                <th style="width:65px;">المحتوى</th>
-                <th style="width:65px;">الجهد</th>
-                <th style="width:90px;">كمية الشركة</th>
-                <th style="width:90px;">كمية المورد</th>
-                <th style="width:85px;">السعر</th>
-                <th style="width:105px;">القيمة</th>
-                <th style="width:75px;">إجراء</th>
+                <th style="width:45px; text-align:center;">م</th>
+                <th style="width:110px; text-align:center;">تاريخ الصب</th>
+                <th style="min-width:140px; text-align:right;">العنصر</th>
+                <th style="width:75px; text-align:center;">المحتوى</th>
+                <th style="width:75px; text-align:center;">الجهد</th>
+                <th style="width:90px; text-align:center;">كمية الشركة</th>
+                <th style="width:90px; text-align:center;">كمية المورد</th>
+                <th style="width:90px; text-align:center;">السعر</th>
+                <th style="width:115px; text-align:center;">القيمة</th>
+                <th style="width:75px; text-align:center;">إجراء</th>
             </tr>`;
         } else {
             tableHeader.innerHTML = `<tr>
-                <th style="width:40px;">مسلسل</th>
-                <th style="width:100px;">التاريخ</th>
-                <th style="width:90px;">كود الصنف</th>
-                <th>البيان</th>
-                <th style="width:80px;">الوحدة</th>
-                <th style="width:90px;">رقم الفاتورة</th>
-                <th style="width:80px;">الكمية</th>
-                <th style="width:80px;">السعر</th>
-                <th style="width:80px;">خصومات</th>
-                <th style="width:100px;">إجمالي المستحق</th>
-                <th style="width:45px;">إجراء</th>
+                <th style="width:45px; text-align:center;">م</th>
+                <th style="width:115px; text-align:center;">التاريخ</th>
+                <th style="width:100px; text-align:center;">كود الصنف</th>
+                <th style="min-width:180px; text-align:right;">بيان المادة / الصنف</th>
+                <th style="width:90px; text-align:center;">الوحدة</th>
+                <th style="width:95px; text-align:center;">رقم الفاتورة</th>
+                <th style="width:85px; text-align:center;">الكمية</th>
+                <th style="width:90px; text-align:center;">السعر</th>
+                <th style="width:85px; text-align:center;">خصومات</th>
+                <th style="width:115px; text-align:center;">إجمالي المستحق</th>
+                <th style="width:75px; text-align:center;">إجراء</th>
             </tr>`;
         }
     }
@@ -3512,9 +3512,9 @@ function renderSupExtract(){
     const tfootRow = gi('supExtractTable').querySelector('tfoot tr');
     if (tfootRow) {
         if (isReadyMix) {
-            tfootRow.innerHTML = `<td colspan="8"><strong>إجمالي القيمة للمورد</strong></td><td class="amount-cell" id="supExtractGrandTotal">0</td><td></td>`;
+            tfootRow.innerHTML = `<td colspan="8" style="text-align:right; font-weight:700;"><strong>إجمالي القيمة للمورد</strong></td><td class="amount-cell" id="supExtractGrandTotal" style="text-align:center; font-weight:700;">0</td><td></td>`;
         } else {
-            tfootRow.innerHTML = `<td colspan="9"><strong>إجمالي المستحق للمورد</strong></td><td class="amount-cell" id="supExtractGrandTotal">0</td><td></td>`;
+            tfootRow.innerHTML = `<td colspan="9" style="text-align:right; font-weight:700;"><strong>إجمالي المستحق للمورد</strong></td><td class="amount-cell" id="supExtractGrandTotal" style="text-align:center; font-weight:700;">0</td><td></td>`;
         }
     }
 
@@ -3532,31 +3532,31 @@ function renderSupExtract(){
         if (isReadyMix) {
             const rowTotal = (r.qty||0)*(r.price||0);
             return `<tr>
-                <td>${toAr(i+1)}</td>
-                <td><input type="text" class="extract-input filter-date" placeholder="D/M/YYYY" value="${formatDateDMY(r.rowDate||r.date)}" onchange="updateSupExtractRow(${origIdx},'rowDate',this.value)"></td>
-                <td><input type="text" class="extract-input" placeholder="العنصر" value="${r.element||r.description||''}" onchange="updateSupExtractRow(${origIdx},'element',this.value)"></td>
-                <td><input type="text" class="extract-input" placeholder="المحتوى" value="${r.content||''}" onchange="updateSupExtractRow(${origIdx},'content',this.value)"></td>
-                <td><input type="text" class="extract-input" placeholder="الجهد" value="${r.strength||''}" onchange="updateSupExtractRow(${origIdx},'strength',this.value)"></td>
-                <td><input type="number" class="extract-input num qty-cell" value="${r.qty||0}" min="0" step="0.01" oninput="updateSupExtractRow(${origIdx},'qty',parseFloat(this.value)||0,this)" onchange="updateSupExtractRow(${origIdx},'qty',parseFloat(this.value)||0,this);save();"></td>
-                <td><input type="number" class="extract-input num supplier-qty-cell" value="${r.supplierQty||0}" min="0" step="0.01" oninput="updateSupExtractRow(${origIdx},'supplierQty',parseFloat(this.value)||0,this)" onchange="updateSupExtractRow(${origIdx},'supplierQty',parseFloat(this.value)||0,this);save();"></td>
-                <td><input type="number" class="extract-input num price-cell" value="${r.price||0}" min="0" step="0.01" oninput="updateSupExtractRow(${origIdx},'price',parseFloat(this.value)||0,this)" onchange="updateSupExtractRow(${origIdx},'price',parseFloat(this.value)||0,this);save();"></td>
-                <td class="amount-cell calculated">${fmtNum(rowTotal)}</td>
-                <td class="action-buttons"><button class="btn btn-reorder" onclick="moveSupExtractRow(${origIdx},-1)" ${origIdx===0?'disabled':''}>▲</button><button class="btn btn-reorder" onclick="moveSupExtractRow(${origIdx},1)" ${origIdx===ex.rows.length-1?'disabled':''}>▼</button><button class="btn btn-icon-only btn-delete" onclick="removeSupExtractRow(${origIdx})">🗑️</button></td>
+                <td style="text-align:center; font-weight:600;">${toAr(i+1)}</td>
+                <td><input type="text" class="extract-input filter-date" placeholder="YYYY/MM/DD" style="text-align:center;" value="${formatDateDMY(r.rowDate||r.date)}" onchange="updateSupExtractRow(${origIdx},'rowDate',this.value)"></td>
+                <td><input type="text" class="extract-input" placeholder="العنصر" style="text-align:right;" value="${r.element||r.description||''}" onchange="updateSupExtractRow(${origIdx},'element',this.value)"></td>
+                <td><input type="text" class="extract-input" placeholder="المحتوى" style="text-align:center;" value="${r.content||''}" onchange="updateSupExtractRow(${origIdx},'content',this.value)"></td>
+                <td><input type="text" class="extract-input" placeholder="الجهد" style="text-align:center;" value="${r.strength||''}" onchange="updateSupExtractRow(${origIdx},'strength',this.value)"></td>
+                <td><input type="number" class="extract-input num qty-cell" style="text-align:center;" value="${r.qty||0}" min="0" step="0.01" oninput="updateSupExtractRow(${origIdx},'qty',parseFloat(this.value)||0,this)" onchange="updateSupExtractRow(${origIdx},'qty',parseFloat(this.value)||0,this);save();"></td>
+                <td><input type="number" class="extract-input num supplier-qty-cell" style="text-align:center;" value="${r.supplierQty||0}" min="0" step="0.01" oninput="updateSupExtractRow(${origIdx},'supplierQty',parseFloat(this.value)||0,this)" onchange="updateSupExtractRow(${origIdx},'supplierQty',parseFloat(this.value)||0,this);save();"></td>
+                <td><input type="number" class="extract-input num price-cell" style="text-align:center;" value="${r.price||0}" min="0" step="0.01" oninput="updateSupExtractRow(${origIdx},'price',parseFloat(this.value)||0,this)" onchange="updateSupExtractRow(${origIdx},'price',parseFloat(this.value)||0,this);save();"></td>
+                <td class="amount-cell calculated" style="text-align:center; font-weight:700;">${fmtNum(rowTotal)}</td>
+                <td class="action-buttons" style="justify-content:center;"><button class="btn btn-reorder" onclick="moveSupExtractRow(${origIdx},-1)" ${origIdx===0?'disabled':''}>▲</button><button class="btn btn-reorder" onclick="moveSupExtractRow(${origIdx},1)" ${origIdx===ex.rows.length-1?'disabled':''}>▼</button><button class="btn btn-icon-only btn-delete" onclick="removeSupExtractRow(${origIdx})">🗑️</button></td>
             </tr>`;
         } else {
             const rowTotal = (r.qty||0)*(r.price||0)-(r.discounts||0);
             return `<tr>
-                <td>${toAr(i+1)}</td>
-                <td><input type="text" class="extract-input filter-date" placeholder="D/M/YYYY" value="${formatDateDMY(r.rowDate||r.date)}" onchange="updateSupExtractRow(${origIdx},'rowDate',this.value)"></td>
-                <td><input type="text" class="extract-input" placeholder="كود الصنف" style="width:85px;text-align:center;" value="${r.productCode||r.code||''}" onchange="updateSupExtractRow(${origIdx},'productCode',this.value)"></td>
-                <td><input type="text" class="extract-input wide" value="${r.description||''}" onchange="updateSupExtractRow(${origIdx},'description',this.value)"></td>
-                <td><select class="extract-select" onchange="updateSupExtractRow(${origIdx},'unit',this.value)">${SUPPLY_UNITS.map(u=>`<option${r.unit===u?' selected':''}>${u}</option>`).join('')}</select></td>
-                <td><input type="text" class="extract-input" value="${r.invoiceNo||''}" onchange="updateSupExtractRow(${origIdx},'invoiceNo',this.value)"></td>
-                <td><input type="number" class="extract-input num qty-cell" value="${r.qty||0}" min="0" step="0.01" oninput="updateSupExtractRow(${origIdx},'qty',parseFloat(this.value)||0,this)" onchange="updateSupExtractRow(${origIdx},'qty',parseFloat(this.value)||0,this);save();"></td>
-                <td><input type="number" class="extract-input num price-cell" value="${r.price||0}" min="0" step="0.01" oninput="updateSupExtractRow(${origIdx},'price',parseFloat(this.value)||0,this)" onchange="updateSupExtractRow(${origIdx},'price',parseFloat(this.value)||0,this);save();"></td>
-                <td><input type="number" class="extract-input num" value="${r.discounts||0}" min="0" step="0.01" oninput="updateSupExtractRow(${origIdx},'discounts',parseFloat(this.value)||0,this)" onchange="updateSupExtractRow(${origIdx},'discounts',parseFloat(this.value)||0,this);save();"></td>
-                <td class="amount-cell calculated">${fmtNum(rowTotal)}</td>
-                <td class="action-buttons"><button class="btn btn-reorder" onclick="moveSupExtractRow(${origIdx},-1)" ${origIdx===0?'disabled':''}>▲</button><button class="btn btn-reorder" onclick="moveSupExtractRow(${origIdx},1)" ${origIdx===ex.rows.length-1?'disabled':''}>▼</button><button class="btn btn-icon-only btn-delete" onclick="removeSupExtractRow(${origIdx})">🗑️</button></td>
+                <td style="text-align:center; font-weight:600;">${toAr(i+1)}</td>
+                <td><input type="text" class="extract-input filter-date" placeholder="YYYY/MM/DD" style="text-align:center;" value="${formatDateDMY(r.rowDate||r.date)}" onchange="updateSupExtractRow(${origIdx},'rowDate',this.value)"></td>
+                <td><input type="text" class="extract-input" placeholder="كود الصنف" style="text-align:center;" value="${r.productCode||r.code||''}" onchange="updateSupExtractRow(${origIdx},'productCode',this.value)"></td>
+                <td><input type="text" class="extract-input" placeholder="بيان المادة أو الصنف" style="text-align:right;" value="${r.description||''}" onchange="updateSupExtractRow(${origIdx},'description',this.value)"></td>
+                <td><select class="extract-select" style="text-align:center; padding:4px 6px;" onchange="updateSupExtractRow(${origIdx},'unit',this.value)">${SUPPLY_UNITS.map(u=>`<option${r.unit===u?' selected':''}>${u}</option>`).join('')}</select></td>
+                <td><input type="text" class="extract-input" placeholder="رقم الفاتورة" style="text-align:center;" value="${r.invoiceNo||''}" onchange="updateSupExtractRow(${origIdx},'invoiceNo',this.value)"></td>
+                <td><input type="number" class="extract-input num qty-cell" style="text-align:center;" value="${r.qty||0}" min="0" step="0.01" oninput="updateSupExtractRow(${origIdx},'qty',parseFloat(this.value)||0,this)" onchange="updateSupExtractRow(${origIdx},'qty',parseFloat(this.value)||0,this);save();"></td>
+                <td><input type="number" class="extract-input num price-cell" style="text-align:center;" value="${r.price||0}" min="0" step="0.01" oninput="updateSupExtractRow(${origIdx},'price',parseFloat(this.value)||0,this)" onchange="updateSupExtractRow(${origIdx},'price',parseFloat(this.value)||0,this);save();"></td>
+                <td><input type="number" class="extract-input num" style="text-align:center;" value="${r.discounts||0}" min="0" step="0.01" oninput="updateSupExtractRow(${origIdx},'discounts',parseFloat(this.value)||0,this)" onchange="updateSupExtractRow(${origIdx},'discounts',parseFloat(this.value)||0,this);save();"></td>
+                <td class="amount-cell calculated" style="text-align:center; font-weight:700;">${fmtNum(rowTotal)}</td>
+                <td class="action-buttons" style="justify-content:center;"><button class="btn btn-reorder" onclick="moveSupExtractRow(${origIdx},-1)" ${origIdx===0?'disabled':''}>▲</button><button class="btn btn-reorder" onclick="moveSupExtractRow(${origIdx},1)" ${origIdx===ex.rows.length-1?'disabled':''}>▼</button><button class="btn btn-icon-only btn-delete" onclick="removeSupExtractRow(${origIdx})">🗑️</button></td>
             </tr>`;
         }
     }).join('');
