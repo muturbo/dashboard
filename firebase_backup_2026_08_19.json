@@ -90,6 +90,11 @@
         "id": 236,
         "item": "نجارة مسلحة",
         "name": "حماده ع 177"
+      },
+      {
+        "id": 237,
+        "item": "توريدات كهربائيه",
+        "name": "المتحده"
       }
     ],
     "expenses": [
@@ -324,9 +329,10 @@
         "beneficiary": "مركز البحوث",
         "createdAt": "2026-08-01T19:58:56.861Z",
         "date": "30/7/2026",
-        "description": "مكعبات 4*قزاعد",
+        "description": "مكعبات 4*قواعد",
         "id": 1785614336861.3567,
-        "type": "اختبارات و تجارب موقع"
+        "type": "اختبارات و تجارب موقع",
+        "updatedAt": "2026-08-19T14:07:04.970Z"
       },
       {
         "amount": 800,
@@ -356,13 +362,14 @@
         "type": "مصروفات بنكيه"
       },
       {
-        "amount": 12500000,
+        "amount": 14100000,
         "beneficiary": "بنك مصر",
         "createdAt": "2026-08-05T18:24:21.646Z",
         "date": "30/7/2026",
         "description": "قروض طويلة الاجل",
         "id": 1785954261646.8696,
-        "type": "التزامات غير متداوله"
+        "type": "التزامات غير متداوله",
+        "updatedAt": "2026-08-19T14:08:25.607Z"
       },
       {
         "amount": 57000,
@@ -444,6 +451,52 @@
         "description": "غداء للاستشارى",
         "id": 1786251011324.6145,
         "type": "بوفيه و ضيافه"
+      },
+      {
+        "amount": 800,
+        "beneficiary": "محمود الغفير",
+        "createdAt": "2026-08-19T14:04:06.769Z",
+        "date": "13/8/2026",
+        "description": "صرف سلف للموظفين",
+        "id": 1787148246769.0405,
+        "type": "سلف عاملين"
+      },
+      {
+        "amount": 800,
+        "beneficiary": "عماد الغفير",
+        "createdAt": "2026-08-19T14:04:26.354Z",
+        "date": "13/8/2026",
+        "description": "صرف سلف للموظفين",
+        "id": 1787148266354.1475,
+        "type": "سلف عاملين"
+      },
+      {
+        "amount": 1500,
+        "beneficiary": "م/محمد البحيرى",
+        "createdAt": "2026-08-19T14:04:56.086Z",
+        "date": "13/8/2026",
+        "description": "بدل ساعات اضافيه للاستشارى",
+        "id": 1787148296086.16,
+        "type": "اشراف هندسى"
+      },
+      {
+        "amount": 285,
+        "beneficiary": "م/محمد البحيرى",
+        "createdAt": "2026-08-19T14:05:53.783Z",
+        "date": "13/8/2026",
+        "description": "غداء للاستشارى",
+        "id": 1787148353783.054,
+        "type": "بوفيه و ضيافه"
+      },
+      {
+        "amount": 2000,
+        "beneficiary": "مركز البحوث",
+        "createdAt": "2026-08-19T14:06:45.790Z",
+        "date": "13/8/2026",
+        "description": "تكسير مكعبات",
+        "id": 1787148405790.2898,
+        "type": "اختبارات و تجارب موقع",
+        "updatedAt": "2026-08-19T14:07:50.431Z"
       }
     ],
     "extracts": [
@@ -767,7 +820,7 @@
             "currentQty": 160,
             "deductions": 0,
             "description": "قاعده مسلحه",
-            "disbursementPct": 65,
+            "disbursementPct": 70,
             "itemPct": 100,
             "prevQty": 0,
             "price": 1000,
@@ -813,6 +866,19 @@
             "rowDate": "11/8/2026",
             "type": "تنفيذ",
             "unit": "م³"
+          },
+          {
+            "buildingNo": "155",
+            "currentQty": 62,
+            "deductions": 0,
+            "description": "سقف الارضى",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1000,
+            "rowDate": "16/8/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
           }
         ]
       },
@@ -836,6 +902,19 @@
             "rowDate": "22/7/2026",
             "type": "تنفيذ",
             "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "151",
+            "currentQty": 160,
+            "deductions": 0,
+            "description": "قاعده مسلحه",
+            "disbursementPct": 65,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1000,
+            "rowDate": "16/8/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
           }
         ]
       },
@@ -888,7 +967,7 @@
             "currentQty": 160,
             "deductions": 0,
             "description": "قاعده مسلحه",
-            "disbursementPct": 65,
+            "disbursementPct": 70,
             "itemPct": 100,
             "prevQty": 0,
             "price": 300,
@@ -971,6 +1050,32 @@
             "prevQty": 0,
             "price": 300,
             "rowDate": "11/8/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "151",
+            "currentQty": 160,
+            "deductions": 0,
+            "description": "قاعده مسلحه",
+            "disbursementPct": 65,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "16/8/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "155",
+            "currentQty": 62,
+            "deductions": 0,
+            "description": "سقف الارضى",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "16/8/2026",
             "type": "تنفيذ",
             "unit": "م³"
           }
@@ -1379,6 +1484,32 @@
             "prevQty": 0,
             "price": 950,
             "rowDate": "11/8/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "155",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "سقف الارضى",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 950,
+            "rowDate": "16/8/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "151",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "قاعده مسلحه",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 950,
+            "rowDate": "16/8/2026",
             "type": "تنفيذ",
             "unit": "مقطوعية"
           }
@@ -1889,6 +2020,126 @@
         "id": 1786250557283.2358,
         "item": "توريد خرسانه جاهزه",
         "notes": ""
+      },
+      {
+        "amount": 10000,
+        "checkNo": "تحويل انستاباى",
+        "contractor": "عبدالعاطى سليم عبدالعاطى ع 151",
+        "createdAt": "2026-08-19T13:58:20.024Z",
+        "date": "2026/08/13",
+        "id": 1787147900024.2688,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 10000,
+        "checkNo": "تحويل انستاباى",
+        "contractor": "رومانى حنا ع 178",
+        "createdAt": "2026-08-19T13:58:38.777Z",
+        "date": "2026/08/13",
+        "id": 1787147918777.6267,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 10000,
+        "checkNo": "تحويل انستاباى",
+        "contractor": "حماده ع 177",
+        "createdAt": "2026-08-19T13:58:56.519Z",
+        "date": "2026/08/13",
+        "id": 1787147936519.6353,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 10000,
+        "checkNo": "تحويل انستاباى",
+        "contractor": "محمد برعى على ع 174",
+        "createdAt": "2026-08-19T13:59:10.919Z",
+        "date": "2026/08/13",
+        "id": 1787147950919.7173,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 30000,
+        "checkNo": "5249",
+        "contractor": "مصطفى محمود ع 175",
+        "createdAt": "2026-08-19T13:59:31.899Z",
+        "date": "2026/08/13",
+        "id": 1787147971899.4402,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 50000,
+        "checkNo": "3205",
+        "contractor": "احمد محمد انور ع 153",
+        "createdAt": "2026-08-19T13:59:52.244Z",
+        "date": "2026/08/13",
+        "id": 1787147992244.0579,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 30000,
+        "checkNo": "3204",
+        "contractor": "احمد حسن حسين ع 154،155،176",
+        "createdAt": "2026-08-19T14:00:11.959Z",
+        "date": "2026/08/13",
+        "id": 1787148011959.1853,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 50000,
+        "checkNo": "3203",
+        "contractor": "هشام شحاته احمد ع 151،174،175",
+        "createdAt": "2026-08-19T14:00:37.864Z",
+        "date": "2026/08/13",
+        "id": 1787148037864.517,
+        "item": "حدادة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 3000,
+        "checkNo": "تحويل انستاباى",
+        "contractor": "مصطفى عبدالناصر محمد",
+        "createdAt": "2026-08-19T14:00:50.865Z",
+        "date": "2026/08/13",
+        "id": 1787148050865.877,
+        "item": "اعمال فرمجه",
+        "notes": ""
+      },
+      {
+        "amount": 250000,
+        "checkNo": "100008076168/5242",
+        "contractor": "محمود محمد عبدالله",
+        "createdAt": "2026-08-19T14:01:27.512Z",
+        "date": "2026/08/13",
+        "id": 1787148087512.7976,
+        "item": "حفر",
+        "notes": ""
+      },
+      {
+        "amount": 2000000,
+        "checkNo": "تحويل بنكى (ائتمان)",
+        "contractor": "المدينه للصلب",
+        "createdAt": "2026-08-19T14:02:10.121Z",
+        "date": "2026/08/13",
+        "id": 1787148130121.7456,
+        "item": "توريد حديد تسليح",
+        "notes": ""
+      },
+      {
+        "amount": 500000,
+        "checkNo": "تحويل بنكى (ائتمان)",
+        "contractor": "محطة بناء",
+        "createdAt": "2026-08-19T14:02:36.265Z",
+        "date": "2026/08/13",
+        "id": 1787148156265.0405,
+        "item": "توريد خرسانه جاهزه",
+        "notes": ""
       }
     ],
     "supplierExtracts": [
@@ -2043,12 +2294,30 @@
             "supplierQty": 0
           },
           {
-            "content": "",
+            "content": "350",
             "element": "قاعده مسلحه ع  176",
             "price": 2430,
             "qty": 167,
             "rowDate": "11/8/2026",
-            "strength": "",
+            "strength": "250",
+            "supplierQty": 0
+          },
+          {
+            "content": "350",
+            "element": "سقف ارضى ع 155",
+            "price": 2430,
+            "qty": 65,
+            "rowDate": "16/8/2026",
+            "strength": "250",
+            "supplierQty": 0
+          },
+          {
+            "content": "350",
+            "element": "قاعده مسلحه ع 151",
+            "price": 2430,
+            "qty": 167,
+            "rowDate": "16/8/2026",
+            "strength": "250",
             "supplierQty": 0
           }
         ],
@@ -2071,16 +2340,95 @@
             "unit": "طن"
           },
           {
-            "description": "",
+            "description": "توريد حديد ",
             "discounts": 0,
             "invoiceNo": "10240",
             "price": 36500,
             "qty": 54.97,
             "rowDate": "2026/08/04",
             "unit": "طن"
+          },
+          {
+            "description": "توريد حديد ",
+            "discounts": 0,
+            "invoiceNo": "10470",
+            "price": 36500,
+            "qty": 66.05,
+            "rowDate": "10/8/2026",
+            "unit": "طن"
           }
         ],
         "supplier": "المدينه للصلب"
+      },
+      {
+        "date": "2026/08/11",
+        "id": 1787136565306.574,
+        "item": "توريدات كهربائيه",
+        "notes": "",
+        "number": 1,
+        "rows": [
+          {
+            "description": "خرطوم 16مم 45متر (احمر)",
+            "discounts": 0,
+            "invoiceNo": "",
+            "price": 0,
+            "productCode": "2161",
+            "qty": 0,
+            "rowDate": "11/8/2026",
+            "unit": "لفة"
+          },
+          {
+            "description": "خرطوم 16مم 45متر (ازرق)",
+            "discounts": 0,
+            "invoiceNo": "",
+            "price": 0,
+            "productCode": "2162",
+            "qty": 0,
+            "rowDate": "11/8/2026",
+            "unit": "لفة"
+          },
+          {
+            "description": "خرطوم 20مم 45متر (ابيض)",
+            "discounts": 0,
+            "invoiceNo": "",
+            "price": 0,
+            "productCode": "205",
+            "qty": 0,
+            "rowDate": "11/8/2026",
+            "unit": "لفة"
+          },
+          {
+            "description": "خرطوم 23مم",
+            "discounts": 0,
+            "invoiceNo": "",
+            "price": 0,
+            "productCode": "223",
+            "qty": 0,
+            "rowDate": "11/8/2026",
+            "unit": "لفة"
+          },
+          {
+            "description": "علبه 4 مخرج",
+            "discounts": 0,
+            "invoiceNo": "",
+            "price": 0,
+            "productCode": "4444",
+            "qty": 0,
+            "rowDate": "11/8/2026",
+            "unit": "لفة"
+          },
+          {
+            "description": "مواسير 40مم 3م*10",
+            "discounts": 0,
+            "invoiceNo": "",
+            "price": 0,
+            "productCode": "540",
+            "qty": 0,
+            "rowDate": "11/8/2026",
+            "unit": "لفة"
+          }
+        ],
+        "supplier": "المتحده"
       }
     ],
     "supplyItemsList": [
