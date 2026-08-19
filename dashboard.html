@@ -1578,11 +1578,7 @@ function showSyncStatus(status){
 function save(){
     saveToCache();
     if(typeof renderBalances==='function') try{renderBalances();}catch(e){}
-    // Debounce server saves to prevent lag
-    if(window._serverSaveTimer) clearTimeout(window._serverSaveTimer);
-    window._serverSaveTimer=setTimeout(()=>{
-        saveToServer();
-    },600);
+    saveToServer();
 }
 
 function initDefaults(){
@@ -3029,34 +3025,51 @@ function calcExtractTotals(ex){
 function addExtractRow(){
     const ex=extracts.find(x=>String(x.id)===String(currentExtractId));if(!ex)return;
     ex.rows.push({rowDate:'',buildingNo:'',description:'',type:'تنفيذ',unit:'م²',price:0,itemPct:100,prevQty:0,currentQty:0,disbursementPct:100,deductions:0});
-    save();renderExtract();
+    saveToCache();
+    saveToServer();
+    renderExtract();
 }
 function updateExtractRow(idx,field,val){
     const ex=extracts.find(x=>String(x.id)===String(currentExtractId));if(!ex||!ex.rows[idx])return;
     ex.rows[idx][field]=val;
     
-    // Immediately recalculate totals in the DOM without full re-render
+    // Immediately recalculate and update ALL calculated cells in the row
     const row = ex.rows[idx];
     const totalQty=(row.prevQty||0)+(row.currentQty||0);
     const gross=totalQty*(row.price||0)*((row.itemPct||100)/100)*((row.disbursementPct||100)/100);
     const rowTotal=gross-(row.deductions||0);
     
-    // Update the grand total display
-    let grandTotal=0;
-    ex.rows.forEach(r=>{
-        const tq=(r.prevQty||0)+(r.currentQty||0);
-        const g=tq*(r.price||0)*((r.itemPct||100)/100)*((r.disbursementPct||100)/100);
-        grandTotal+=g-(r.deductions||0);
-    });
-    const gtEl=gi('extractGrandTotal');if(gtEl)gtEl.textContent=fmtNum(grandTotal);
+    // Update DOM cells for this specific row
+    const tbody = gi('extractBody');
+    if(tbody) {
+        const allRows = tbody.querySelectorAll('tr');
+        // Find the displayed row corresponding to origIdx
+        for(let ri=0; ri<allRows.length; ri++){
+            const tr = allRows[ri];
+            const calcCells = tr.querySelectorAll('.amount-cell.calculated');
+            // Check if this row's buttons reference our idx
+            const delBtn = tr.querySelector('.btn-delete');
+            if(delBtn && delBtn.getAttribute('onclick') && delBtn.getAttribute('onclick').includes('('+idx+')')){
+                if(calcCells.length >= 2){
+                    calcCells[0].textContent = fmtNum(totalQty);
+                    calcCells[1].textContent = fmtNum(rowTotal);
+                } else if(calcCells.length === 1){
+                    calcCells[0].textContent = fmtNum(rowTotal);
+                }
+                break;
+            }
+        }
+    }
     
-    // Debounced save - wait 800ms after last change before saving to server
-    if(window._extractSaveTimer) clearTimeout(window._extractSaveTimer);
+    // Update grand total
+    calcExtractTotals(ex);
+    
+    // Save immediately to cache, debounce server save slightly
     saveToCache();
+    if(window._extractSaveTimer) clearTimeout(window._extractSaveTimer);
     window._extractSaveTimer=setTimeout(()=>{
         saveToServer();
-        renderBalance(ex.item,ex.contractor);
-    },800);
+    },1200);
 }
 function removeExtractRow(idx){
     const ex=extracts.find(x=>String(x.id)===String(currentExtractId));if(!ex)return;
@@ -3479,7 +3492,8 @@ function addSupExtractRow(){
     } else {
         ex.rows.push({ rowDate: today(), description: '', unit: 'م³', invoiceNo: '', qty: 0, price: 0, discounts: 0 });
     }
-    save();
+    saveToCache();
+    saveToServer();
     renderSupExtract();
     if(typeof renderSupBalance === 'function') renderSupBalance(ex.item, ex.supplier);
     showToast('➕ تم إضافة بند جديد للمستخلص', 'success');
@@ -3489,7 +3503,6 @@ function updateSupExtractRow(idx, field, val, inputEl){
     const ex = supplierExtracts.find(x => String(x.id) === String(currentSupExtractId));
     if(!ex || !ex.rows || !ex.rows[idx]) return;
     ex.rows[idx][field] = val;
-    saveToCache();
     
     // Immediately calculate and update row total in the DOM
     const tr = inputEl ? (inputEl.closest ? inputEl.closest('tr') : null) : null;
@@ -3504,7 +3517,14 @@ function updateSupExtractRow(idx, field, val, inputEl){
     }
 
     calcSupExtractTotals(ex);
-    if(typeof renderSupBalance === 'function') renderSupBalance(ex.item, ex.supplier);
+    if(typeof renderSupBalance === 'function') try{renderSupBalance(ex.item, ex.supplier);}catch(e){}
+    
+    // Save to cache immediately, debounce server save
+    saveToCache();
+    if(window._supExtractSaveTimer) clearTimeout(window._supExtractSaveTimer);
+    window._supExtractSaveTimer=setTimeout(()=>{
+        saveToServer();
+    },1200);
 }
 
 function removeSupExtractRow(idx){
