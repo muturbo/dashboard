@@ -11,6 +11,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
     <link rel="stylesheet" href="style_v4.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
@@ -1393,6 +1395,16 @@ function saveToCache(){
 // Firebase URL
 const FIREBASE_URL='https://dashboard-77bb2-default-rtdb.firebaseio.com';
 
+// Initialize Firebase SDK
+const _fbConfig = { databaseURL: FIREBASE_URL };
+try {
+    if(typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length === 0) {
+        firebase.initializeApp(_fbConfig);
+    }
+} catch(e){ console.warn('Firebase SDK init:', e); }
+function _fbRef(path){ try { return firebase.database().ref(path); } catch(e){ return null; } }
+
+
 // Save to Firebase
 async function saveToServer(){
     try{
@@ -1409,7 +1421,21 @@ async function saveToServer(){
         const jsonStr = JSON.stringify(data);
         let saved = false;
 
-        // Method 1: fetch (works on HTTP/HTTPS)
+        // Method 1: Firebase SDK (most reliable, works from file://)
+        if(!saved){
+            try{
+                const ref = _fbRef('data');
+                if(ref){
+                    await ref.set(data);
+                    saved = true;
+                    console.log('[SAVE] Firebase SDK set() success');
+                }
+            }catch(sdkErr){
+                console.warn('[SAVE] Firebase SDK failed:', sdkErr.message);
+            }
+        }
+
+        // Method 2: fetch (works on HTTP/HTTPS)
         if(!saved){
             try{
                 const res = await fetch(FIREBASE_URL+'/data.json',{
@@ -1423,7 +1449,7 @@ async function saveToServer(){
             }
         }
 
-        // Method 2: XMLHttpRequest (works on file:// in most browsers)
+        // Method 3: XMLHttpRequest
         if(!saved){
             try{
                 saved = await new Promise((resolve)=>{
@@ -1436,14 +1462,14 @@ async function saveToServer(){
                                 console.log('[SAVE] XHR PUT success');
                                 resolve(true);
                             } else {
-                                console.warn('[SAVE] XHR PUT failed, status:', xhr.status);
+                                console.warn('[SAVE] XHR failed, status:', xhr.status);
                                 resolve(false);
                             }
                         }
                     };
-                    xhr.onerror = function(){ console.warn('[SAVE] XHR error'); resolve(false); };
+                    xhr.onerror = function(){ resolve(false); };
                     xhr.timeout = 10000;
-                    xhr.ontimeout = function(){ console.warn('[SAVE] XHR timeout'); resolve(false); };
+                    xhr.ontimeout = function(){ resolve(false); };
                     xhr.send(jsonStr);
                 });
             }catch(xhrErr){
@@ -1456,9 +1482,9 @@ async function saveToServer(){
             isServerMode=true;
             showSyncStatus('synced');
         } else {
-            console.error('[SAVE] All save methods failed! Data saved to cache only.');
+            console.error('[SAVE] All methods failed!');
             showSyncStatus('error');
-            showToast('⚠️ فشل حفظ البيانات على السيرفر - البيانات محفوظة محلياً فقط', 'error');
+            showToast('⚠️ فشل حفظ البيانات - تأكد من اتصال الإنترنت', 'error');
         }
     }catch(err){
         console.error('saveToServer critical error:', err);
@@ -1469,20 +1495,35 @@ async function saveToServer(){
 // Load from Firebase
 async function loadFromServer(){
     try {
-        const cacheBuster = 't=' + Date.now();
         let data = null;
 
-        // Method 1: Fetch (works on HTTP/HTTPS)
-        try {
-            const res = await fetch(FIREBASE_URL + '/data.json?' + cacheBuster, { cache: 'no-cache' });
-            if (res.ok) {
-                data = await res.json();
+        // Method 1: Firebase SDK (most reliable, works from file://)
+        try{
+            const ref = _fbRef('data');
+            if(ref){
+                const snap = await ref.once('value');
+                data = snap.val();
+                if(data) console.log('[LOAD] Firebase SDK success');
             }
-        } catch(fetchErr) {
-            console.warn('Fetch failed (likely file:// protocol CORS limit), trying JSONP script injection...');
+        }catch(sdkErr){
+            console.warn('[LOAD] Firebase SDK failed:', sdkErr.message);
         }
 
-        // Method 2: JSONP Script Tag Injection (Bypasses ALL Chrome file:// CORS restrictions!)
+        // Method 2: fetch
+        if(!data){
+            try {
+                const cacheBuster = 't=' + Date.now();
+                const res = await fetch(FIREBASE_URL + '/data.json?' + cacheBuster, { cache: 'no-cache' });
+                if (res.ok) {
+                    data = await res.json();
+                    if(data) console.log('[LOAD] fetch success');
+                }
+            } catch(fetchErr) {
+                console.warn('[LOAD] fetch failed:', fetchErr.message);
+            }
+        }
+
+        // Method 3: JSONP Script Tag Injection (fallback for file://)
         if (!data) {
             data = await new Promise((resolve) => {
                 const cbName = '__fbCB_' + Date.now() + '_' + Math.floor(Math.random()*1000);
@@ -1493,10 +1534,11 @@ async function loadFromServer(){
                     if (timeoutId) clearTimeout(timeoutId);
                     try { delete window[cbName]; } catch(e) { window[cbName] = undefined; }
                     if (script.parentNode) script.parentNode.removeChild(script);
+                    if(respData) console.log('[LOAD] JSONP success');
                     resolve(respData);
                 };
 
-                script.src = FIREBASE_URL + '/data.json?callback=' + cbName + '&' + cacheBuster;
+                script.src = FIREBASE_URL + '/data.json?callback=' + cbName + '&' + ('t=' + Date.now());
                 script.onerror = function() {
                     if (timeoutId) clearTimeout(timeoutId);
                     try { delete window[cbName]; } catch(e) { window[cbName] = undefined; }
@@ -1504,7 +1546,6 @@ async function loadFromServer(){
                     resolve(null);
                 };
 
-                // 5 second safety timeout
                 timeoutId = setTimeout(() => {
                     try { delete window[cbName]; } catch(e) { window[cbName] = undefined; }
                     if (script.parentNode) script.parentNode.removeChild(script);
@@ -1527,38 +1568,15 @@ async function loadFromServer(){
             if (Array.isArray(data.inventory) && data.inventory.length > 0) inventory = data.inventory;
             if (Array.isArray(data.supplyItemsList) && data.supplyItemsList.length > 0) supplyItemsList = data.supplyItemsList;
             if (Array.isArray(data.expenses) && data.expenses.length > 0) expenses = data.expenses;
-
-            // FAILSAFE: If any array is still empty, restore from EMBEDDED_BACKUP_DATA
-            if (typeof EMBEDDED_BACKUP_DATA !== 'undefined' && EMBEDDED_BACKUP_DATA) {
-                if (!Array.isArray(contractors) || contractors.length === 0) contractors = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.contractors || []));
-                if (!Array.isArray(payments) || payments.length === 0) payments = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.payments || []));
-                if (!Array.isArray(items) || items.length === 0) items = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.items || []));
-                if (!Array.isArray(extracts) || extracts.length === 0) extracts = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.extracts || []));
-                if (!Array.isArray(supplierExtracts) || supplierExtracts.length === 0) supplierExtracts = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.supplierExtracts || []));
-                if (!Array.isArray(expenses) || expenses.length === 0) expenses = JSON.parse(JSON.stringify(EMBEDDED_BACKUP_DATA.expenses || []));
-            }
-            if (Array.isArray(data.revenue)) revenue = data.revenue;
+            if (Array.isArray(data.revenue) && data.revenue.length > 0) revenue = data.revenue;
 
             sanitizeRows();
             saveToCache();
-            if (typeof contractors !== 'undefined') window.contractors = contractors;
-            if (typeof payments !== 'undefined') window.payments = payments;
-            if (typeof items !== 'undefined') window.items = items;
-
-            renderAll();
-            populateDropdowns();
-            if (typeof populateSupplyDropdowns === 'function') try { populateSupplyDropdowns(); } catch(e) {}
-            showSyncStatus('synced');
-            console.log('✅ Firebase JSONP data loaded successfully:', contractors.length, 'contractors,', payments.length, 'payments');
             return true;
-        } else {
-            console.warn('No data returned from Firebase, using cached data');
-            showSyncStatus('synced');
-            return false;
         }
+        return false;
     } catch(err) {
-        console.warn('Server load notice (using local data):', err);
-        showSyncStatus('synced');
+        console.error('loadFromServer error:', err);
         return false;
     }
 }
@@ -1568,9 +1586,23 @@ async function autoSync(){
     if(!isServerMode)return;
     if(_localSaveInProgress){return;}
     try{
-        const res=await fetch(FIREBASE_URL+'/data.json');
-        if(!res.ok)return;
-        const data=await res.json();
+        let data = null;
+        
+        // Try Firebase SDK first
+        try{
+            const ref = _fbRef('data');
+            if(ref){
+                const snap = await ref.once('value');
+                data = snap.val();
+            }
+        }catch(e){
+            // Fallback to fetch
+            try{
+                const res=await fetch(FIREBASE_URL+'/data.json');
+                if(res.ok) data=await res.json();
+            }catch(e2){}
+        }
+        
         if(!data)return;
         const hash=JSON.stringify(data);
         if(hash!==lastSyncHash){
@@ -1590,14 +1622,12 @@ async function autoSync(){
             if (typeof payments !== 'undefined') window.payments = payments;
             if (typeof items !== 'undefined') window.items = items;
             
-            // Smart re-render: only re-render sections NOT currently being edited
             const activeEl = document.activeElement;
             const isEditing = activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'SELECT' || activeEl.tagName === 'TEXTAREA');
             
             if(!isEditing){
                 renderAll();
             } else {
-                // Only update overview stats silently without touching current section
                 if(typeof renderOverview === 'function') try{renderOverview();}catch(e){}
                 if(typeof renderBalances === 'function') try{renderBalances();}catch(e){}
             }
