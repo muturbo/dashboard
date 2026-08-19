@@ -522,6 +522,7 @@
                                 <tr>
                                     <th style="width:40px;">مسلسل</th>
                                     <th>التاريخ</th>
+                                    <th>كود الصنف</th>
                                     <th>البيان</th>
                                     <th>الوحدة</th>
                                     <th>رقم الفاتورة</th>
@@ -535,7 +536,7 @@
                             <tbody id="supExtractBody"></tbody>
                             <tfoot>
                                 <tr class="total-row">
-                                    <td colspan="8"><strong>إجمالي المستحق للمورد</strong></td>
+                                    <td colspan="9"><strong>إجمالي المستحق للمورد</strong></td>
                                     <td class="amount-cell" id="supExtractGrandTotal">٠</td>
                                     <td></td>
                                 </tr>
@@ -1239,7 +1240,7 @@ const COLORS = [
     '#a7ffeb','#82b1ff','#69f0ae','#40c4ff','#e6ee9c','#f48fb1'
 ];
 
-const UNITS = ['م²','م³','م.ط','عدد','طن','مقطوعية','متر','كجم'];
+const UNITS = ['م²','م³','م.ط','عدد','طن','مقطوعية','متر','كجم','لفة'];
 const WORK_TYPES = ['تنفيذ','توريد','توريد وتنفيذ'];
 
 
@@ -1248,7 +1249,7 @@ const WORK_TYPES = ['تنفيذ','توريد','توريد وتنفيذ'];
 
 
 
-const SUPPLY_UNITS = ['م²','م³','م.ط','عدد','طن','متر','كجم','لتر','كيس','شكارة','الف طوبة','م.م','رحلة'];
+const SUPPLY_UNITS = ['م²','م³','م.ط','عدد','طن','متر','كجم','لتر','كيس','شكارة','الف طوبة','م.م','رحلة','لفة'];
 
 // ========================================
 // STORAGE (Server + LocalStorage fallback)
@@ -2943,8 +2944,6 @@ function renderCombinedSupExtract(){
         });
     });
 
-    // Grouped by Extract number first, then sorted by date per extract
-
     const tableHeader = gi('supExtractTable') ? gi('supExtractTable').querySelector('thead') : null;
     if (tableHeader) {
         if (isReadyMix) {
@@ -2963,14 +2962,15 @@ function renderCombinedSupExtract(){
         } else {
             tableHeader.innerHTML = `<tr>
                 <th style="width:40px;">مسلسل</th>
-                <th>التاريخ</th>
+                <th style="width:130px;">التاريخ</th>
+                <th style="width:90px;">كود الصنف</th>
                 <th>البيان</th>
-                <th>الوحدة</th>
-                <th>رقم الفاتورة</th>
-                <th>الكمية</th>
-                <th>السعر</th>
-                <th>خصومات</th>
-                <th>إجمالي المستحق</th>
+                <th style="width:80px;">الوحدة</th>
+                <th style="width:90px;">رقم الفاتورة</th>
+                <th style="width:80px;">الكمية</th>
+                <th style="width:80px;">السعر</th>
+                <th style="width:80px;">خصومات</th>
+                <th style="width:100px;">إجمالي المستحق</th>
                 <th style="width:70px;">الإجراء</th>
             </tr>`;
         }
@@ -2991,27 +2991,31 @@ function renderCombinedSupExtract(){
                     <td class="num">${fmtNum(r.supplierQty || 0)}</td>
                     <td class="amount-cell">${fmtNum(r.price || 0)}</td>
                     <td class="amount-cell calculated font-bold">${fmtNum(rowTotal)}</td>
-                    <td><span class="text-muted" style="font-size:0.75rem; color:#888;">مجمع</span></td>
+                    <td class="action-buttons">
+                        <button class="btn btn-icon-only btn-delete" onclick="deleteRowFromCombined(${r.extractNumber}, '${esc(r.rowDate || r.date || '')}', '${esc(r.description || r.element || '')}', ${r.qty || 0})" title="حذف من المستخلص الأصلي">🗑️</button>
+                    </td>
                 </tr>`;
             } else {
                 const rowTotal = (r.qty || 0) * (r.price || 0) - (r.discounts || 0);
                 return `<tr>
                     <td>${toAr(i+1)}</td>
                     <td><span class="badge badge-info" style="font-size:0.75rem; background:#e3f2fd; color:#1976d2; padding:2px 6px; border-radius:4px;">مستخلص ${r.extractNumber}</span> ${formatDateDMY(r.rowDate || r.date)}</td>
+                    <td>${r.productCode || r.code || '—'}</td>
                     <td>${r.description || '—'}</td>
                     <td>${r.unit || '—'}</td>
                     <td>${r.invoiceNo || '—'}</td>
-                    <td class="num">${fmtNum(r.qty || 0)}</td>
+                    <td class="num font-bold">${fmtNum(r.qty || 0)}</td>
                     <td class="amount-cell">${fmtNum(r.price || 0)}</td>
-                    <td class="num">${fmtNum(r.discounts || 0)}</td>
-                    <td class="amount-cell calculated">${fmtNum(rowTotal)}</td>
-                    <td><span class="text-muted" style="font-size:0.75rem; color:#888;">مجمع</span></td>
+                    <td class="amount-cell text-danger">${(r.discounts || 0) > 0 ? '-' + fmtNum(r.discounts) : '٠'}</td>
+                    <td class="amount-cell calculated font-bold">${fmtNum(rowTotal)}</td>
+                    <td class="action-buttons">
+                        <button class="btn btn-icon-only btn-delete" onclick="deleteRowFromCombined(${r.extractNumber}, '${esc(r.rowDate || r.date || '')}', '${esc(r.description || '')}', ${r.qty || 0})" title="حذف من المستخلص الأصلي">🗑️</button>
+                    </td>
                 </tr>`;
             }
         }).join('');
     }
 
-    // Calc totals
     let grandTotal = 0;
     if (isReadyMix) {
         allRows.forEach(r => { grandTotal += (r.qty || 0) * (r.price || 0); });
@@ -3020,6 +3024,15 @@ function renderCombinedSupExtract(){
     }
     const totalEl = gi('supExtractGrandTotal');
     if(totalEl) totalEl.textContent = fmtNum(grandTotal);
+
+    const tfootRow = gi('supExtractTable') ? gi('supExtractTable').querySelector('tfoot tr') : null;
+    if (tfootRow) {
+        if (isReadyMix) {
+            tfootRow.innerHTML = `<td colspan="8"><strong>إجمالي القيمة لكافة المستخلصات</strong></td><td class="amount-cell">${fmtNum(grandTotal)}</td><td></td>`;
+        } else {
+            tfootRow.innerHTML = `<td colspan="9"><strong>إجمالي المستحق لكافة المستخلصات</strong></td><td class="amount-cell">${fmtNum(grandTotal)}</td><td></td>`;
+        }
+    }
 }
 
 window.renderCombinedExtract = renderCombinedExtract;
@@ -3482,14 +3495,15 @@ function renderSupExtract(){
         } else {
             tableHeader.innerHTML = `<tr>
                 <th style="width:40px;">مسلسل</th>
-                <th>التاريخ</th>
+                <th style="width:100px;">التاريخ</th>
+                <th style="width:90px;">كود الصنف</th>
                 <th>البيان</th>
-                <th>الوحدة</th>
-                <th>رقم الفاتورة</th>
-                <th>الكمية</th>
-                <th>السعر</th>
-                <th>خصومات</th>
-                <th>إجمالي المستحق</th>
+                <th style="width:80px;">الوحدة</th>
+                <th style="width:90px;">رقم الفاتورة</th>
+                <th style="width:80px;">الكمية</th>
+                <th style="width:80px;">السعر</th>
+                <th style="width:80px;">خصومات</th>
+                <th style="width:100px;">إجمالي المستحق</th>
                 <th style="width:45px;">إجراء</th>
             </tr>`;
         }
@@ -3500,7 +3514,7 @@ function renderSupExtract(){
         if (isReadyMix) {
             tfootRow.innerHTML = `<td colspan="8"><strong>إجمالي القيمة للمورد</strong></td><td class="amount-cell" id="supExtractGrandTotal">0</td><td></td>`;
         } else {
-            tfootRow.innerHTML = `<td colspan="8"><strong>إجمالي المستحق للمورد</strong></td><td class="amount-cell" id="supExtractGrandTotal">0</td><td></td>`;
+            tfootRow.innerHTML = `<td colspan="9"><strong>إجمالي المستحق للمورد</strong></td><td class="amount-cell" id="supExtractGrandTotal">0</td><td></td>`;
         }
     }
 
@@ -3534,6 +3548,7 @@ function renderSupExtract(){
             return `<tr>
                 <td>${toAr(i+1)}</td>
                 <td><input type="text" class="extract-input filter-date" placeholder="D/M/YYYY" value="${formatDateDMY(r.rowDate||r.date)}" onchange="updateSupExtractRow(${origIdx},'rowDate',this.value)"></td>
+                <td><input type="text" class="extract-input" placeholder="كود الصنف" style="width:85px;text-align:center;" value="${r.productCode||r.code||''}" onchange="updateSupExtractRow(${origIdx},'productCode',this.value)"></td>
                 <td><input type="text" class="extract-input wide" value="${r.description||''}" onchange="updateSupExtractRow(${origIdx},'description',this.value)"></td>
                 <td><select class="extract-select" onchange="updateSupExtractRow(${origIdx},'unit',this.value)">${SUPPLY_UNITS.map(u=>`<option${r.unit===u?' selected':''}>${u}</option>`).join('')}</select></td>
                 <td><input type="text" class="extract-input" value="${r.invoiceNo||''}" onchange="updateSupExtractRow(${origIdx},'invoiceNo',this.value)"></td>
@@ -3571,15 +3586,13 @@ function addSupExtractRow(){
     if(!ex.rows) ex.rows = [];
     const isReadyMix = isReadyMixItem(ex.item);
     if(isReadyMix) {
-        ex.rows.push({ rowDate: today(), element: '', content: '', strength: '', supplierQty: 0, qty: 0, price: 0 });
+        ex.rows.push({ rowDate: today(), productCode: '', element: '', content: '', strength: '', supplierQty: 0, qty: 0, price: 0 });
     } else {
-        ex.rows.push({ rowDate: today(), description: '', unit: 'م³', invoiceNo: '', qty: 0, price: 0, discounts: 0 });
+        ex.rows.push({ rowDate: today(), productCode: '', description: '', unit: 'عدد', invoiceNo: '', qty: 0, price: 0, discounts: 0 });
     }
     saveToCache();
     saveToServer();
     renderSupExtract();
-    if(typeof renderSupBalance === 'function') renderSupBalance(ex.item, ex.supplier);
-    showToast('➕ تم إضافة بند جديد للمستخلص', 'success');
 }
 
 function updateSupExtractRow(idx, field, val, inputEl){
@@ -3694,7 +3707,7 @@ function printSupExtract(){
 
     const headers = isReadyMix ?
         ['م','تاريخ الصب','العنصر','المحتوى','الجهد','كمية الشركة','كمية المورد','السعر','القيمة'] :
-        ['م','التاريخ','البيان','الوحدة','رقم الفاتورة','الكمية','السعر','خصومات','إجمالي المستحق'];
+        ['م','التاريخ','كود الصنف','البيان','الوحدة','رقم الفاتورة','الكمية','السعر','خصومات','إجمالي المستحق'];
 
     const html=`<div style="font-family:Cairo,sans-serif;direction:rtl;padding:20px;color:#333;">
         <div style="text-align:center;margin-bottom:10px;"><img src="${COMPANY_LOGO}" style="height:45px;" alt="logo"></div>
@@ -3714,19 +3727,29 @@ function printSupExtract(){
                     return `<tr>${[i+1, fmtDate(r.rowDate), r.element||r.description||'—', toAr(r.content||'—'), toAr(r.strength||'—'), fmtNum(r.qty||0), fmtNum(r.supplierQty||0), fmtNum(r.price||0), fmtNum(rowTotal)].map(c=>`<td style="${td}">${c}</td>`).join('')}</tr>`;
                 } else {
                     const rowTotal=(r.qty||0)*(r.price||0)-(r.discounts||0);
-                    return `<tr>${[i+1, fmtDate(r.rowDate), r.description||'—', r.unit, r.invoiceNo||'—', fmtNum(r.qty||0), fmtNum(r.price||0), fmtNum(r.discounts||0), fmtNum(rowTotal)].map(c=>`<td style="${td}">${c}</td>`).join('')}</tr>`;
+                    return `<tr>${[i+1, fmtDate(r.rowDate), r.productCode||r.code||'—', r.description||'—', r.unit||'—', r.invoiceNo||'—', fmtNum(r.qty||0), fmtNum(r.price||0), fmtNum(r.discounts||0), fmtNum(rowTotal)].map(c=>`<td style="${td}">${c}</td>`).join('')}</tr>`;
                 }
             }).join('')}</tbody>
-            <tfoot><tr style="background:#f0f0f0;font-weight:bold;"><td colspan="8" style="${th}">إجمالي المستحق للمورد</td><td style="${th}">${fmtNum(grandTotal)}</td></tr></tfoot>
+            <tfoot><tr style="background:#f0f0f0;font-weight:bold;"><td colspan="${isReadyMix?8:9}" style="${th}">إجمالي المستحق للمورد</td><td style="${th}">${fmtNum(grandTotal)}</td></tr></tfoot>
         </table>
         <table style="width:50%;margin:0 auto;border-collapse:collapse;font-size:14px;">
-            <tr><td style="padding:4px 6px;border:1px solid #ccc;background:#e8f5e9;font-weight:bold;">إجمالي المستحق</td><td style="padding:4px 6px;border:1px solid #ccc;text-align:center;">${fmtCur(grandTotal)}</td></tr>
-            <tr><td style="padding:4px 6px;border:1px solid #ccc;background:#fff3e0;font-weight:bold;">إجمالي المنصرف</td><td style="padding:4px 6px;border:1px solid #ccc;text-align:center;">${fmtCur(totalPaid)}</td></tr>
-            <tr><td style="padding:4px 6px;border:1px solid #ccc;background:#e3f2fd;font-weight:bold;">الباقي للمورد</td><td style="padding:4px 6px;border:1px solid #ccc;text-align:center;font-weight:bold;">${fmtCur(grandTotal-totalPaid)}</td></tr>
+            <tr><td style="padding:4px 6px;border:1px solid #ccc;background:#e8f5e9;font-weight:bold;">إجمالي المستحق</td><td style="padding:4px 6px;border:1px solid #ccc;font-weight:bold;font-size:16px;">${fmtCur(grandTotal)}</td></tr>
+            <tr><td style="padding:4px 6px;border:1px solid #ccc;background:#e3f2fd;font-weight:bold;">إجمالي المدفوع</td><td style="padding:4px 6px;border:1px solid #ccc;">${fmtCur(totalPaid)}</td></tr>
+            <tr><td style="padding:4px 6px;border:1px solid #ccc;background:${grandTotal-totalPaid>0?'#ffebee':'#e8f5e9'};font-weight:bold;">الرصيد المتبقي</td><td style="padding:4px 6px;border:1px solid #ccc;font-weight:bold;font-size:16px;color:${grandTotal-totalPaid>0?'#c62828':'#2e7d32'};">${fmtCur(grandTotal-totalPaid)}</td></tr>
         </table>
-        ${ex.notes?`<p style="margin-top:16px;padding:10px;background:#f5f5f5;border-radius:8px;"><strong>ملاحظات:</strong> ${ex.notes}</p>`:''}
+        ${ex.notes?`<div style="margin-top:10px;padding:6px;background:#fffde7;border:1px solid #fff59d;border-radius:4px;"><strong>ملاحظات:</strong> ${ex.notes}</div>`:''}
+        <div style="margin-top:20px;display:flex;justify-content:space-between;font-size:13px;">
+            <div>إعداد : ....................</div>
+            <div>المراجعة : ....................</div>
+            <div>المدير المالي : ....................</div>
+            <div>يعتمد : ....................</div>
+        </div>
     </div>`;
-    printHTMLContent(html, `مستخلص مورد ${ex.number} - ${ex.supplier}`);
+
+    const w=window.open('','_blank');
+    w.document.write(`<!DOCTYPE html><html dir="rtl"><head><meta charset="UTF-8"><title>مستخلص مورد ${ex.supplier}</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet"><style>body{margin:0;padding:10px;}@media print{body{padding:0;}}</style></head><body>${html}</body></html>`);
+    w.document.close();
+    setTimeout(()=>w.print(),500);
 }
 
 
@@ -5591,7 +5614,7 @@ function exportSupExtractToExcel() {
                 r.qty || 0,
                 r.supplierQty || 0,
                 r.price || 0,
-                { f: `F${rowNum}*H${rowNum}` } // Formula Company Qty (Col F) * Price (Col H)
+                { f: `F${rowNum}*H${rowNum}` }
             ]);
         });
         if(ex.rows.length > 0) {
@@ -5601,29 +5624,30 @@ function exportSupExtractToExcel() {
     } else {
         data = [
             ['مستخلص مورد رقم:', ex.number, 'المورد:', ex.supplier, 'البند:', ex.item, 'التاريخ:', (ex.date || '').replace(/-/g, '/')],
-            ['مسلسل', 'التاريخ', 'البيان', 'الوحدة', 'رقم الفاتورة', 'الكمية', 'السعر', 'خصومات', 'إجمالي المستحق (ج.م)']
+            ['مسلسل', 'التاريخ', 'كود الصنف', 'البيان', 'الوحدة', 'رقم الفاتورة', 'الكمية', 'السعر', 'خصومات', 'إجمالي المستحق (ج.م)']
         ];
         ex.rows.forEach((r, i) => {
             const rowNum = i + 3;
             data.push([
                 i + 1,
                 (r.rowDate || '').replace(/-/g, '/'),
+                r.productCode || r.code || '-',
                 r.description || '-',
                 r.unit || '-',
                 r.invoiceNo || '-',
                 r.qty || 0,
                 r.price || 0,
                 r.discounts || 0,
-                { f: `(F${rowNum}*G${rowNum})-H${rowNum}` } // Formula Qty * Price - Discounts
+                { f: `G${rowNum}*H${rowNum}-I${rowNum}` }
             ]);
         });
         if(ex.rows.length > 0) {
             const lastRow = ex.rows.length + 2;
-            data.push(['إجمالي المستحق للمورد', '', '', '', '', '', '', '', { f: `SUM(I3:I${lastRow})` }]);
+            data.push(['إجمالي المستحق للمورد', '', '', '', '', '', '', '', '', { f: `SUM(J3:J${lastRow})` }]);
         }
     }
 
-    saveHelperExcel(data, `مستخلص_مورد_${ex.supplier}_رقم_${ex.number}`);
+    saveHelperExcel(data, `مستخلص_مورد_${ex.supplier}_${ex.item}_رقم_${ex.number}`);
 }
 
 function exportInventoryToExcel() {
