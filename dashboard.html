@@ -1395,6 +1395,14 @@ function saveToCache(){
 // Firebase URL
 const FIREBASE_URL='https://dashboard-77bb2-default-rtdb.firebaseio.com';
 
+// Global sync & edit state variables
+var _localSaveInProgress = false;
+var _localSaveTimeout = null;
+var editingExpenseIndex = -1;
+window._localSaveInProgress = false;
+window._localSaveTimeout = null;
+
+
 // Initialize Firebase SDK
 const _fbConfig = { databaseURL: FIREBASE_URL };
 try {
@@ -1414,9 +1422,9 @@ async function saveToServer(){
             console.warn('saveToServer Anti-Wipe Guard: Aborting save.');
             return;
         }
-        _localSaveInProgress=true;
-        if(_localSaveTimeout) clearTimeout(_localSaveTimeout);
-        _localSaveTimeout=setTimeout(()=>{_localSaveInProgress=false;},5000);
+        window._localSaveInProgress = true;
+        if(window._localSaveTimeout) clearTimeout(window._localSaveTimeout);
+        window._localSaveTimeout = setTimeout(()=>{ window._localSaveInProgress = false; }, 5000);
         const data={items,contractors,payments,extracts,supplierExtracts,supplyItemsList,expenses,revenue,inventory};
         const jsonStr = JSON.stringify(data);
         let saved = false;
@@ -1478,11 +1486,11 @@ async function saveToServer(){
         }
 
         if(saved){
-            lastSyncHash=jsonStr;
-            isServerMode=true;
+            lastSyncHash = jsonStr;
+            isServerMode = true;
             showSyncStatus('synced');
         } else {
-            console.error('[SAVE] All methods failed!');
+            console.error('[SAVE] All save methods failed!');
             showSyncStatus('error');
             showToast('⚠️ فشل حفظ البيانات - تأكد من اتصال الإنترنت', 'error');
         }
@@ -1584,11 +1592,10 @@ async function loadFromServer(){
 // Auto-sync: check for changes from other devices
 async function autoSync(){
     if(!isServerMode)return;
-    if(_localSaveInProgress){return;}
+    if(window._localSaveInProgress){return;}
     try{
         let data = null;
         
-        // Try Firebase SDK first
         try{
             const ref = _fbRef('data');
             if(ref){
@@ -1596,7 +1603,6 @@ async function autoSync(){
                 data = snap.val();
             }
         }catch(e){
-            // Fallback to fetch
             try{
                 const res=await fetch(FIREBASE_URL+'/data.json');
                 if(res.ok) data=await res.json();
@@ -3847,7 +3853,7 @@ function submitEditRevenue(e) {
     showToast('✅ تم تعديل الإيراد بنجاح', 'success');
 }
 
-let editingExpenseIndex = -1;
+var editingExpenseIndex = -1;
 
 function editExpenseInline(idx) {
     editingExpenseIndex = idx;
@@ -4389,6 +4395,7 @@ function renderCharts(){
 // ========================================
 // HELPERS
 // ========================================
+function bind(id,ev,fn){const el=gi(id);if(el)el.addEventListener(ev,fn);}
 function gi(id){return document.getElementById(id);}
 function gv(id){const el=gi(id);return el?el.value:'';}
 function show(id){const el=typeof id==='string'?gi(id):id;if(el)el.style.display='';}
