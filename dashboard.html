@@ -3130,6 +3130,9 @@ function updateExtractRow(idx,field,val){
     const ex=extracts.find(x=>String(x.id)===String(currentExtractId));if(!ex||!ex.rows[idx])return;
     ex.rows[idx][field]=val;
     
+    // If date changed, re-render to re-sort rows by date
+    if(field==='rowDate'){ renderExtract(); calcExtractTotals(ex); saveToCache(); if(window._extractSaveTimer)clearTimeout(window._extractSaveTimer); window._extractSaveTimer=setTimeout(function(){saveToServer();},1200); return; }
+    
     // Immediately recalculate and update ALL calculated cells in the row
     const row = ex.rows[idx];
     const totalQty=(row.prevQty||0)+(row.currentQty||0);
