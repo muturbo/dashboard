@@ -3115,11 +3115,8 @@ function calcExtractTotals(ex){
         grandTotal+=gross-(r.deductions||0);
     });
     var gtEl=gi('extractGrandTotal');if(gtEl)gtEl.textContent=fmtNum(grandTotal);
-    /* Also update the summary cards at the top */
-    var wvEl=gi('extractWorkValue');if(wvEl)wvEl.textContent=fmtCur(grandTotal);
-    var totalPaid=payments.filter(function(p){return p.contractor===ex.contractor&&p.item===ex.item;}).reduce(function(s,p){return s+p.amount;},0);
-    var tpEl=gi('extractTotalPaid');if(tpEl)tpEl.textContent=fmtCur(totalPaid);
-    var rmEl=gi('extractRemaining');if(rmEl)rmEl.textContent=fmtCur(grandTotal-totalPaid);
+    /* Update the balance summary cards at the top (real IDs: balExecuted, balPaid, balRemaining) */
+    if(typeof renderBalance==='function') try{renderBalance(ex.item, ex.contractor);}catch(e){}
 }
 
 async function addExtractRow(){
