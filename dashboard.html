@@ -3121,7 +3121,7 @@ function calcExtractTotals(ex){
 
 async function addExtractRow(){
     const ex=extracts.find(x=>String(x.id)===String(currentExtractId));if(!ex)return;
-    ex.rows.push({rowDate:'',buildingNo:'',description:'',type:'تنفيذ',unit:'م²',price:0,itemPct:100,prevQty:0,currentQty:0,disbursementPct:100,deductions:0});
+    ex.rows.push({rowDate:today(),buildingNo:'',description:'',type:'تنفيذ',unit:'م²',price:0,itemPct:100,prevQty:0,currentQty:0,disbursementPct:100,deductions:0});
     renderExtract();
     saveToCache();
     saveToServer();
