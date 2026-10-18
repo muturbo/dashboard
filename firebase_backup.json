@@ -95,6 +95,51 @@
         "id": 237,
         "item": "توريدات كهربائيه",
         "name": "المتحده"
+      },
+      {
+        "id": 238,
+        "item": "عزل",
+        "name": "محمود مبارك"
+      },
+      {
+        "id": 239,
+        "item": "لوادر",
+        "name": "عياد محود عبدالله"
+      },
+      {
+        "id": 240,
+        "item": "توريد طوب اسمنتى",
+        "name": "محمود زيتون"
+      },
+      {
+        "id": 241,
+        "item": "توريد طوب طفلى",
+        "name": "احمد داوود"
+      },
+      {
+        "id": 242,
+        "item": "كهرباء",
+        "name": "حمدى احمد حسن"
+      },
+      {
+        "id": 243,
+        "item": "لوادر",
+        "name": "عيد عواد"
+      },
+      {
+        "id": 244,
+        "item": "توريد اسمنت",
+        "name": "محمد يوسف"
+      },
+      {
+        "id": 245,
+        "item": "مباني",
+        "name": "صابر حسن"
+      },
+      {
+        "id": 246,
+        "item": "نحاته",
+        "name": "علاء عبدالكريم"
       }
     ],
     "expenses": [
@@ -615,6 +660,380 @@
         "description": "صرف بوفيه للاستشارى",
         "id": 1787997626050.1233,
         "type": "بوفيه و ضيافه"
+      },
+      {
+        "amount": 300,
+        "beneficiary": "محمود الغفير",
+        "createdAt": "2026-09-05T07:51:08.145Z",
+        "date": "3/9/2026",
+        "description": "تصفية سركى",
+        "id": 1788594668145.112,
+        "type": "عماله مؤقته و اجور"
+      },
+      {
+        "amount": 10000,
+        "beneficiary": "محمد محمود عبدالله",
+        "createdAt": "2026-09-05T07:51:48.434Z",
+        "date": "3/9/2026",
+        "description": "راتب شهر 9",
+        "id": 1788594708434.378,
+        "type": "اجور و مرتبات"
+      },
+      {
+        "amount": 850,
+        "beneficiary": "محمود الغفير",
+        "createdAt": "2026-09-05T07:52:20.210Z",
+        "date": "3/9/2026",
+        "description": "صرف سلف للعاملين",
+        "id": 1788594740210.754,
+        "type": "سلف عاملين"
+      },
+      {
+        "amount": 150,
+        "beneficiary": "محمود الغفير",
+        "createdAt": "2026-09-05T07:53:15.190Z",
+        "date": "3/9/2026",
+        "description": "شراء انبوبه",
+        "id": 1788594795190.1804,
+        "type": "مصروفات اداريه "
+      },
+      {
+        "amount": 1000,
+        "beneficiary": "م/محمد البحيرى",
+        "createdAt": "2026-09-05T07:53:39.565Z",
+        "date": "3/9/2026",
+        "description": "بدل ساعات اضافيه للاستشارى",
+        "id": 1788594819565.0872,
+        "type": "اشراف هندسى"
+      },
+      {
+        "amount": 1485,
+        "beneficiary": "مركز البحوث",
+        "createdAt": "2026-09-05T07:54:22.489Z",
+        "date": "3/9/2026",
+        "description": "تكسير مكعبات",
+        "id": 1788594862489.9768,
+        "type": "اختبارات و تجارب موقع"
+      },
+      {
+        "amount": 10247500,
+        "beneficiary": "بنك مصر",
+        "createdAt": "2026-09-05T08:11:35.565Z",
+        "date": "3/9/2026",
+        "description": "دفعه مقدمه مناقصه 15",
+        "id": 1788595895565.7688,
+        "type": "التزامات غير متداوله",
+        "updatedAt": "2026-09-23T05:19:07.804Z"
+      },
+      {
+        "amount": 20000,
+        "beneficiary": "هانى",
+        "createdAt": "2026-09-12T11:10:15.901Z",
+        "date": "10/9/2026",
+        "description": "راتب شهر 8",
+        "id": 1789211415901.712,
+        "type": "اجور و مرتبات"
+      },
+      {
+        "amount": 2933,
+        "beneficiary": "م / محمد عبدالجابر",
+        "createdAt": "2026-09-12T11:11:26.988Z",
+        "date": "10/9/2026",
+        "description": "راتب شهر 8",
+        "id": 1789211486988.1199,
+        "type": "اجور و مرتبات"
+      },
+      {
+        "amount": 15000,
+        "beneficiary": "م/احمد داوود",
+        "createdAt": "2026-09-12T11:12:07.472Z",
+        "date": "10/9/2026",
+        "description": "راتب شهر 8",
+        "id": 1789211527472.2876,
+        "type": "اجور و مرتبات"
+      },
+      {
+        "amount": 3750,
+        "beneficiary": "محمود الغفير",
+        "createdAt": "2026-09-12T11:12:49.051Z",
+        "date": "10/9/2026",
+        "description": "راتب شهر 8",
+        "id": 1789211569051.612,
+        "type": "اجور و مرتبات"
+      },
+      {
+        "amount": 800,
+        "beneficiary": "عماد الغفير",
+        "createdAt": "2026-09-12T11:17:35.397Z",
+        "date": "10/9/2026",
+        "description": "سلف للموظفين",
+        "id": 1789211855397.8567,
+        "type": "سلف عاملين",
+        "updatedAt": "2026-09-23T05:32:48.220Z"
+      },
+      {
+        "amount": 2145,
+        "beneficiary": "مركز البحوث",
+        "createdAt": "2026-09-12T11:21:13.560Z",
+        "date": "10/9/2026",
+        "description": "تكسير مكعبات",
+        "id": 1789212073560.9583,
+        "type": "اختبارات و تجارب موقع"
+      },
+      {
+        "amount": 3070,
+        "beneficiary": "مركز البحوث",
+        "createdAt": "2026-09-12T11:22:40.946Z",
+        "date": "10/9/2026",
+        "description": "بدل ساعات اضافيه للاستشارى",
+        "id": 1789212160946.2083,
+        "type": "اشراف هندسى"
+      },
+      {
+        "amount": 1360000,
+        "beneficiary": "جهاز مدينة 15 مايو",
+        "createdAt": "2026-09-23T04:53:45.680Z",
+        "date": "10/9/2026",
+        "description": "تنفيذ المقر الادارى للجهاز",
+        "id": 1790139225680.8152,
+        "type": "مصروفات اداريه",
+        "updatedAt": "2026-09-23T05:15:30.807Z"
+      },
+      {
+        "amount": 800,
+        "beneficiary": "عماد الغفير",
+        "createdAt": "2026-09-23T05:02:43.387Z",
+        "date": "17/9/2026",
+        "description": "سلف للموظفين",
+        "id": 1790139763387.4583,
+        "type": "سلف عاملين",
+        "updatedAt": "2026-09-23T05:32:36.446Z"
+      },
+      {
+        "amount": 2310,
+        "beneficiary": "مركز البحوث",
+        "createdAt": "2026-09-23T05:03:30.727Z",
+        "date": "17/9/2026",
+        "description": "تكسير مكعبات",
+        "id": 1790139810727.646,
+        "type": "اختبارات و تجارب موقع"
+      },
+      {
+        "amount": 2150,
+        "beneficiary": "م/محمد البحيرى",
+        "createdAt": "2026-09-23T05:03:55.681Z",
+        "date": "17/9/2026",
+        "description": "بدل ساعات اضافيه للاستشارى",
+        "id": 1790139835681.893,
+        "type": "اشراف هندسى",
+        "updatedAt": "2026-09-23T05:04:30.471Z"
+      },
+      {
+        "amount": 133068.85,
+        "beneficiary": "هيئة التامينات الاجتماعيه",
+        "createdAt": "2026-09-23T05:07:06.895Z",
+        "date": "17/9/2026",
+        "description": "سداد تامينات ج 1 م 15",
+        "id": 1790140026895.9766,
+        "type": "رسوم و تراخيض حكوميه"
+      },
+      {
+        "amount": 143472.99,
+        "beneficiary": "هيئة التامينات الاجتماعيه",
+        "createdAt": "2026-09-23T05:08:11.339Z",
+        "date": "17/9/2026",
+        "description": "سداد تامينات ج 1 م 14",
+        "id": 1790140091339.4187,
+        "type": "رسوم و تراخيض حكوميه"
+      },
+      {
+        "amount": 2100,
+        "beneficiary": "ا / علاء",
+        "createdAt": "2026-09-23T05:09:21.422Z",
+        "date": "17/9/2026",
+        "description": "اكرامية تسيير اعمال",
+        "id": 1790140161422.7307,
+        "type": "اكراميات تسيير اعمال"
+      },
+      {
+        "amount": 3265,
+        "beneficiary": "مركز البحوث",
+        "createdAt": "2026-10-03T11:08:47.220Z",
+        "date": "1/10/2026",
+        "description": "تكسير مكعبات",
+        "id": 1791025727220.2654,
+        "type": "اختبارات و تجارب موقع"
+      },
+      {
+        "amount": 800,
+        "beneficiary": "عماد الغفير",
+        "createdAt": "2026-10-03T11:09:31.156Z",
+        "date": "1/10/2026",
+        "description": "اختبارات و تجارب موقع",
+        "id": 1791025771156.1113,
+        "type": "سلف عاملين"
+      },
+      {
+        "amount": 1000,
+        "beneficiary": "مصطفى",
+        "createdAt": "2026-10-03T11:10:33.584Z",
+        "date": "1/10/2026",
+        "description": "انتقال ادارى",
+        "id": 1791025833584.0444,
+        "type": "مصروفات اداريه و عموميه"
+      },
+      {
+        "amount": 2000,
+        "beneficiary": "م/محمد البحيرى",
+        "createdAt": "2026-10-03T11:11:09.272Z",
+        "date": "1/10/2026",
+        "description": "بدل ساعات اضافيه للاستشارى",
+        "id": 1791025869272.7043,
+        "type": "اشراف هندسى"
+      },
+      {
+        "amount": 800,
+        "beneficiary": "ا / محمود",
+        "createdAt": "2026-10-18T05:13:28.249Z",
+        "date": "7/10/2026",
+        "description": "انتقال اداراى",
+        "id": 1792300408249.2878,
+        "type": "مصروفات اداريه "
+      },
+      {
+        "amount": 640,
+        "beneficiary": "عم امين",
+        "createdAt": "2026-10-18T05:14:05.454Z",
+        "date": "7/10/2026",
+        "description": "تفويلة الملاكى",
+        "id": 1792300445454.7837,
+        "type": "وقود و محروقات"
+      },
+      {
+        "amount": 9000,
+        "beneficiary": "م / محمد",
+        "createdAt": "2026-10-18T05:14:50.483Z",
+        "date": "7/10/2026",
+        "description": "رااب شهر 9",
+        "id": 1792300490483.115,
+        "type": "رواتب و اجور"
+      },
+      {
+        "amount": 10000,
+        "beneficiary": "عياد محمود",
+        "createdAt": "2026-10-18T05:15:27.019Z",
+        "date": "7/10/2026",
+        "description": "راتب شهر 9",
+        "id": 1792300527019.7737,
+        "type": "رواتب و اجور "
+      },
+      {
+        "amount": 2400,
+        "beneficiary": "عماد الغفير",
+        "createdAt": "2026-10-18T05:17:02.848Z",
+        "date": "7/10/2026",
+        "description": "رواتب و اجور",
+        "id": 1792300622848.1453,
+        "type": "رواتب و اجور"
+      },
+      {
+        "amount": 1500,
+        "beneficiary": "م/محمد البحيرى",
+        "createdAt": "2026-10-18T05:17:32.589Z",
+        "date": "7/10/2026",
+        "description": "بدل ساعات اضافيه للاستشارى",
+        "id": 1792300652589.7668,
+        "type": "اشراف هندسى"
+      },
+      {
+        "amount": 2475,
+        "beneficiary": "مركز البحوث",
+        "createdAt": "2026-10-18T05:18:20.605Z",
+        "date": "7/10/2026",
+        "description": "تكسير مكعبات",
+        "id": 1792300700605.505,
+        "type": "اختبارات و تجارب موقع"
+      },
+      {
+        "amount": 1000,
+        "beneficiary": "مصطفى",
+        "createdAt": "2026-10-18T05:18:42.432Z",
+        "date": "7/10/2026",
+        "description": "انتقال اداراى",
+        "id": 1792300722432.2578,
+        "type": "مصروفات اداريه "
+      },
+      {
+        "amount": 925,
+        "beneficiary": "عم امين",
+        "createdAt": "2026-10-18T05:19:43.982Z",
+        "date": "7/10/2026",
+        "description": "تفويلة الملاكى",
+        "id": 1792300783982.4663,
+        "type": "وقود و محروقات"
+      },
+      {
+        "amount": 1100,
+        "beneficiary": "علاء",
+        "createdAt": "2026-10-18T05:20:19.729Z",
+        "date": "14/10/2026",
+        "description": "اكرامية تسيير اعمال",
+        "id": 1792300819729.3477,
+        "type": "اكراميات تسيير اعمال"
+      },
+      {
+        "amount": 100,
+        "beneficiary": "التامينات الاجتماعيه",
+        "createdAt": "2026-10-18T05:21:05.754Z",
+        "date": "14/10/2026",
+        "description": "ادوات مكتبيه",
+        "id": 1792300865754.2148,
+        "type": "مصروفات اداريه "
+      },
+      {
+        "amount": 1580,
+        "beneficiary": "م/محمد البحيرى",
+        "createdAt": "2026-10-18T05:21:41.327Z",
+        "date": "14/10/2026",
+        "description": "بدل ساعات اضافيه للاستشارى",
+        "id": 1792300901327.2751,
+        "type": "اشراف هندسى"
+      },
+      {
+        "amount": 800,
+        "beneficiary": "خالد",
+        "createdAt": "2026-10-18T05:22:15.782Z",
+        "date": "14/10/2026",
+        "description": "صرف سلف للعاملين",
+        "id": 1792300935782.5234,
+        "type": "سلف عاملين"
+      },
+      {
+        "amount": 20000,
+        "beneficiary": "هانى",
+        "createdAt": "2026-10-18T05:22:45.484Z",
+        "date": "14/10/2026",
+        "description": "راتب شهر 9",
+        "id": 1792300965484.6057,
+        "type": "رواتب و اجور"
+      },
+      {
+        "amount": 98820.64,
+        "beneficiary": "هيئة التامينات الاجتماعيه",
+        "createdAt": "2026-10-18T05:30:00.022Z",
+        "date": "14/10/2026",
+        "description": "سداد تامينات م 2 مناقصه 14",
+        "id": 1792301400022.9397,
+        "type": "رسوم و تراخيص حكوميه"
+      },
+      {
+        "amount": 104799.03,
+        "beneficiary": "هيئة التامينات الاجتماعيه",
+        "createdAt": "2026-10-18T05:30:48.723Z",
+        "date": "14/10/2026",
+        "description": "سداد تامينات م 2 مناقصه 15",
+        "id": 1792301448723.7556,
+        "type": "رسوم و تراخيص حكوميه"
       }
     ],
     "extracts": [
@@ -715,7 +1134,7 @@
             "price": 175,
             "rowDate": "15/7/2026",
             "type": "توريد",
-            "unit": "م²"
+            "unit": "م³"
           },
           {
             "buildingNo": "",
@@ -741,6 +1160,84 @@
             "price": 175,
             "rowDate": "12/8/2026",
             "type": "توريد",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "",
+            "currentQty": 280,
+            "deductions": 0,
+            "description": "توريد احلال",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 175,
+            "rowDate": "12/9/2026",
+            "type": "توريد",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "",
+            "currentQty": 300,
+            "deductions": 0,
+            "description": "توريد احلال",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 175,
+            "rowDate": "23/9/2026",
+            "type": "توريد",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "",
+            "currentQty": 700,
+            "deductions": 0,
+            "description": "توريد احلال",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 175,
+            "rowDate": "24/9/2026",
+            "type": "توريد",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "",
+            "currentQty": 120,
+            "deductions": 0,
+            "description": "توريد احلال",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 175,
+            "rowDate": "1/10/2026",
+            "type": "توريد",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "",
+            "currentQty": 120,
+            "deductions": 0,
+            "description": "توريد احلال",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 175,
+            "rowDate": "7/10/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "",
+            "currentQty": 1380,
+            "deductions": 0,
+            "description": "توريد احلال",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 175,
+            "rowDate": "14/10/2026",
+            "type": "تنفيذ",
             "unit": "م³"
           }
         ]
@@ -771,7 +1268,7 @@
             "currentQty": 160,
             "deductions": 0,
             "description": "صب قاعده مسلحه",
-            "disbursementPct": 65,
+            "disbursementPct": 80,
             "itemPct": 100,
             "prevQty": 0,
             "price": 1000,
@@ -789,6 +1286,97 @@
             "prevQty": 0,
             "price": 1000,
             "rowDate": "11/8/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "175",
+            "currentQty": 62,
+            "deductions": 0,
+            "description": "سقف الارضى",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1000,
+            "rowDate": "1/9/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "175",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "فرق التخشيب",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 15000,
+            "rowDate": "1/9/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "175",
+            "currentQty": 17,
+            "deductions": 0,
+            "description": "اعمدة الاول",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1000,
+            "rowDate": "8/9/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "175",
+            "currentQty": 60,
+            "deductions": 0,
+            "description": "سقف الاول",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1000,
+            "rowDate": "17/9/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "175",
+            "currentQty": 15,
+            "deductions": 0,
+            "description": "اعمدة تانى",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1000,
+            "rowDate": "22/9/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "175",
+            "currentQty": 60,
+            "deductions": 0,
+            "description": "سقف التانى",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1000,
+            "rowDate": "7/10/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "175",
+            "currentQty": 15,
+            "deductions": 0,
+            "description": "اعمدة التالت",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1000,
+            "rowDate": "14/10/2026",
             "type": "تنفيذ",
             "unit": "م³"
           }
@@ -843,7 +1431,7 @@
             "currentQty": 160,
             "deductions": 0,
             "description": "قاعده مسلحه",
-            "disbursementPct": 65,
+            "disbursementPct": 75,
             "itemPct": 100,
             "prevQty": 0,
             "price": 1000,
@@ -862,7 +1450,72 @@
             "price": 1000,
             "rowDate": "22/8/2026",
             "type": "تنفيذ",
-            "unit": "م²"
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "174",
+            "currentQty": 62,
+            "deductions": 0,
+            "description": "سقف الارضى",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1000,
+            "rowDate": "17/9/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "174",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "فرق تخشيب",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 15000,
+            "rowDate": "17/9/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "174",
+            "currentQty": 17,
+            "deductions": 0,
+            "description": "اعمدة اول",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1000,
+            "rowDate": "22/9/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "174",
+            "currentQty": 60,
+            "deductions": 0,
+            "description": "سقف الاول",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1000,
+            "rowDate": "1/10/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "174",
+            "currentQty": 15,
+            "deductions": 0,
+            "description": "اعمدة التانى",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1000,
+            "rowDate": "14/10/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
           }
         ]
       },
@@ -898,33 +1551,10 @@
         "number": 1,
         "rows": [
           {
-            "buildingNo": "",
-            "currentQty": 0,
-            "deductions": 0,
-            "description": "",
-            "disbursementPct": 100,
-            "itemPct": 100,
-            "prevQty": 0,
-            "price": 0,
-            "rowDate": "",
-            "type": "تنفيذ",
-            "unit": "م²"
-          }
-        ]
-      },
-      {
-        "contractor": "احمد حسن حسين ع 154،155،176",
-        "date": "",
-        "id": 1785589057771.521,
-        "item": "نجارة مسلحة",
-        "notes": "",
-        "number": 2,
-        "rows": [
-          {
             "buildingNo": "155",
             "currentQty": 1,
             "deductions": 0,
-            "description": "قاعد عاديه",
+            "description": "قاعده عاديه",
             "disbursementPct": 100,
             "itemPct": 100,
             "prevQty": 0,
@@ -934,43 +1564,17 @@
             "unit": "مقطوعية"
           },
           {
-            "buildingNo": "154",
-            "currentQty": 1,
-            "deductions": 0,
-            "description": "قاعد عاديه",
-            "disbursementPct": 100,
-            "itemPct": 100,
-            "prevQty": 0,
-            "price": 15000,
-            "rowDate": "22/7/2026",
-            "type": "تنفيذ",
-            "unit": "مقطوعية"
-          },
-          {
             "buildingNo": "155",
             "currentQty": 160,
             "deductions": 0,
             "description": "قاعده مسلحه",
-            "disbursementPct": 70,
+            "disbursementPct": 90,
             "itemPct": 100,
             "prevQty": 0,
             "price": 1000,
             "rowDate": "26/7/2026",
             "type": "تنفيذ",
             "unit": "م³"
-          },
-          {
-            "buildingNo": "176",
-            "currentQty": 1,
-            "deductions": 0,
-            "description": "قاعد عاديه",
-            "disbursementPct": 100,
-            "itemPct": 100,
-            "prevQty": 0,
-            "price": 15000,
-            "rowDate": "30/7/2026",
-            "type": "تنفيذ",
-            "unit": "مقطوعية"
           },
           {
             "buildingNo": "155",
@@ -982,19 +1586,6 @@
             "prevQty": 0,
             "price": 1000,
             "rowDate": "6/8/2026",
-            "type": "تنفيذ",
-            "unit": "م³"
-          },
-          {
-            "buildingNo": "176",
-            "currentQty": 160,
-            "deductions": 0,
-            "description": "قاعده مسلحه",
-            "disbursementPct": 65,
-            "itemPct": 100,
-            "prevQty": 0,
-            "price": 1000,
-            "rowDate": "11/8/2026",
             "type": "تنفيذ",
             "unit": "م³"
           },
@@ -1025,32 +1616,6 @@
             "unit": "مقطوعية"
           },
           {
-            "buildingNo": "176",
-            "currentQty": 34,
-            "deductions": 0,
-            "description": "اعمدة الارضى",
-            "disbursementPct": 95,
-            "itemPct": 100,
-            "prevQty": 0,
-            "price": 1000,
-            "rowDate": "19/8/2026",
-            "type": "تنفيذ",
-            "unit": "م³"
-          },
-          {
-            "buildingNo": "154",
-            "currentQty": 160,
-            "deductions": 0,
-            "description": "قاعده مسلحه",
-            "disbursementPct": 65,
-            "itemPct": 100,
-            "prevQty": 0,
-            "price": 1000,
-            "rowDate": "22/8/2026",
-            "type": "تنفيذ",
-            "unit": "م²"
-          },
-          {
             "buildingNo": "155",
             "currentQty": 17,
             "deductions": 0,
@@ -1060,6 +1625,211 @@
             "prevQty": 0,
             "price": 1000,
             "rowDate": "22/8/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "155",
+            "currentQty": 60,
+            "deductions": 0,
+            "description": "سقف الاول",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1000,
+            "rowDate": "1/9/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "155",
+            "currentQty": 15,
+            "deductions": 0,
+            "description": "اعمدة الثانى",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1000,
+            "rowDate": "8/9/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "155",
+            "currentQty": 60,
+            "deductions": 0,
+            "description": "سقف التانى",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1000,
+            "rowDate": "17/9/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "155",
+            "currentQty": 15,
+            "deductions": 0,
+            "description": "اعمدة تالت",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1000,
+            "rowDate": "22/9/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "155",
+            "currentQty": 60,
+            "deductions": 0,
+            "description": "سقف التالت",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1000,
+            "rowDate": "1/10/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "155",
+            "currentQty": 14,
+            "deductions": 0,
+            "description": "اعمدة الرابع",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1000,
+            "rowDate": "7/10/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "155",
+            "currentQty": 60,
+            "deductions": 0,
+            "description": "سقف الرباع",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1000,
+            "rowDate": "14/10/2026",
+            "type": "تنفيذ",
+            "unit": "م²"
+          }
+        ]
+      },
+      {
+        "contractor": "احمد حسن حسين ع 154،155،176",
+        "date": "",
+        "id": 1785589057771.521,
+        "item": "نجارة مسلحة",
+        "notes": "",
+        "number": 2,
+        "rows": [
+          {
+            "buildingNo": "154",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "قاعده عاديه",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 15000,
+            "rowDate": "22/7/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "154",
+            "currentQty": 160,
+            "deductions": 0,
+            "description": "قاعده مسلجه",
+            "disbursementPct": 75,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1000,
+            "rowDate": "30/7/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "154",
+            "currentQty": 34,
+            "deductions": 0,
+            "description": "اعمدة الارضى",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1000,
+            "rowDate": "22/8/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "154",
+            "currentQty": 62,
+            "deductions": 0,
+            "description": "سقف الارضى",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1000,
+            "rowDate": "19/9/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "154",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "فرق تخشيب",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 15000,
+            "rowDate": "19/9/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "154",
+            "currentQty": 17,
+            "deductions": 0,
+            "description": "اعمدة الاول",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1000,
+            "rowDate": "24/9/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "154",
+            "currentQty": 60,
+            "deductions": 0,
+            "description": "سقف الاول",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1000,
+            "rowDate": "7/10/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "154",
+            "currentQty": 15,
+            "deductions": 0,
+            "description": "اعمدة التانى",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1000,
+            "rowDate": "14/10/2026",
             "type": "تنفيذ",
             "unit": "م³"
           }
@@ -1091,7 +1861,7 @@
             "currentQty": 160,
             "deductions": 0,
             "description": "قاعده مسلحه",
-            "disbursementPct": 65,
+            "disbursementPct": 75,
             "itemPct": 100,
             "prevQty": 0,
             "price": 1000,
@@ -1109,6 +1879,58 @@
             "prevQty": 0,
             "price": 1000,
             "rowDate": "25/8/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "151",
+            "currentQty": 62,
+            "deductions": 0,
+            "description": "سقف الارضى",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1000,
+            "rowDate": "17/9/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "151",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "فرق تخشيب",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 15000,
+            "rowDate": "17/9/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "151",
+            "currentQty": 17,
+            "deductions": 0,
+            "description": "اعمدة الاول",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1000,
+            "rowDate": "22/9/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "151",
+            "currentQty": 60,
+            "deductions": 0,
+            "description": "سقف الاول",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1000,
+            "rowDate": "7/10/2026",
             "type": "تنفيذ",
             "unit": "م³"
           }
@@ -1140,7 +1962,7 @@
             "currentQty": 160,
             "deductions": 0,
             "description": "قاعده مسلحه",
-            "disbursementPct": 65,
+            "disbursementPct": 75,
             "itemPct": 100,
             "prevQty": 0,
             "price": 1000,
@@ -1158,6 +1980,71 @@
             "prevQty": 0,
             "price": 1000,
             "rowDate": "25/8/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "153",
+            "currentQty": 62,
+            "deductions": 0,
+            "description": "سقف الارضى",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1000,
+            "rowDate": "8/9/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "153",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "فرق تخشيب",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 15000,
+            "rowDate": "8/9/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "153",
+            "currentQty": 17,
+            "deductions": 0,
+            "description": "اعمدة الاول",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1000,
+            "rowDate": "17/9/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "153",
+            "currentQty": 60,
+            "deductions": 0,
+            "description": "سقف الاول",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1000,
+            "rowDate": "1/10/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "153",
+            "currentQty": 15,
+            "deductions": 0,
+            "description": "اعمدة التانى",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1000,
+            "rowDate": "7/10/2026",
             "type": "تنفيذ",
             "unit": "م³"
           }
@@ -1172,20 +2059,7 @@
         "number": 1,
         "rows": [
           {
-            "buildingNo": "155",
-            "currentQty": 160,
-            "deductions": 0,
-            "description": "قاعده مسلحه",
-            "disbursementPct": 70,
-            "itemPct": 100,
-            "prevQty": 0,
-            "price": 300,
-            "rowDate": "26/7/2026",
-            "type": "تنفيذ",
-            "unit": "م³"
-          },
-          {
-            "buildingNo": "175",
+            "buildingNo": "178",
             "currentQty": 160,
             "deductions": 0,
             "description": "قاعده مسلحه",
@@ -1193,25 +2067,12 @@
             "itemPct": 100,
             "prevQty": 0,
             "price": 300,
-            "rowDate": "26/7/2026",
+            "rowDate": "7/9/2026",
             "type": "تنفيذ",
             "unit": "م³"
           },
           {
-            "buildingNo": "154",
-            "currentQty": 160,
-            "deductions": 0,
-            "description": "قاعده مسلحه",
-            "disbursementPct": 65,
-            "itemPct": 100,
-            "prevQty": 0,
-            "price": 300,
-            "rowDate": "1/8/2026",
-            "type": "تنفيذ",
-            "unit": "م³"
-          },
-          {
-            "buildingNo": "155",
+            "buildingNo": "178",
             "currentQty": 34,
             "deductions": 0,
             "description": "اعمدة الارضى",
@@ -1219,150 +2080,7 @@
             "itemPct": 100,
             "prevQty": 0,
             "price": 300,
-            "rowDate": "6/8/2026",
-            "type": "تنفيذ",
-            "unit": "م³"
-          },
-          {
-            "buildingNo": "175",
-            "currentQty": 34,
-            "deductions": 0,
-            "description": "اعمدة الارضى",
-            "disbursementPct": 95,
-            "itemPct": 100,
-            "prevQty": 0,
-            "price": 300,
-            "rowDate": "10/8/2026",
-            "type": "تنفيذ",
-            "unit": "م³"
-          },
-          {
-            "buildingNo": "153",
-            "currentQty": 160,
-            "deductions": 0,
-            "description": "قاعده مسلحه",
-            "disbursementPct": 65,
-            "itemPct": 100,
-            "prevQty": 0,
-            "price": 300,
-            "rowDate": "11/8/2026",
-            "type": "تنفيذ",
-            "unit": "م³"
-          },
-          {
-            "buildingNo": "153",
-            "currentQty": 160,
-            "deductions": 0,
-            "description": "قاعده مسلحه",
-            "disbursementPct": 65,
-            "itemPct": 100,
-            "prevQty": 0,
-            "price": 300,
-            "rowDate": "11/8/2026",
-            "type": "تنفيذ",
-            "unit": "م³"
-          },
-          {
-            "buildingNo": "151",
-            "currentQty": 160,
-            "deductions": 0,
-            "description": "قاعده مسلحه",
-            "disbursementPct": 65,
-            "itemPct": 100,
-            "prevQty": 0,
-            "price": 300,
-            "rowDate": "16/8/2026",
-            "type": "تنفيذ",
-            "unit": "م³"
-          },
-          {
-            "buildingNo": "174",
-            "currentQty": 62,
-            "deductions": 0,
-            "description": "سقف الارضى",
-            "disbursementPct": 95,
-            "itemPct": 100,
-            "prevQty": 0,
-            "price": 300,
-            "rowDate": "16/8/2026",
-            "type": "تنفيذ",
-            "unit": "م³"
-          },
-          {
-            "buildingNo": "154",
-            "currentQty": 34,
-            "deductions": 0,
-            "description": "اعمدة الارضى",
-            "disbursementPct": 95,
-            "itemPct": 100,
-            "prevQty": 0,
-            "price": 300,
-            "rowDate": "19/8/2026",
-            "type": "تنفيذ",
-            "unit": "م³"
-          },
-          {
-            "buildingNo": "155",
-            "currentQty": 17,
-            "deductions": 0,
-            "description": "اعمدة الاول",
-            "disbursementPct": 95,
-            "itemPct": 100,
-            "prevQty": 0,
-            "price": 300,
-            "rowDate": "22/8/2026",
-            "type": "تنفيذ",
-            "unit": "م³"
-          },
-          {
-            "buildingNo": "174",
-            "currentQty": 34,
-            "deductions": 0,
-            "description": "اعمدة الارضى",
-            "disbursementPct": 95,
-            "itemPct": 100,
-            "prevQty": 0,
-            "price": 300,
-            "rowDate": "22/8/2026",
-            "type": "تنفيذ",
-            "unit": "م³"
-          },
-          {
-            "buildingNo": "154",
-            "currentQty": 160,
-            "deductions": 0,
-            "description": "قاعده مسلحه",
-            "disbursementPct": 65,
-            "itemPct": 100,
-            "prevQty": 0,
-            "price": 300,
-            "rowDate": "22/8/2026",
-            "type": "تنفيذ",
-            "unit": "م³"
-          },
-          {
-            "buildingNo": "151",
-            "currentQty": 34,
-            "deductions": 0,
-            "description": "اعمدة الارضى",
-            "disbursementPct": 95,
-            "itemPct": 100,
-            "prevQty": 0,
-            "price": 300,
-            "rowDate": "25/8/2026",
-            "type": "تنفيذ",
-            "unit": "م³"
-          },
-          {
-            "buildingNo": "153",
-            "currentQty": 34,
-            "deductions": 0,
-            "description": "اعمدة الارضى",
-            "disbursementPct": 95,
-            "itemPct": 100,
-            "prevQty": 0,
-            "price": 300,
-            "rowDate": "25/8/2026",
+            "rowDate": "1/10/2026",
             "type": "تنفيذ",
             "unit": "م³"
           }
@@ -1411,6 +2129,45 @@
             "rowDate": "1/8/2026",
             "type": "تنفيذ",
             "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "178",
+            "currentQty": 160,
+            "deductions": 0,
+            "description": "قاعده مسلحه",
+            "disbursementPct": 65,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1000,
+            "rowDate": "7/9/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "178",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "خصم",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": -2430,
+            "rowDate": "1/10/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "178",
+            "currentQty": 34,
+            "deductions": 0,
+            "description": "اعمدة الارضى",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1000,
+            "rowDate": "2026/10/03",
+            "type": "تنفيذ",
+            "unit": "م³"
           }
         ]
       },
@@ -1424,7 +2181,7 @@
         "rows": [
           {
             "buildingNo": "",
-            "currentQty": 3,
+            "currentQty": 5,
             "deductions": 0,
             "description": "لودر 66",
             "disbursementPct": 100,
@@ -1554,6 +2311,19 @@
           },
           {
             "buildingNo": "",
+            "currentQty": 11,
+            "deductions": 0,
+            "description": "لودر 66",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1200,
+            "rowDate": "2/8/2026",
+            "type": "تنفيذ",
+            "unit": "عدد"
+          },
+          {
+            "buildingNo": "",
             "currentQty": 7.5,
             "deductions": 0,
             "description": "لودر 66",
@@ -1593,7 +2363,7 @@
           },
           {
             "buildingNo": "",
-            "currentQty": 0,
+            "currentQty": 3,
             "deductions": 0,
             "description": "لودر 66",
             "disbursementPct": 100,
@@ -1601,6 +2371,32 @@
             "prevQty": 0,
             "price": 1200,
             "rowDate": "27/8/2026",
+            "type": "تنفيذ",
+            "unit": "عدد"
+          },
+          {
+            "buildingNo": "",
+            "currentQty": 7,
+            "deductions": 0,
+            "description": "لودر 66",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1200,
+            "rowDate": "1/9/2026",
+            "type": "تنفيذ",
+            "unit": "عدد"
+          },
+          {
+            "buildingNo": "",
+            "currentQty": 2,
+            "deductions": 0,
+            "description": "لودر 66",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1200,
+            "rowDate": "10/9/2026",
             "type": "تنفيذ",
             "unit": "عدد"
           }
@@ -1664,7 +2460,7 @@
             "price": 130,
             "rowDate": "29/7/2026",
             "type": "توريد",
-            "unit": "عدد"
+            "unit": "م³"
           },
           {
             "buildingNo": "",
@@ -1689,6 +2485,84 @@
             "prevQty": 0,
             "price": 130,
             "rowDate": "19/8/2026",
+            "type": "توريد",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "",
+            "currentQty": 18,
+            "deductions": 0,
+            "description": "توريد مياه",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 130,
+            "rowDate": "1/9/2026",
+            "type": "توريد",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "",
+            "currentQty": 18,
+            "deductions": 0,
+            "description": "توريد مياه",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 130,
+            "rowDate": "12/9/2026",
+            "type": "توريد",
+            "unit": "م²"
+          },
+          {
+            "buildingNo": "",
+            "currentQty": 18,
+            "deductions": 0,
+            "description": "توريد مياه",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 130,
+            "rowDate": "16/9/2026",
+            "type": "توريد",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "",
+            "currentQty": 36,
+            "deductions": 0,
+            "description": "توريد مياه",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 130,
+            "rowDate": "1/10/2026",
+            "type": "توريد",
+            "unit": "م²"
+          },
+          {
+            "buildingNo": "",
+            "currentQty": 40,
+            "deductions": 0,
+            "description": "توريد مياه",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 130,
+            "rowDate": "7/10/2026",
+            "type": "توريد",
+            "unit": "م²"
+          },
+          {
+            "buildingNo": "",
+            "currentQty": 40,
+            "deductions": 0,
+            "description": "توريد مياه",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 130,
+            "rowDate": "14/10/2026",
             "type": "تنفيذ",
             "unit": "م³"
           }
@@ -1916,6 +2790,487 @@
             "rowDate": "25/8/2026",
             "type": "تنفيذ",
             "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "175",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "سقف الارضى",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 950,
+            "rowDate": "1/9/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "176",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "سقف الارضى",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 950,
+            "rowDate": "1/9/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "155",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "سقف الاول",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 950,
+            "rowDate": "1/9/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "178",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "قاعده مسلحه",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 950,
+            "rowDate": "7/9/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "177",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "قاعده مسلحه",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 950,
+            "rowDate": "7/9/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "154",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "اعمدة الارضى",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 950,
+            "rowDate": "8/9/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "153",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "سقف الارضى",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 950,
+            "rowDate": "8/9/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "175",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "اعمدة الاول",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 950,
+            "rowDate": "8/9/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "155",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "اعمدة الثانى",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 950,
+            "rowDate": "8/9/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "151",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "سقف الارضى",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 950,
+            "rowDate": "17/9/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "174",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "سقف الارضى",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 950,
+            "rowDate": "17/9/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "176",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "اعمدة الاول",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 950,
+            "rowDate": "17/9/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "153",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "اعمدة الاول",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 950,
+            "rowDate": "17/9/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "175",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "سقف اول",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 950,
+            "rowDate": "17/9/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "155",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "سقف تانى",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 950,
+            "rowDate": "17/9/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "154",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "سقف ارضى",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 950,
+            "rowDate": "19/9/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "174",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "اعمدة الاول",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 950,
+            "rowDate": "22/9/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "155",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "اعمدة التالت",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 950,
+            "rowDate": "22/9/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "151",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "اعمدة الاول",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 950,
+            "rowDate": "22/9/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "175",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "اعمدة الثانى",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 950,
+            "rowDate": "22/9/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "154",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "اعمدة الاول",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 950,
+            "rowDate": "24/9/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "177",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "اعمدة الارضى",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1100,
+            "rowDate": "1/10/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "155",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "سقف التالت",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1100,
+            "rowDate": "1/10/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "176",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "سقف اول",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1100,
+            "rowDate": "1/10/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "174",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "سقف اول",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1100,
+            "rowDate": "1/10/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "153",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "سقف الاول",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1100,
+            "rowDate": "1/10/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "178",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "اعمدة الارضى",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1100,
+            "rowDate": "1/10/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "175",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "سقف التانى",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1100,
+            "rowDate": "7/10/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "151",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "سقف اول",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1100,
+            "rowDate": "7/10/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "155",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "اعمدة رابع",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1100,
+            "rowDate": "7/10/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "153",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "اعمدة التانى",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1100,
+            "rowDate": "7/10/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "154",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "سقف الاول",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1100,
+            "rowDate": "7/10/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "174",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "اعمدة تانى",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1100,
+            "rowDate": "14/10/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "175",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "اعمدة تالت",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1100,
+            "rowDate": "14/10/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "176",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "اعمدة تانى",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1100,
+            "rowDate": "14/10/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "155",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "سقف رابع",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1100,
+            "rowDate": "14/10/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "154",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "اعمدة تانى",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1100,
+            "rowDate": "14/10/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
           }
         ]
       },
@@ -1939,6 +3294,1672 @@
             "rowDate": "8/8/2026",
             "type": "تنفيذ",
             "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "177",
+            "currentQty": 160,
+            "deductions": 0,
+            "description": "قاعده مسلحه",
+            "disbursementPct": 65,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1000,
+            "rowDate": "5/9/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "177",
+            "currentQty": 34,
+            "deductions": 0,
+            "description": "اعمدة الارضى",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1000,
+            "rowDate": "1/10/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          }
+        ]
+      },
+      {
+        "contractor": "محمود مبارك",
+        "date": "2026/09/03",
+        "id": 1788594034661.7568,
+        "item": "عزل",
+        "notes": "",
+        "number": 1,
+        "rows": [
+          {
+            "buildingNo": "155",
+            "currentQty": 570,
+            "deductions": 0,
+            "description": "عزل القواعد المسلحه",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 19,
+            "rowDate": "1/10/2026",
+            "type": "تنفيذ",
+            "unit": "م²"
+          },
+          {
+            "buildingNo": "155",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "عزل الاسفلتويد للعمارة الواحدة",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1500,
+            "rowDate": "14/10/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          }
+        ]
+      },
+      {
+        "contractor": "عياد محود عبدالله",
+        "date": "2026/09/16",
+        "id": 1789569742712.8323,
+        "item": "لوادر",
+        "notes": "",
+        "number": 1,
+        "rows": [
+          {
+            "buildingNo": "",
+            "currentQty": 3,
+            "deductions": 0,
+            "description": "لودر 50",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 800,
+            "rowDate": "14/9/2026",
+            "type": "تنفيذ",
+            "unit": "عدد"
+          },
+          {
+            "buildingNo": "",
+            "currentQty": 11,
+            "deductions": 0,
+            "description": "لودر 50",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 800,
+            "rowDate": "23/9/2026",
+            "type": "تنفيذ",
+            "unit": "عدد"
+          },
+          {
+            "buildingNo": "",
+            "currentQty": 16,
+            "deductions": 0,
+            "description": "لودر 50",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 800,
+            "rowDate": "1/10/2026",
+            "type": "تنفيذ",
+            "unit": "عدد"
+          },
+          {
+            "buildingNo": "",
+            "currentQty": 11.5,
+            "deductions": 0,
+            "description": "لودر 50",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 800,
+            "rowDate": "7/10/2026",
+            "type": "تنفيذ",
+            "unit": "عدد"
+          },
+          {
+            "buildingNo": "",
+            "currentQty": 22.5,
+            "deductions": 0,
+            "description": "لودر 50",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 800,
+            "rowDate": "14/10/2026",
+            "type": "تنفيذ",
+            "unit": "عدد"
+          }
+        ]
+      },
+      {
+        "contractor": "عياد محود عبدالله",
+        "date": "2026/09/16",
+        "id": 1789569802884.7783,
+        "item": "لوادر",
+        "notes": "",
+        "number": 2,
+        "rows": [
+          {
+            "buildingNo": "",
+            "currentQty": 8,
+            "deductions": 0,
+            "description": "لودر صغير",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 600,
+            "rowDate": "13/9/2026",
+            "type": "تنفيذ",
+            "unit": "عدد"
+          },
+          {
+            "buildingNo": "",
+            "currentQty": 7.5,
+            "deductions": 0,
+            "description": "لودر صغير",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 600,
+            "rowDate": "1/10/2026",
+            "type": "تنفيذ",
+            "unit": "عدد"
+          },
+          {
+            "buildingNo": "",
+            "currentQty": 13.5,
+            "deductions": 0,
+            "description": "لودر صغير",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 600,
+            "rowDate": "7/10/2026",
+            "type": "تنفيذ",
+            "unit": "عدد"
+          },
+          {
+            "buildingNo": "",
+            "currentQty": 24,
+            "deductions": 0,
+            "description": "لودر صغير",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 600,
+            "rowDate": "14/10/2026",
+            "type": "تنفيذ",
+            "unit": "عدد"
+          }
+        ]
+      },
+      {
+        "contractor": "عياد محود عبدالله",
+        "date": "2026/09/16",
+        "id": 1789570026047.54,
+        "item": "لوادر",
+        "notes": "",
+        "number": 3,
+        "rows": [
+          {
+            "buildingNo": "",
+            "currentQty": 4,
+            "deductions": 0,
+            "description": "لودر 66",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1200,
+            "rowDate": "15/9/2026",
+            "type": "تنفيذ",
+            "unit": "عدد"
+          },
+          {
+            "buildingNo": "",
+            "currentQty": 3.5,
+            "deductions": 0,
+            "description": "لودر 66",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1200,
+            "rowDate": "23/9/2026",
+            "type": "تنفيذ",
+            "unit": "عدد"
+          },
+          {
+            "buildingNo": "",
+            "currentQty": 5,
+            "deductions": 0,
+            "description": "لودر 66",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1200,
+            "rowDate": "1/10/2026",
+            "type": "تنفيذ",
+            "unit": "عدد"
+          },
+          {
+            "buildingNo": "",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "لودر 66",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1200,
+            "rowDate": "7/10/2026",
+            "type": "تنفيذ",
+            "unit": "عدد"
+          },
+          {
+            "buildingNo": "",
+            "currentQty": 5,
+            "deductions": 0,
+            "description": "لودر 66",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1200,
+            "rowDate": "14/10/2026",
+            "type": "تنفيذ",
+            "unit": "عدد"
+          }
+        ]
+      },
+      {
+        "contractor": "احمد حسن حسين ع 154،155،176",
+        "date": "2026/09/17",
+        "id": 1789597054819.3005,
+        "item": "نجارة مسلحة",
+        "notes": "",
+        "number": 3,
+        "rows": [
+          {
+            "buildingNo": "176",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "قاعده عاديه",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 15000,
+            "rowDate": "30/7/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "176",
+            "currentQty": 160,
+            "deductions": 0,
+            "description": "قاعده مسلحه",
+            "disbursementPct": 75,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1000,
+            "rowDate": "11/8/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "176",
+            "currentQty": 34,
+            "deductions": 0,
+            "description": "اعمدة الارضى",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1000,
+            "rowDate": "19/8/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "176",
+            "currentQty": 62,
+            "deductions": 0,
+            "description": "سقف الارضى",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1000,
+            "rowDate": "1/9/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "176",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "فرق تخشيب",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 15000,
+            "rowDate": "1/9/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "176",
+            "currentQty": 17,
+            "deductions": 0,
+            "description": "اعمدة الاول",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1000,
+            "rowDate": "17/9/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "176",
+            "currentQty": 60,
+            "deductions": 0,
+            "description": "سقف الاول",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1000,
+            "rowDate": "1/10/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "176",
+            "currentQty": 15,
+            "deductions": 0,
+            "description": "اعمدة التانى",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1000,
+            "rowDate": "14/10/2026",
+            "type": "تنفيذ",
+            "unit": "م²"
+          }
+        ]
+      },
+      {
+        "contractor": "هشام شحاته احمد ع 151،174،175",
+        "date": "2026/09/17",
+        "id": 1789598353408.2068,
+        "item": "حدادة مسلحة",
+        "notes": "",
+        "number": 2,
+        "rows": [
+          {
+            "buildingNo": "177",
+            "currentQty": 160,
+            "deductions": 0,
+            "description": "قاعده مسلحه",
+            "disbursementPct": 65,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "7/9/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "177",
+            "currentQty": 34,
+            "deductions": 0,
+            "description": "اعمدة الارضى",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "1/10/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          }
+        ]
+      },
+      {
+        "contractor": "هشام شحاته احمد ع 151،174،175",
+        "date": "2026/09/17",
+        "id": 1789598446863.196,
+        "item": "حدادة مسلحة",
+        "notes": "",
+        "number": 3,
+        "rows": [
+          {
+            "buildingNo": "176",
+            "currentQty": 160,
+            "deductions": 0,
+            "description": "قاعده مسلحه",
+            "disbursementPct": 75,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "11/8/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "176",
+            "currentQty": 34,
+            "deductions": 0,
+            "description": "اعمدة الارضى",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "19/8/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "176",
+            "currentQty": 62,
+            "deductions": 0,
+            "description": "سقف الارضى",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "1/9/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "176",
+            "currentQty": 17,
+            "deductions": 0,
+            "description": "اعمدة الاول",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "17/9/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "176",
+            "currentQty": 60,
+            "deductions": 0,
+            "description": "سقف الاول",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "1/10/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "176",
+            "currentQty": 15,
+            "deductions": 0,
+            "description": "اعمدة تانى",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "14/10/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          }
+        ]
+      },
+      {
+        "contractor": "هشام شحاته احمد ع 151،174،175",
+        "date": "2026/09/17",
+        "id": 1789598647897.0188,
+        "item": "حدادة مسلحة",
+        "notes": "",
+        "number": 4,
+        "rows": [
+          {
+            "buildingNo": "175",
+            "currentQty": 160,
+            "deductions": 0,
+            "description": "قاعده مسلحه",
+            "disbursementPct": 80,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "26/7/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "175",
+            "currentQty": 34,
+            "deductions": 0,
+            "description": "اعمدة الارضى",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "10/8/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "175",
+            "currentQty": 62,
+            "deductions": 0,
+            "description": "سقف الارضى",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "1/9/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "175",
+            "currentQty": 17,
+            "deductions": 0,
+            "description": "اعمدة الاول",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "8/9/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "175",
+            "currentQty": 60,
+            "deductions": 0,
+            "description": "سقف الاول",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "17/9/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "175",
+            "currentQty": 15,
+            "deductions": 0,
+            "description": "اعمدة التانى",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "22/9/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "175",
+            "currentQty": 60,
+            "deductions": 0,
+            "description": "سقف التانى",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "7/10/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "175",
+            "currentQty": 15,
+            "deductions": 0,
+            "description": "اعمدة تالت",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "14/10/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          }
+        ]
+      },
+      {
+        "contractor": "هشام شحاته احمد ع 151،174،175",
+        "date": "2026/09/17",
+        "id": 1789598893524.999,
+        "item": "حدادة مسلحة",
+        "notes": "",
+        "number": 5,
+        "rows": [
+          {
+            "buildingNo": "174",
+            "currentQty": 160,
+            "deductions": 0,
+            "description": "قاعده مسلحه",
+            "disbursementPct": 75,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "1/8/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "174",
+            "currentQty": 34,
+            "deductions": 0,
+            "description": "اعمدة الارضى",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "22/8/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "174",
+            "currentQty": 62,
+            "deductions": 0,
+            "description": "سقف الارضى",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "17/9/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "174",
+            "currentQty": 17,
+            "deductions": 0,
+            "description": "اعمدة الاول",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "22/9/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "174",
+            "currentQty": 60,
+            "deductions": 0,
+            "description": "سقف الاول",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "1/10/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "174",
+            "currentQty": 15,
+            "deductions": 0,
+            "description": "اعمدة تانى",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "14/10/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          }
+        ]
+      },
+      {
+        "contractor": "هشام شحاته احمد ع 151،174،175",
+        "date": "2026/09/17",
+        "id": 1789599111020.6313,
+        "item": "حدادة مسلحة",
+        "notes": "",
+        "number": 6,
+        "rows": [
+          {
+            "buildingNo": "155",
+            "currentQty": 160,
+            "deductions": 0,
+            "description": "قاعده مسلحه",
+            "disbursementPct": 90,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "26/7/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "155",
+            "currentQty": 34,
+            "deductions": 0,
+            "description": "اعمدة الارضى",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "6/8/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "155",
+            "currentQty": 62,
+            "deductions": 0,
+            "description": "سقف الارضى",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "16/8/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "155",
+            "currentQty": 17,
+            "deductions": 0,
+            "description": "اعمدة الاول",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "22/8/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "155",
+            "currentQty": 60,
+            "deductions": 0,
+            "description": "سقف الاول",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "1/9/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "155",
+            "currentQty": 15,
+            "deductions": 0,
+            "description": "اعمدة التانى",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "8/9/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "155",
+            "currentQty": 60,
+            "deductions": 0,
+            "description": "سقف التانى",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "17/9/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "155",
+            "currentQty": 15,
+            "deductions": 0,
+            "description": "اعمدة التالت",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "22/9/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "155",
+            "currentQty": 60,
+            "deductions": 0,
+            "description": "سقف التالت",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "1/10/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "155",
+            "currentQty": 14,
+            "deductions": 0,
+            "description": "اعمدة الرابع",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "7/10/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "155",
+            "currentQty": 60,
+            "deductions": 0,
+            "description": "سقف الرابع",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "14/10/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          }
+        ]
+      },
+      {
+        "contractor": "هشام شحاته احمد ع 151،174،175",
+        "date": "2026/09/17",
+        "id": 1789599470475.511,
+        "item": "حدادة مسلحة",
+        "notes": "",
+        "number": 7,
+        "rows": [
+          {
+            "buildingNo": "154",
+            "currentQty": 160,
+            "deductions": 0,
+            "description": "قاعدة مسلحه",
+            "disbursementPct": 75,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "22/8/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "154",
+            "currentQty": 34,
+            "deductions": 0,
+            "description": "اعمدة الارضى",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "8/9/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "154",
+            "currentQty": 62,
+            "deductions": 0,
+            "description": "سقف الارضى",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "19/9/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "154",
+            "currentQty": 17,
+            "deductions": 0,
+            "description": "اعمدة الاول",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "24/9/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "154",
+            "currentQty": 60,
+            "deductions": 0,
+            "description": "سقف الاول",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "7/10/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "154",
+            "currentQty": 15,
+            "deductions": 0,
+            "description": "اعمدة تانى",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "14/10/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          }
+        ]
+      },
+      {
+        "contractor": "هشام شحاته احمد ع 151،174،175",
+        "date": "2026/09/17",
+        "id": 1789599628372.0479,
+        "item": "حدادة مسلحة",
+        "notes": "",
+        "number": 8,
+        "rows": [
+          {
+            "buildingNo": "153",
+            "currentQty": 160,
+            "deductions": 0,
+            "description": "قاعده مسلحه",
+            "disbursementPct": 75,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "11/8/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "153",
+            "currentQty": 34,
+            "deductions": 0,
+            "description": "اعمدة الارضى",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "25/8/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "153",
+            "currentQty": 62,
+            "deductions": 0,
+            "description": "سقف الارضى",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "8/9/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "153",
+            "currentQty": 17,
+            "deductions": 0,
+            "description": "اعمدة الاول",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "17/9/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "153",
+            "currentQty": 60,
+            "deductions": 0,
+            "description": "سقف الاول",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "1/10/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "153",
+            "currentQty": 15,
+            "deductions": 0,
+            "description": "اعمدة التانى",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "7/10/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          }
+        ]
+      },
+      {
+        "contractor": "هشام شحاته احمد ع 151،174،175",
+        "date": "2026/09/17",
+        "id": 1789599831504.8152,
+        "item": "حدادة مسلحة",
+        "notes": "",
+        "number": 9,
+        "rows": [
+          {
+            "buildingNo": "151",
+            "currentQty": 160,
+            "deductions": 0,
+            "description": "قاعده مسلحه",
+            "disbursementPct": 75,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "16/8/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "151",
+            "currentQty": 34,
+            "deductions": 0,
+            "description": "اعمدة الارضى",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "25/8/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "151",
+            "currentQty": 62,
+            "deductions": 0,
+            "description": "سقف ارضى",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "17/9/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "151",
+            "currentQty": 17,
+            "deductions": 0,
+            "description": "اعمدة اول",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "22/9/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "151",
+            "currentQty": 60,
+            "deductions": 0,
+            "description": "سقف الاول",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 300,
+            "rowDate": "7/10/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          }
+        ]
+      },
+      {
+        "contractor": "عيد عواد",
+        "date": "2026/10/01",
+        "id": 1791021357892.5354,
+        "item": "لوادر",
+        "notes": "",
+        "number": 1,
+        "rows": [
+          {
+            "buildingNo": "",
+            "currentQty": 144,
+            "deductions": 0,
+            "description": "بلتات",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 90,
+            "rowDate": "1/10/2026",
+            "type": "تنفيذ",
+            "unit": "عدد"
+          },
+          {
+            "buildingNo": "",
+            "currentQty": 240,
+            "deductions": 0,
+            "description": "بلتات",
+            "disbursementPct": 100,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 90,
+            "rowDate": "14/10/2026",
+            "type": "تنفيذ",
+            "unit": "عدد"
+          }
+        ]
+      },
+      {
+        "contractor": "محمود مبارك",
+        "date": "2026/10/1",
+        "id": 1791025129359.9126,
+        "item": "عزل",
+        "notes": "",
+        "number": 2,
+        "rows": [
+          {
+            "buildingNo": "154",
+            "currentQty": 500,
+            "deductions": 0,
+            "description": "عزل القواعد المسلحه",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 19,
+            "rowDate": "14/10/2026",
+            "type": "تنفيذ",
+            "unit": "م²"
+          }
+        ]
+      },
+      {
+        "contractor": "حمدى احمد حسن",
+        "date": "2026/10/03",
+        "id": 1791025247255.3313,
+        "item": "كهرباء",
+        "notes": "",
+        "number": 1,
+        "rows": [
+          {
+            "buildingNo": "",
+            "currentQty": 4,
+            "deductions": 0,
+            "description": "خراطيم للسقف الواحد",
+            "disbursementPct": 90,
+            "itemPct": 100,
+            "prevQty": 14,
+            "price": 1500,
+            "rowDate": "1/10/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          }
+        ]
+      },
+      {
+        "contractor": "محمود مبارك",
+        "date": "2026/10/18",
+        "id": 1792340110879.5127,
+        "item": "عزل",
+        "notes": "",
+        "number": 3,
+        "rows": [
+          {
+            "buildingNo": "153",
+            "currentQty": 500,
+            "deductions": 0,
+            "description": "عزل القواعد المسلحه",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 19,
+            "rowDate": "14/10/2026",
+            "type": "تنفيذ",
+            "unit": "م²"
+          }
+        ]
+      },
+      {
+        "contractor": "محمود مبارك",
+        "date": "2026/10/18",
+        "id": 1792340113352.217,
+        "item": "عزل",
+        "notes": "",
+        "number": 4,
+        "rows": [
+          {
+            "buildingNo": "152",
+            "currentQty": 0,
+            "deductions": 0,
+            "description": "عزل القواعد المسلحه",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 0,
+            "rowDate": "14/10/2026",
+            "type": "تنفيذ",
+            "unit": "م²"
+          }
+        ]
+      },
+      {
+        "contractor": "محمود مبارك",
+        "date": "2026/10/18",
+        "id": 1792340115744.0208,
+        "item": "عزل",
+        "notes": "",
+        "number": 5,
+        "rows": [
+          {
+            "buildingNo": "151",
+            "currentQty": 500,
+            "deductions": 0,
+            "description": "عزل القواعد المسلحه",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 19,
+            "rowDate": "14/10/2026",
+            "type": "تنفيذ",
+            "unit": "م²"
+          }
+        ]
+      },
+      {
+        "contractor": "محمود مبارك",
+        "date": "2026/10/18",
+        "id": 1792340118043.0789,
+        "item": "عزل",
+        "notes": "",
+        "number": 6,
+        "rows": [
+          {
+            "buildingNo": "178",
+            "currentQty": 0,
+            "deductions": 0,
+            "description": "عزل القواعد المسلحه",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 0,
+            "rowDate": "14/10/2026",
+            "type": "تنفيذ",
+            "unit": "م²"
+          }
+        ]
+      },
+      {
+        "contractor": "محمود مبارك",
+        "date": "2026/10/18",
+        "id": 1792340123203.9119,
+        "item": "عزل",
+        "notes": "",
+        "number": 7,
+        "rows": [
+          {
+            "buildingNo": "177",
+            "currentQty": 0,
+            "deductions": 0,
+            "description": "عزل القواعد المسلحه",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 0,
+            "rowDate": "14/10/2026",
+            "type": "تنفيذ",
+            "unit": "م²"
+          }
+        ]
+      },
+      {
+        "contractor": "محمود مبارك",
+        "date": "2026/10/18",
+        "id": 1792340126232.1074,
+        "item": "عزل",
+        "notes": "",
+        "number": 8,
+        "rows": [
+          {
+            "buildingNo": "176",
+            "currentQty": 500,
+            "deductions": 0,
+            "description": "عزل القواعد المسلحه",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 19,
+            "rowDate": "14/10/2026",
+            "type": "تنفيذ",
+            "unit": "م²"
+          }
+        ]
+      },
+      {
+        "contractor": "محمود مبارك",
+        "date": "2026/10/18",
+        "id": 1792340129304.3218,
+        "item": "عزل",
+        "notes": "",
+        "number": 9,
+        "rows": [
+          {
+            "buildingNo": "175",
+            "currentQty": 570,
+            "deductions": 0,
+            "description": "عزل القواعد المسلحه",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 19,
+            "rowDate": "14/10/2026",
+            "type": "تنفيذ",
+            "unit": "م²"
+          },
+          {
+            "buildingNo": "175",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "عزل الاسفلتويد للعمارة الواحدة",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 1500,
+            "rowDate": "14/10/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          }
+        ]
+      },
+      {
+        "contractor": "محمود مبارك",
+        "date": "2026/10/18",
+        "id": 1792340131625.9927,
+        "item": "عزل",
+        "notes": "",
+        "number": 10,
+        "rows": [
+          {
+            "buildingNo": "174",
+            "currentQty": 500,
+            "deductions": 0,
+            "description": "عزل القواعد المسلحه",
+            "disbursementPct": 95,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 19,
+            "rowDate": "14/10/2026",
+            "type": "تنفيذ",
+            "unit": "م²"
+          }
+        ]
+      },
+      {
+        "contractor": "صابر حسن",
+        "date": "2026/10/18",
+        "id": 1792340959018.6428,
+        "item": "مباني",
+        "notes": "",
+        "number": 1,
+        "rows": [
+          {
+            "buildingNo": "155",
+            "currentQty": 90,
+            "deductions": 0,
+            "description": " مباني لزوم قصية الردم ",
+            "disbursementPct": 75,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 350,
+            "rowDate": "14/10/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "155",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "مباني للدور الواحد (1)",
+            "disbursementPct": 75,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 28000,
+            "rowDate": "14/10/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          },
+          {
+            "buildingNo": "155",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "مباني للدور الواحد (2)",
+            "disbursementPct": 75,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 28000,
+            "rowDate": "14/10/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          }
+        ]
+      },
+      {
+        "contractor": "صابر حسن",
+        "date": "2026/10/18",
+        "id": 1792340962553.943,
+        "item": "مباني",
+        "notes": "",
+        "number": 2,
+        "rows": [
+          {
+            "buildingNo": "154",
+            "currentQty": 0,
+            "deductions": 0,
+            "description": "مباني لزوم قصية الردم ",
+            "disbursementPct": 75,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 0,
+            "rowDate": "14/10/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          }
+        ]
+      },
+      {
+        "contractor": "صابر حسن",
+        "date": "2026/10/18",
+        "id": 1792340965400.6667,
+        "item": "مباني",
+        "notes": "",
+        "number": 3,
+        "rows": [
+          {
+            "buildingNo": "153",
+            "currentQty": 0,
+            "deductions": 0,
+            "description": "مبانى لزوم قصية الردم ",
+            "disbursementPct": 75,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 0,
+            "rowDate": "14/10/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          }
+        ]
+      },
+      {
+        "contractor": "صابر حسن",
+        "date": "2026/10/18",
+        "id": 1792340968273.847,
+        "item": "مباني",
+        "notes": "",
+        "number": 4,
+        "rows": [
+          {
+            "buildingNo": "152",
+            "currentQty": 0,
+            "deductions": 0,
+            "description": "مبانى لزوم قصية الردم ",
+            "disbursementPct": 75,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 0,
+            "rowDate": "14/10/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          }
+        ]
+      },
+      {
+        "contractor": "صابر حسن",
+        "date": "2026/10/18",
+        "id": 1792340970817.8105,
+        "item": "مباني",
+        "notes": "",
+        "number": 5,
+        "rows": [
+          {
+            "buildingNo": "151",
+            "currentQty": 0,
+            "deductions": 0,
+            "description": "مبانى لزوم قصية الردم ",
+            "disbursementPct": 75,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 0,
+            "rowDate": "14/10/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          }
+        ]
+      },
+      {
+        "contractor": "صابر حسن",
+        "date": "2026/10/18",
+        "id": 1792340972851.2349,
+        "item": "مباني",
+        "notes": "",
+        "number": 6,
+        "rows": [
+          {
+            "buildingNo": "178",
+            "currentQty": 0,
+            "deductions": 0,
+            "description": "مبانى لزوم قصية الردم ",
+            "disbursementPct": 75,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 0,
+            "rowDate": "14/10/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          }
+        ]
+      },
+      {
+        "contractor": "صابر حسن",
+        "date": "2026/10/18",
+        "id": 1792340974974.188,
+        "item": "مباني",
+        "notes": "",
+        "number": 7,
+        "rows": [
+          {
+            "buildingNo": "177",
+            "currentQty": 0,
+            "deductions": 0,
+            "description": "مبانى لزوم قصية الردم ",
+            "disbursementPct": 75,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 0,
+            "rowDate": "14/10/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          }
+        ]
+      },
+      {
+        "contractor": "صابر حسن",
+        "date": "2026/10/18",
+        "id": 1792340977367.5396,
+        "item": "مباني",
+        "notes": "",
+        "number": 8,
+        "rows": [
+          {
+            "buildingNo": "176",
+            "currentQty": 90,
+            "deductions": 0,
+            "description": "مبانى لزوم قصية الردم ",
+            "disbursementPct": 75,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 350,
+            "rowDate": "14/10/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          }
+        ]
+      },
+      {
+        "contractor": "صابر حسن",
+        "date": "2026/10/18",
+        "id": 1792340980406.7158,
+        "item": "مباني",
+        "notes": "",
+        "number": 9,
+        "rows": [
+          {
+            "buildingNo": "175",
+            "currentQty": 90,
+            "deductions": 0,
+            "description": "مبانى لزوم قصية الردم ",
+            "disbursementPct": 75,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 350,
+            "rowDate": "14/10/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
+          },
+          {
+            "buildingNo": "175",
+            "currentQty": 1,
+            "deductions": 0,
+            "description": "مباني للدور الواحد (1)",
+            "disbursementPct": 75,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 28000,
+            "rowDate": "14/10/2026",
+            "type": "تنفيذ",
+            "unit": "مقطوعية"
+          }
+        ]
+      },
+      {
+        "contractor": "صابر حسن",
+        "date": "2026/10/18",
+        "id": 1792340982687.4866,
+        "item": "مباني",
+        "notes": "",
+        "number": 10,
+        "rows": [
+          {
+            "buildingNo": "174",
+            "currentQty": 0,
+            "deductions": 0,
+            "description": "مبانى لزوم قصية الردم ",
+            "disbursementPct": 75,
+            "itemPct": 100,
+            "prevQty": 0,
+            "price": 350,
+            "rowDate": "14/10/2026",
+            "type": "تنفيذ",
+            "unit": "م³"
           }
         ]
       }
@@ -1968,9 +4989,10 @@
       "تدبيش",
       "إنترلوك",
       "بلدوره",
+      "خرسانة أرضيات",
       "غرف تفتيش",
       "مطابق",
-      "خرسانة أرضيات",
+      "نحاته",
       "توريد رمل",
       "توريد مياه",
       "توريد خرسانه جاهزه",
@@ -2774,6 +5796,1068 @@
         "id": 1787996526856.1023,
         "item": "حدادة مسلحة",
         "notes": ""
+      },
+      {
+        "amount": 20000,
+        "checkNo": "تحويل انستاباى",
+        "contractor": "مصطفى محمود ع 175",
+        "createdAt": "2026-09-05T07:15:41.184Z",
+        "date": "2026/09/3",
+        "id": 1788592541184.2153,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 20000,
+        "checkNo": "تحويل انستاباى",
+        "contractor": "احمد محمد انور ع 153",
+        "createdAt": "2026-09-05T07:15:56.406Z",
+        "date": "2026/09/03",
+        "id": 1788592556406.7378,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 20000,
+        "checkNo": "تحويل انستاباى",
+        "contractor": "حماده ع 177",
+        "createdAt": "2026-09-05T07:16:13.531Z",
+        "date": "2026/09/03",
+        "id": 1788592573531.2383,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 20000,
+        "checkNo": "تحويل انستاباى",
+        "contractor": "رومانى حنا ع 178",
+        "createdAt": "2026-09-05T07:16:32.227Z",
+        "date": "2026/09/03",
+        "id": 1788592592227.9905,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 5000,
+        "checkNo": "تحويل انستاباى",
+        "contractor": "مصطفى عبدالناصر محمد",
+        "createdAt": "2026-09-05T07:16:48.709Z",
+        "date": "2026/09/03",
+        "id": 1788592608709.127,
+        "item": "اعمال فرمجه",
+        "notes": ""
+      },
+      {
+        "amount": 3000,
+        "checkNo": "تحويل انستاباى",
+        "contractor": "محمود مبارك",
+        "createdAt": "2026-09-05T07:17:14.166Z",
+        "date": "2026/09/03",
+        "id": 1788592634166.5369,
+        "item": "عزل",
+        "notes": ""
+      },
+      {
+        "amount": 150000,
+        "checkNo": "4128076234/3151",
+        "contractor": "محمود محمد عبدالله",
+        "createdAt": "2026-09-05T07:18:03.397Z",
+        "date": "2026/09/03",
+        "id": 1788592683397.9377,
+        "item": "حفر",
+        "notes": ""
+      },
+      {
+        "amount": 30000,
+        "checkNo": "تحويل انستاباى",
+        "contractor": "م / احمد عبدالعزيز",
+        "createdAt": "2026-09-05T07:18:15.587Z",
+        "date": "2026/09/03",
+        "id": 1788592695587.1445,
+        "item": "اختبارات",
+        "notes": ""
+      },
+      {
+        "amount": 150000,
+        "checkNo": "412807638/5303",
+        "contractor": "احمد حسن حسين ع 154،155،176",
+        "createdAt": "2026-09-05T07:18:43.114Z",
+        "date": "2026/09/03",
+        "id": 1788592723114.4758,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 50000,
+        "checkNo": "4128076237/5304",
+        "contractor": "محمد برعى على ع 174",
+        "createdAt": "2026-09-05T07:19:22.465Z",
+        "date": "2026/09/03",
+        "id": 1788592762465.0496,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 40000,
+        "checkNo": "4128076239/5301",
+        "contractor": "عبدالعاطى سليم عبدالعاطى ع 151",
+        "createdAt": "2026-09-05T07:19:50.639Z",
+        "date": "2026/09/03",
+        "id": 1788592790639.9521,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 70000,
+        "checkNo": "4128076240/5302",
+        "contractor": "هشام شحاته احمد ع 151،174،175",
+        "createdAt": "2026-09-05T07:20:16.848Z",
+        "date": "2026/09/03",
+        "id": 1788592816848.84,
+        "item": "حدادة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 1000000,
+        "checkNo": "تحويل بنكى (ائتمان)",
+        "contractor": "المدينه للصلب",
+        "createdAt": "2026-09-05T07:20:48.688Z",
+        "date": "2026/09/03",
+        "id": 1788592848688.5015,
+        "item": "توريد حديد تسليح",
+        "notes": ""
+      },
+      {
+        "amount": 1000000,
+        "checkNo": "100008915865/5305",
+        "contractor": "محطة بناء",
+        "createdAt": "2026-09-05T07:21:32.101Z",
+        "date": "2026/09/03",
+        "id": 1788592892101.844,
+        "item": "توريد خرسانه جاهزه",
+        "notes": ""
+      },
+      {
+        "amount": 20000,
+        "checkNo": "تحويل انستاباى",
+        "contractor": "مصطفى محمود ع 175",
+        "createdAt": "2026-09-12T10:59:46.722Z",
+        "date": "2026/09/10",
+        "id": 1789210786722.4048,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 20000,
+        "checkNo": "تحويل انستاباى",
+        "contractor": "محمد برعى على ع 174",
+        "createdAt": "2026-09-12T11:00:00.152Z",
+        "date": "2026/09/10",
+        "id": 1789210800152.3235,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 6000,
+        "checkNo": "تحويل انستاباى",
+        "contractor": "مصطفى عبدالناصر محمد",
+        "createdAt": "2026-09-12T11:00:16.720Z",
+        "date": "2026/09/10",
+        "id": 1789210816720.2678,
+        "item": "اعمال فرمجه",
+        "notes": ""
+      },
+      {
+        "amount": 40000,
+        "checkNo": "4128076247/3181",
+        "contractor": "حماده ع 177",
+        "createdAt": "2026-09-12T11:01:01.972Z",
+        "date": "2026/09/10",
+        "id": 1789210861972.0698,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 50000,
+        "checkNo": "4128076246/3177",
+        "contractor": "احمد محمد انور ع 153",
+        "createdAt": "2026-09-12T11:01:35.916Z",
+        "date": "2026/09/10",
+        "id": 1789210895916.9866,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 35000,
+        "checkNo": "4128076249/3180",
+        "contractor": "رومانى حنا ع 178",
+        "createdAt": "2026-09-12T11:02:17.555Z",
+        "date": "2026/09/10",
+        "id": 1789210937555.0894,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 30000,
+        "checkNo": "4128076248/3178",
+        "contractor": "احمد حسن حسين ع 154،155،176",
+        "createdAt": "2026-09-12T11:02:51.205Z",
+        "date": "2026/09/10",
+        "id": 1789210971205.538,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 25000,
+        "checkNo": "4128076256/3179",
+        "contractor": "عبدالعاطى سليم عبدالعاطى ع 151",
+        "createdAt": "2026-09-12T11:03:22.485Z",
+        "date": "2026/09/10",
+        "id": 1789211002485.6416,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 100000,
+        "checkNo": "412807644/3191",
+        "contractor": "هشام شحاته احمد ع 151،174،175",
+        "createdAt": "2026-09-12T11:03:46.526Z",
+        "date": "2026/09/10",
+        "id": 1789211026526.8806,
+        "item": "حدادة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 6200,
+        "checkNo": "4128076257/3182",
+        "contractor": "محمود مبارك",
+        "createdAt": "2026-09-12T11:04:25.574Z",
+        "date": "2026/09/10",
+        "id": 1789211065574.205,
+        "item": "عزل",
+        "notes": ""
+      },
+      {
+        "amount": 2000000,
+        "checkNo": "",
+        "contractor": "المدينه للصلب",
+        "createdAt": "2026-09-12T11:04:46.386Z",
+        "date": "2026/09/10",
+        "id": 1789211086386.0225,
+        "item": "توريد حديد تسليح",
+        "notes": ""
+      },
+      {
+        "amount": 500000,
+        "checkNo": "تحويل بنكى (ائتمان)",
+        "contractor": "المدينه للصلب",
+        "createdAt": "2026-09-12T11:05:18.102Z",
+        "date": "2026/09/10",
+        "id": 1789211118102.1216,
+        "item": "توريد حديد تسليح",
+        "notes": ""
+      },
+      {
+        "amount": 1000000,
+        "checkNo": "4128076245/3184",
+        "contractor": "محطة بناء",
+        "createdAt": "2026-09-12T11:05:54.481Z",
+        "date": "2026/09/10",
+        "id": 1789211154481.5352,
+        "item": "توريد خرسانه جاهزه",
+        "notes": ""
+      },
+      {
+        "amount": 50000,
+        "checkNo": "4128076245/3184",
+        "contractor": "المتحده",
+        "createdAt": "2026-09-12T11:07:56.378Z",
+        "date": "2026/09/10",
+        "id": 1789211276378.4531,
+        "item": "توريدات كهربائيه",
+        "notes": ""
+      },
+      {
+        "amount": 5000,
+        "checkNo": "3195",
+        "contractor": "عياد محود عبدالله",
+        "createdAt": "2026-09-23T04:54:41.235Z",
+        "date": "2026/09/17",
+        "id": 1790139281235.9597,
+        "item": "لوادر",
+        "notes": ""
+      },
+      {
+        "amount": 20000,
+        "checkNo": "تحويل انستاباى",
+        "contractor": "محمد برعى على ع 174",
+        "createdAt": "2026-09-23T04:55:05.233Z",
+        "date": "2026/09/17",
+        "id": 1790139305233.0447,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 15000,
+        "checkNo": "تحويل انستاباى",
+        "contractor": "احمد محمد انور ع 153",
+        "createdAt": "2026-09-23T04:55:19.102Z",
+        "date": "2026/09/17",
+        "id": 1790139319102.2234,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 10000,
+        "checkNo": "تحويل انستاباى",
+        "contractor": "رومانى حنا ع 178",
+        "createdAt": "2026-09-23T04:55:41.489Z",
+        "date": "2026/09/17",
+        "id": 1790139341489.9766,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 10000,
+        "checkNo": "تحويل انستاباى",
+        "contractor": "حماده ع 177",
+        "createdAt": "2026-09-23T04:56:07.495Z",
+        "date": "2026/09/17",
+        "id": 1790139367495.3982,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 4000,
+        "checkNo": "تحويل انستاباى",
+        "contractor": "مصطفى عبدالناصر محمد",
+        "createdAt": "2026-09-23T04:56:25.858Z",
+        "date": "2026/09/17",
+        "id": 1790139385858.6636,
+        "item": "اعمال فرمجه",
+        "notes": ""
+      },
+      {
+        "amount": 70000,
+        "checkNo": "4128076273",
+        "contractor": "محمود محمد عبدالله",
+        "createdAt": "2026-09-23T04:56:58.800Z",
+        "date": "2026/09/17",
+        "id": 1790139418800.1433,
+        "item": "حفر",
+        "notes": ""
+      },
+      {
+        "amount": 170000,
+        "checkNo": "412807627/5408",
+        "contractor": "احمد حسن حسين ع 154،155،176",
+        "createdAt": "2026-09-23T04:57:26.281Z",
+        "date": "2026/09/17",
+        "id": 1790139446281.2769,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 50000,
+        "checkNo": "41280767268/5401",
+        "contractor": "مصطفى محمود ع 175",
+        "createdAt": "2026-09-23T04:58:05.085Z",
+        "date": "2026/09/17",
+        "id": 1790139485085.823,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 40000,
+        "checkNo": "4128076275/5409",
+        "contractor": "عبدالعاطى سليم عبدالعاطى ع 151",
+        "createdAt": "2026-09-23T04:58:39.479Z",
+        "date": "2026/09/17",
+        "id": 1790139519479.9282,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 70000,
+        "checkNo": "4128076274/3200",
+        "contractor": "هشام شحاته احمد ع 151،174،175",
+        "createdAt": "2026-09-23T04:59:14.848Z",
+        "date": "2026/09/17",
+        "id": 1790139554848.3027,
+        "item": "حدادة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 2000000,
+        "checkNo": "تحويل بنكى (ائتمان)",
+        "contractor": "المدينه للصلب",
+        "createdAt": "2026-09-23T05:00:20.290Z",
+        "date": "2026/09/17",
+        "id": 1790139620290.6663,
+        "item": "توريد حديد تسليح",
+        "notes": ""
+      },
+      {
+        "amount": 1000000,
+        "checkNo": "تحويل بنكى (ائتمان)",
+        "contractor": "محطة بناء",
+        "createdAt": "2026-09-23T05:00:47.450Z",
+        "date": "2026/09/17",
+        "id": 1790139647450.9648,
+        "item": "توريد خرسانه جاهزه",
+        "notes": ""
+      },
+      {
+        "amount": 15000,
+        "checkNo": "5427",
+        "contractor": "عياد محود عبدالله",
+        "createdAt": "2026-09-26T09:24:17.696Z",
+        "date": "2026/09/24",
+        "id": 1790414657696.586,
+        "item": "لوادر",
+        "notes": ""
+      },
+      {
+        "amount": 20000,
+        "checkNo": "تحويل انستاباى",
+        "contractor": "مصطفى محمود ع 175",
+        "createdAt": "2026-09-26T09:36:34.668Z",
+        "date": "2026/09/24",
+        "id": 1790415394668.4197,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 15000,
+        "checkNo": "",
+        "contractor": "محمد برعى على ع 174",
+        "createdAt": "2026-09-26T09:37:06.468Z",
+        "date": "2026/09/24",
+        "id": 1790415426468.8506,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 7000,
+        "checkNo": "تحويل انستاباى",
+        "contractor": "مصطفى عبدالناصر محمد",
+        "createdAt": "2026-09-26T09:37:34.178Z",
+        "date": "2026/09/24",
+        "id": 1790415454178.95,
+        "item": "اعمال فرمجه",
+        "notes": ""
+      },
+      {
+        "amount": 7000,
+        "checkNo": "5414",
+        "contractor": "محمود مبارك",
+        "createdAt": "2026-09-26T09:38:02.264Z",
+        "date": "2026/09/24",
+        "id": 1790415482264.7058,
+        "item": "عزل",
+        "notes": ""
+      },
+      {
+        "amount": 15000,
+        "checkNo": "تحويل انستاباى",
+        "contractor": "عبدالعاطى سليم عبدالعاطى ع 151",
+        "createdAt": "2026-09-26T09:38:47.718Z",
+        "date": "2026/09/24",
+        "id": 1790415527718.3245,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 50000,
+        "checkNo": "4128076283/5423",
+        "contractor": "احمد محمد انور ع 153",
+        "createdAt": "2026-09-26T09:39:47.296Z",
+        "date": "2026/09/24",
+        "id": 1790415587296.556,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 30000,
+        "checkNo": "4128076287/5424",
+        "contractor": "احمد حسن حسين ع 154،155،176",
+        "createdAt": "2026-09-26T09:40:16.438Z",
+        "date": "2026/09/24",
+        "id": 1790415616438.8606,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 100000,
+        "checkNo": "4128076281/5422",
+        "contractor": "هشام شحاته احمد ع 151،174،175",
+        "createdAt": "2026-09-26T09:40:49.883Z",
+        "date": "2026/09/24",
+        "id": 1790415649883.1895,
+        "item": "حدادة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 1500000,
+        "checkNo": "",
+        "contractor": "المدينه للصلب",
+        "createdAt": "2026-09-26T09:41:15.406Z",
+        "date": "2026/09/24",
+        "id": 1790415675406.8748,
+        "item": "توريد حديد تسليح",
+        "notes": ""
+      },
+      {
+        "amount": 1000000,
+        "checkNo": "100008915868/5411",
+        "contractor": "محطة بناء",
+        "createdAt": "2026-09-26T10:09:08.159Z",
+        "date": "2026/09/24",
+        "id": 1790417348159.8176,
+        "item": "توريد خرسانه جاهزه",
+        "notes": ""
+      },
+      {
+        "amount": 75000,
+        "checkNo": "4128076280/5420",
+        "contractor": "المتحده",
+        "createdAt": "2026-09-26T10:10:23.217Z",
+        "date": "2026/09/24",
+        "id": 1790417423217.0132,
+        "item": "توريدات كهربائيه",
+        "notes": ""
+      },
+      {
+        "amount": 1000000,
+        "checkNo": "تحويل (ائتمان)",
+        "contractor": "محطة بناء",
+        "createdAt": "2026-10-03T09:14:45.351Z",
+        "date": "2026/10/01",
+        "id": 1791018885351.281,
+        "item": "توريد خرسانه جاهزه",
+        "notes": ""
+      },
+      {
+        "amount": 1500000,
+        "checkNo": "تحويل (ائتمان)",
+        "contractor": "المدينه للصلب",
+        "createdAt": "2026-10-03T09:15:49.751Z",
+        "date": "2026/10/01",
+        "id": 1791018949751.9966,
+        "item": "توريد حديد تسليح",
+        "notes": ""
+      },
+      {
+        "amount": 200000,
+        "checkNo": "شيك",
+        "contractor": "محمود محمد عبدالله",
+        "createdAt": "2026-10-03T09:16:06.645Z",
+        "date": "2026/10/01",
+        "id": 1791018966645.5645,
+        "item": "حفر",
+        "notes": ""
+      },
+      {
+        "amount": 5000,
+        "checkNo": "تحويل انستاباى",
+        "contractor": "مصطفى عبدالناصر محمد",
+        "createdAt": "2026-10-03T09:16:22.459Z",
+        "date": "2026/10/01",
+        "id": 1791018982459.2588,
+        "item": "اعمال فرمجه",
+        "notes": ""
+      },
+      {
+        "amount": 40000,
+        "checkNo": "شيك",
+        "contractor": "محمد برعى على ع 174",
+        "createdAt": "2026-10-03T09:16:55.399Z",
+        "date": "2026/10/01",
+        "id": 1791019015399.062,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 35000,
+        "checkNo": "شيك",
+        "contractor": "مصطفى محمود ع 175",
+        "createdAt": "2026-10-03T09:17:32.579Z",
+        "date": "2026/10/01",
+        "id": 1791019052579.8672,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 15000,
+        "checkNo": "تحويل انستاباى",
+        "contractor": "احمد محمد انور ع 153",
+        "createdAt": "2026-10-03T09:17:54.587Z",
+        "date": "2026/10/01",
+        "id": 1791019074587.3196,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 150000,
+        "checkNo": "شيك",
+        "contractor": "احمد حسن حسين ع 154،155،176",
+        "createdAt": "2026-10-03T09:18:11.390Z",
+        "date": "2026/10/01",
+        "id": 1791019091390.52,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 35000,
+        "checkNo": "شيك",
+        "contractor": "عبدالعاطى سليم عبدالعاطى ع 151",
+        "createdAt": "2026-10-03T09:18:31.384Z",
+        "date": "2026/10/01",
+        "id": 1791019111384.3574,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 10000,
+        "checkNo": "تحويل انستاباى",
+        "contractor": "رومانى حنا ع 178",
+        "createdAt": "2026-10-03T09:18:58.481Z",
+        "date": "2026/10/01",
+        "id": 1791019138481.1558,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 15000,
+        "checkNo": "تحويل انستاباى",
+        "contractor": "حماده ع 177",
+        "createdAt": "2026-10-03T09:19:27.917Z",
+        "date": "2026/10/01",
+        "id": 1791019167917.0227,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 40000,
+        "checkNo": "شيك",
+        "contractor": "هشام شحاته احمد ع 151،174،175",
+        "createdAt": "2026-10-03T09:19:52.871Z",
+        "date": "2026/10/01",
+        "id": 1791019192871.6294,
+        "item": "حدادة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 200000,
+        "checkNo": "شيك",
+        "contractor": "احمد داوود",
+        "createdAt": "2026-10-03T09:20:15.149Z",
+        "date": "2026/10/01",
+        "id": 1791019215149.5396,
+        "item": "توريد طوب طفلى",
+        "notes": ""
+      },
+      {
+        "amount": 150000,
+        "checkNo": "شيك",
+        "contractor": "محمود زيتون",
+        "createdAt": "2026-10-03T09:20:36.529Z",
+        "date": "2026/10/01",
+        "id": 1791019236529.6907,
+        "item": "توريد طوب اسمنتى",
+        "notes": ""
+      },
+      {
+        "amount": 10000,
+        "checkNo": "تحويل انستاباى",
+        "contractor": "عياد محود عبدالله",
+        "createdAt": "2026-10-03T09:20:52.355Z",
+        "date": "2026/10/01",
+        "id": 1791019252355.4182,
+        "item": "لوادر",
+        "notes": ""
+      },
+      {
+        "amount": 15000,
+        "checkNo": "شيك",
+        "contractor": "حمدى احمد حسن",
+        "createdAt": "2026-10-03T09:21:57.095Z",
+        "date": "2026/10/01",
+        "id": 1791019317095.1882,
+        "item": "كهرباء",
+        "notes": ""
+      },
+      {
+        "amount": 10000,
+        "checkNo": "تحويل انستاباى",
+        "contractor": "عيد عواد",
+        "createdAt": "2026-10-03T09:22:21.101Z",
+        "date": "2026/10/01",
+        "id": 1791019341101.0117,
+        "item": "لوادر",
+        "notes": ""
+      },
+      {
+        "amount": 200000,
+        "checkNo": "شيك",
+        "contractor": "محمد يوسف",
+        "createdAt": "2026-10-03T09:58:06.389Z",
+        "date": "2026/10/01",
+        "id": 1791021486389.7651,
+        "item": "توريد اسمنت",
+        "notes": ""
+      },
+      {
+        "amount": 7000,
+        "checkNo": "تحويل انستاباى",
+        "contractor": "مصطفى عبدالناصر محمد",
+        "createdAt": "2026-10-10T18:52:34.054Z",
+        "date": "2026/10/7",
+        "id": 1791658354054.646,
+        "item": "اعمال فرمجه",
+        "notes": ""
+      },
+      {
+        "amount": 40000,
+        "checkNo": "10008902516/5441",
+        "contractor": "احمد حسن حسين ع 154،155،176",
+        "createdAt": "2026-10-10T18:53:35.164Z",
+        "date": "2026/10/7",
+        "id": 1791658415164.3035,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 30000,
+        "checkNo": "100008902515/5444",
+        "contractor": "احمد محمد انور ع 153",
+        "createdAt": "2026-10-10T18:54:22.920Z",
+        "date": "2026/10/7",
+        "id": 1791658462920.2322,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 30000,
+        "checkNo": "100008902514/5437",
+        "contractor": "مصطفى محمود ع 175",
+        "createdAt": "2026-10-10T18:55:05.626Z",
+        "date": "2026/10/7",
+        "id": 1791658505626.7,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 20000,
+        "checkNo": "100008902517/5443",
+        "contractor": "عبدالعاطى سليم عبدالعاطى ع 151",
+        "createdAt": "2026-10-10T18:55:40.187Z",
+        "date": "2026/10/7",
+        "id": 1791658540187.2695,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 20000,
+        "checkNo": "100008908871/5442",
+        "contractor": "حماده ع 177",
+        "createdAt": "2026-10-10T18:56:11.577Z",
+        "date": "2026/10/7",
+        "id": 1791658571577.357,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 20000,
+        "checkNo": "100008258870/5439",
+        "contractor": "رومانى حنا ع 178",
+        "createdAt": "2026-10-10T18:56:53.681Z",
+        "date": "2026/10/7",
+        "id": 1791658613681.21,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 15000,
+        "checkNo": "100008258872/5438",
+        "contractor": "محمد برعى على ع 174",
+        "createdAt": "2026-10-10T18:58:01.217Z",
+        "date": "2026/10/7",
+        "id": 1791658681217.562,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 100000,
+        "checkNo": "100008902513/5445",
+        "contractor": "هشام شحاته احمد ع 151،174،175",
+        "createdAt": "2026-10-10T18:58:32.552Z",
+        "date": "2026/10/7",
+        "id": 1791658712552.2795,
+        "item": "حدادة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 15000,
+        "checkNo": "100008258869/5450",
+        "contractor": "محمود مبارك",
+        "createdAt": "2026-10-10T18:59:06.683Z",
+        "date": "2026/10/7",
+        "id": 1791658746683.926,
+        "item": "عزل",
+        "notes": ""
+      },
+      {
+        "amount": 20000,
+        "checkNo": "تحويل انستاباى",
+        "contractor": "صابر حسن",
+        "createdAt": "2026-10-10T18:59:58.762Z",
+        "date": "2026/10/7",
+        "id": 1791658798762.184,
+        "item": "مباني",
+        "notes": ""
+      },
+      {
+        "amount": 40000,
+        "checkNo": "100008902504/5436",
+        "contractor": "المتحده",
+        "createdAt": "2026-10-10T19:00:29.341Z",
+        "date": "2026/10/7",
+        "id": 1791658829341.6501,
+        "item": "توريدات كهربائيه",
+        "notes": ""
+      },
+      {
+        "amount": 50000,
+        "checkNo": "100008258874/5449",
+        "contractor": "محمود زيتون",
+        "createdAt": "2026-10-10T19:01:00.038Z",
+        "date": "2026/10/7",
+        "id": 1791658860038.0005,
+        "item": "توريد طوب اسمنتى",
+        "notes": ""
+      },
+      {
+        "amount": 50000,
+        "checkNo": "100008258873/5601",
+        "contractor": "احمد داوود",
+        "createdAt": "2026-10-10T19:01:36.203Z",
+        "date": "2026/10/7",
+        "id": 1791658896203.9595,
+        "item": "توريد طوب طفلى",
+        "notes": ""
+      },
+      {
+        "amount": 15000,
+        "checkNo": "5612",
+        "contractor": "عيد عواد",
+        "createdAt": "2026-10-18T17:10:20.269Z",
+        "date": "2026/10/14",
+        "id": 1792343420269.8413,
+        "item": "لوادر",
+        "notes": ""
+      },
+      {
+        "amount": 6000,
+        "checkNo": "تحويل انستاباى",
+        "contractor": "مصطفى عبدالناصر محمد",
+        "createdAt": "2026-10-18T17:10:44.495Z",
+        "date": "2026/10/14",
+        "id": 1792343444495.054,
+        "item": "اعمال فرمجه",
+        "notes": ""
+      },
+      {
+        "amount": 4000,
+        "checkNo": "5613",
+        "contractor": "علاء عبدالكريم",
+        "createdAt": "2026-10-18T17:11:09.500Z",
+        "date": "2026/10/14",
+        "id": 1792343469500.5876,
+        "item": "نحاته",
+        "notes": ""
+      },
+      {
+        "amount": 150000,
+        "checkNo": "100008258884/5622",
+        "contractor": "احمد حسن حسين ع 154،155،176",
+        "createdAt": "2026-10-18T17:11:47.572Z",
+        "date": "2026/10/14",
+        "id": 1792343507572.1875,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 40000,
+        "checkNo": "100008258881/5620",
+        "contractor": "محمد برعى على ع 174",
+        "createdAt": "2026-10-18T17:12:13.811Z",
+        "date": "2026/10/14",
+        "id": 1792343533811.5662,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 30000,
+        "checkNo": "100008258888/5624",
+        "contractor": "حماده ع 177",
+        "createdAt": "2026-10-18T17:12:52.753Z",
+        "date": "2026/10/14",
+        "id": 1792343572753.866,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 30000,
+        "checkNo": "100008258887/5621",
+        "contractor": "رومانى حنا ع 178",
+        "createdAt": "2026-10-18T17:13:43.495Z",
+        "date": "2026/10/14",
+        "id": 1792343623495.615,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 20000,
+        "checkNo": "100008258883/5623",
+        "contractor": "احمد محمد انور ع 153",
+        "createdAt": "2026-10-18T17:14:57.374Z",
+        "date": "2026/10/14",
+        "id": 1792343697374.9297,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 15000,
+        "checkNo": "100008258884/5615",
+        "contractor": "مصطفى محمود ع 175",
+        "createdAt": "2026-10-18T17:15:25.176Z",
+        "date": "2026/10/14",
+        "id": 1792343725176.3777,
+        "item": "نجارة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 40000,
+        "checkNo": "100008258890/5625",
+        "contractor": "هشام شحاته احمد ع 151،174،175",
+        "createdAt": "2026-10-18T17:16:38.890Z",
+        "date": "2026/10/14",
+        "id": 1792343798890.671,
+        "item": "حدادة مسلحة",
+        "notes": ""
+      },
+      {
+        "amount": 120000,
+        "checkNo": "100008258892/5608",
+        "contractor": "محمود محمد عبدالله",
+        "createdAt": "2026-10-18T17:17:35.178Z",
+        "date": "2026/10/14",
+        "id": 1792343855178.534,
+        "item": "حفر",
+        "notes": ""
+      },
+      {
+        "amount": 40000,
+        "checkNo": "100008258901/5607",
+        "contractor": "عياد محود عبدالله",
+        "createdAt": "2026-10-18T17:18:11.422Z",
+        "date": "2026/10/14",
+        "id": 1792343891422.5442,
+        "item": "لوادر",
+        "notes": ""
+      },
+      {
+        "amount": 7000,
+        "checkNo": "100008258901/5629",
+        "contractor": "حمدى احمد حسن",
+        "createdAt": "2026-10-18T17:19:26.362Z",
+        "date": "2026/10/14",
+        "id": 1792343966362.6294,
+        "item": "كهرباء",
+        "notes": ""
+      },
+      {
+        "amount": 25000,
+        "checkNo": "100008258886/5626",
+        "contractor": "محمود مبارك",
+        "createdAt": "2026-10-18T17:20:20.997Z",
+        "date": "2026/10/14",
+        "id": 1792344020997.3113,
+        "item": "عزل",
+        "notes": ""
+      },
+      {
+        "amount": 70000,
+        "checkNo": "100008258900/5631",
+        "contractor": "صابر حسن",
+        "createdAt": "2026-10-18T17:20:53.704Z",
+        "date": "2026/10/14",
+        "id": 1792344053704.35,
+        "item": "مباني",
+        "notes": ""
+      },
+      {
+        "amount": 1000000,
+        "checkNo": "تحويل (ائتمان)",
+        "contractor": "محطة بناء",
+        "createdAt": "2026-10-18T17:21:28.901Z",
+        "date": "2026/10/14",
+        "id": 1792344088901.6763,
+        "item": "توريد خرسانه جاهزه",
+        "notes": ""
+      },
+      {
+        "amount": 1500000,
+        "checkNo": "تحويل (ائتمان)",
+        "contractor": "المدينه للصلب",
+        "createdAt": "2026-10-18T17:21:48.725Z",
+        "date": "2026/10/14",
+        "id": 1792344108725.7417,
+        "item": "توريد حديد تسليح",
+        "notes": ""
+      },
+      {
+        "amount": 150000,
+        "checkNo": "",
+        "contractor": "محمود زيتون",
+        "createdAt": "2026-10-18T17:22:12.521Z",
+        "date": "2026/10/14",
+        "id": 1792344132521.705,
+        "item": "توريد طوب اسمنتى",
+        "notes": ""
+      },
+      {
+        "amount": 100000,
+        "checkNo": "",
+        "contractor": "احمد داوود",
+        "createdAt": "2026-10-18T17:22:29.228Z",
+        "date": "2026/10/14",
+        "id": 1792344149228.763,
+        "item": "توريد طوب طفلى",
+        "notes": ""
+      }
+    ],
+    "revenue": [
+      {
+        "amount": 7230529.7,
+        "createdAt": "2026-09-05T08:09:30.358Z",
+        "date": "3/9/2026",
+        "extractNo": "1",
+        "flowType": "مستخلص جارى",
+        "id": 1788595770357.4668,
+        "ref": "GP00442732014900",
+        "tender": "14"
+      },
+      {
+        "amount": 448000,
+        "createdAt": "2026-09-23T05:11:27.074Z",
+        "date": "22/9/2026",
+        "extractNo": "جارى 1",
+        "flowType": "رد تعلية التامينات",
+        "id": 1790140287074.9485,
+        "ref": "GP٠٠٤٤٢٧٣٢٠20940",
+        "tender": "14"
       }
     ],
     "supplierExtracts": [
@@ -3023,6 +7107,396 @@
             "rowDate": "25/8/2026",
             "strength": "250",
             "supplierQty": 0
+          },
+          {
+            "content": "350",
+            "element": "سقف ارضى ع 175",
+            "price": 2430,
+            "productCode": "",
+            "qty": 64,
+            "rowDate": "1/9/2026",
+            "strength": "250",
+            "supplierQty": 0
+          },
+          {
+            "content": "350",
+            "element": "سقف ارضى ع 176",
+            "price": 2430,
+            "productCode": "",
+            "qty": 63,
+            "rowDate": "2026/09/02",
+            "strength": "250",
+            "supplierQty": 0
+          },
+          {
+            "content": "350",
+            "element": "سقف اول ع ع 155",
+            "price": 2430,
+            "productCode": "",
+            "qty": 63,
+            "rowDate": "2026/09/02",
+            "strength": "250",
+            "supplierQty": 0
+          },
+          {
+            "content": "350",
+            "element": "مسلحه ع 178",
+            "price": 2430,
+            "productCode": "",
+            "qty": 161,
+            "rowDate": "7/9/2026",
+            "strength": "250",
+            "supplierQty": 0
+          },
+          {
+            "content": "350",
+            "element": "مسلحه ع 177",
+            "price": 2430,
+            "productCode": "",
+            "qty": 159,
+            "rowDate": "7/9/2026",
+            "strength": "250",
+            "supplierQty": 0
+          },
+          {
+            "content": "350",
+            "element": "اعمدة ارضى ع 154",
+            "price": 2430,
+            "productCode": "",
+            "qty": 36,
+            "rowDate": "10/9/2026",
+            "strength": "250",
+            "supplierQty": 0
+          },
+          {
+            "content": "350",
+            "element": "سقف ارضى ع 153",
+            "price": 2430,
+            "productCode": "",
+            "qty": 65,
+            "rowDate": "10/9/2026",
+            "strength": "250",
+            "supplierQty": 0
+          },
+          {
+            "content": "350",
+            "element": "اعمدة اول ع 175",
+            "price": 2430,
+            "productCode": "",
+            "qty": 18,
+            "rowDate": "10/9/2026",
+            "strength": "250",
+            "supplierQty": 0
+          },
+          {
+            "content": "350",
+            "element": "اعمدة ثانى ع 155",
+            "price": 2430,
+            "productCode": "",
+            "qty": 17,
+            "rowDate": "10/9/2026",
+            "strength": "250",
+            "supplierQty": 0
+          },
+          {
+            "content": "350",
+            "element": "سقف ارضى ع 151",
+            "price": 2430,
+            "productCode": "",
+            "qty": 18,
+            "rowDate": "2026/09/17",
+            "strength": "250",
+            "supplierQty": 0
+          },
+          {
+            "content": "350",
+            "element": "سقف ارضى ع 174",
+            "price": 2430,
+            "productCode": "",
+            "qty": 18,
+            "rowDate": "2026/09/17",
+            "strength": "250",
+            "supplierQty": 0
+          },
+          {
+            "content": "350",
+            "element": "اعمدة اول ع 176",
+            "price": 2430,
+            "productCode": "",
+            "qty": 66,
+            "rowDate": "2026/09/17",
+            "strength": "250",
+            "supplierQty": 0
+          },
+          {
+            "content": "350",
+            "element": "اعمدة اول ع 153",
+            "price": 2430,
+            "productCode": "",
+            "qty": 66,
+            "rowDate": "2026/09/17",
+            "strength": "250",
+            "supplierQty": 0
+          },
+          {
+            "content": "350",
+            "element": "سقف اول ع 175",
+            "price": 2430,
+            "productCode": "",
+            "qty": 63,
+            "rowDate": "17/9/2026",
+            "strength": "250",
+            "supplierQty": 0
+          },
+          {
+            "content": "350",
+            "element": "سقف تانى ع 155",
+            "price": 2430,
+            "productCode": "",
+            "qty": 63,
+            "rowDate": "17/9/2026",
+            "strength": "250",
+            "supplierQty": 0
+          },
+          {
+            "content": "350",
+            "element": "سقف ارضى ع 154",
+            "price": 2430,
+            "productCode": "",
+            "qty": 64,
+            "rowDate": "19/9/2026",
+            "strength": "250",
+            "supplierQty": 0
+          },
+          {
+            "content": "",
+            "element": "خصم ",
+            "price": -1000,
+            "productCode": "",
+            "qty": 1,
+            "rowDate": "19/9/2026",
+            "strength": "",
+            "supplierQty": 0
+          },
+          {
+            "content": "350",
+            "element": "اعمدة اول ع 174",
+            "price": 2430,
+            "productCode": "",
+            "qty": 18,
+            "rowDate": "22/9/2026",
+            "strength": "250",
+            "supplierQty": 0
+          },
+          {
+            "content": "350",
+            "element": "اعمدة تالت ع 155",
+            "price": 2430,
+            "productCode": "",
+            "qty": 15.5,
+            "rowDate": "22/9/2026",
+            "strength": "250",
+            "supplierQty": 0
+          },
+          {
+            "content": "350",
+            "element": "اعمدة اول ع 151",
+            "price": 2430,
+            "productCode": "",
+            "qty": 18,
+            "rowDate": "22/9/2026",
+            "strength": "250",
+            "supplierQty": 0
+          },
+          {
+            "content": "350",
+            "element": "اعمدة تانى ع 175",
+            "price": 2430,
+            "productCode": "",
+            "qty": 17,
+            "rowDate": "22/9/2026",
+            "strength": "250",
+            "supplierQty": 0
+          },
+          {
+            "content": "350",
+            "element": "اعمدة اول ع  154",
+            "price": 2430,
+            "productCode": "",
+            "qty": 18,
+            "rowDate": "24/9/2026",
+            "strength": "250",
+            "supplierQty": 0
+          },
+          {
+            "content": "350",
+            "element": "اعمدة ارضى ع 177",
+            "price": 2430,
+            "productCode": "",
+            "qty": 38,
+            "rowDate": "1/10/2026",
+            "strength": "250",
+            "supplierQty": 0
+          },
+          {
+            "content": "350",
+            "element": "سقف تالت ع 155",
+            "price": 2430,
+            "productCode": "",
+            "qty": 63,
+            "rowDate": "1/10/2026",
+            "strength": "250",
+            "supplierQty": 0
+          },
+          {
+            "content": "350",
+            "element": "سقف اول ع 176",
+            "price": 2430,
+            "productCode": "",
+            "qty": 63,
+            "rowDate": "1/10/2026",
+            "strength": "250",
+            "supplierQty": 0
+          },
+          {
+            "content": "350",
+            "element": "سقف اول ع 174",
+            "price": 2430,
+            "productCode": "",
+            "qty": 64,
+            "rowDate": "1/10/2026",
+            "strength": "250",
+            "supplierQty": 0
+          },
+          {
+            "content": "350",
+            "element": "سقف اول ع 153",
+            "price": 2430,
+            "productCode": "",
+            "qty": 63,
+            "rowDate": "1/10/2026",
+            "strength": "250",
+            "supplierQty": 0
+          },
+          {
+            "content": "350",
+            "element": "اعمدة ارضى 178",
+            "price": 2430,
+            "productCode": "",
+            "qty": 38,
+            "rowDate": "1/10/2026",
+            "strength": "250",
+            "supplierQty": 0
+          },
+          {
+            "content": "350",
+            "element": "سقف تانى ع 175",
+            "price": 2430,
+            "productCode": "",
+            "qty": 63,
+            "rowDate": "7/10/2026",
+            "strength": "250",
+            "supplierQty": 0
+          },
+          {
+            "content": "350",
+            "element": "سقف اول ع 151",
+            "price": 2430,
+            "productCode": "",
+            "qty": 63,
+            "rowDate": "7/10/2026",
+            "strength": "250",
+            "supplierQty": 0
+          },
+          {
+            "content": "350",
+            "element": "اعمدة رابع ع 155",
+            "price": 2430,
+            "productCode": "",
+            "qty": 16,
+            "rowDate": "7/10/2026",
+            "strength": "250",
+            "supplierQty": 0
+          },
+          {
+            "content": "350",
+            "element": "اعمدة تانى ع 153",
+            "price": 2430,
+            "productCode": "",
+            "qty": 18,
+            "rowDate": "7/10/2026",
+            "strength": "250",
+            "supplierQty": 0
+          },
+          {
+            "content": "350",
+            "element": "سقف اول ع 154",
+            "price": 2430,
+            "productCode": "",
+            "qty": 64,
+            "rowDate": "7/10/2026",
+            "strength": "250",
+            "supplierQty": 0
+          },
+          {
+            "content": "",
+            "element": "اعمدة تانى ع 174",
+            "price": 2480,
+            "productCode": "",
+            "qty": 18,
+            "rowDate": "14/10/2026",
+            "strength": "250",
+            "supplierQty": 0
+          },
+          {
+            "content": "",
+            "element": "اعمدة تالت ع 175",
+            "price": 2480,
+            "productCode": "",
+            "qty": 16,
+            "rowDate": "14/10/2026",
+            "strength": "250",
+            "supplierQty": 0
+          },
+          {
+            "content": "350",
+            "element": "",
+            "price": 2480,
+            "productCode": "",
+            "qty": 18,
+            "rowDate": "14/10/2026",
+            "strength": "250",
+            "supplierQty": 0
+          },
+          {
+            "content": "350",
+            "element": "سقف رابع ع 155",
+            "price": 2480,
+            "productCode": "",
+            "qty": 64,
+            "rowDate": "14/10/2026",
+            "strength": "250",
+            "supplierQty": 0
+          },
+          {
+            "content": "350",
+            "element": "اعمدة تانى ع 154",
+            "price": 2480,
+            "productCode": "",
+            "qty": 16,
+            "rowDate": "14/10/2026",
+            "strength": "250",
+            "supplierQty": 0
+          },
+          {
+            "content": "",
+            "element": "خصم على حساب محمود عيد  نظير اعمال السائق",
+            "price": 25000,
+            "productCode": "",
+            "qty": 1,
+            "rowDate": "14/10/2026",
+            "strength": "",
+            "supplierQty": 0
           }
         ],
         "supplier": "محطة بناء"
@@ -3069,6 +7543,36 @@
             "productCode": "",
             "qty": 70.04,
             "rowDate": "26/8/2026",
+            "unit": "طن"
+          },
+          {
+            "description": "توريد حديد ",
+            "discounts": 0,
+            "invoiceNo": "11282",
+            "price": 36500,
+            "productCode": "",
+            "qty": 75.31,
+            "rowDate": "9/9/2026",
+            "unit": "طن"
+          },
+          {
+            "description": "توريد حديد ",
+            "discounts": 0,
+            "invoiceNo": "11574",
+            "price": 37000,
+            "productCode": "",
+            "qty": 71.38,
+            "rowDate": "19/9/2026",
+            "unit": "طن"
+          },
+          {
+            "description": "توريد حديد ",
+            "discounts": 0,
+            "invoiceNo": "12117",
+            "price": 39000,
+            "productCode": "",
+            "qty": 70.46,
+            "rowDate": "7/10/2026",
             "unit": "طن"
           }
         ],
@@ -3140,9 +7644,347 @@
             "qty": 4,
             "rowDate": "11/8/2026",
             "unit": "لفة"
+          },
+          {
+            "description": "خرطوم 16مم 45متر (احمر)",
+            "discounts": 0,
+            "invoiceNo": "",
+            "price": 450,
+            "productCode": "2161",
+            "qty": 30,
+            "rowDate": "2/9/2026",
+            "unit": "لفة"
+          },
+          {
+            "description": "خرطوم 16مم 45متر (ازرق)",
+            "discounts": 0,
+            "invoiceNo": "",
+            "price": 450,
+            "productCode": "2162",
+            "qty": 44,
+            "rowDate": "2/9/2026",
+            "unit": "لفة"
+          },
+          {
+            "description": "خرطوم 23مم",
+            "discounts": 0,
+            "invoiceNo": "",
+            "price": 550,
+            "productCode": "223",
+            "qty": 15,
+            "rowDate": "2/9/2026",
+            "unit": "لفة"
+          },
+          {
+            "description": "خرطوم 20مم مقاوم ",
+            "discounts": 0,
+            "invoiceNo": "",
+            "price": 1100,
+            "productCode": "320",
+            "qty": 20,
+            "rowDate": "2/9/2026",
+            "unit": "لفة"
+          },
+          {
+            "description": "علبه 4 مخرج",
+            "discounts": 0,
+            "invoiceNo": "",
+            "price": 550,
+            "productCode": "4444",
+            "qty": 1,
+            "rowDate": "2/9/2026",
+            "unit": "عدد"
+          },
+          {
+            "description": "خرطوم 16مم 45متر (احمر)",
+            "discounts": 0,
+            "invoiceNo": "",
+            "price": 450,
+            "productCode": "2161",
+            "qty": 60,
+            "rowDate": "10/9/2026",
+            "unit": "لفة"
+          },
+          {
+            "description": "خرطوم 16مم 45متر (ازرق)",
+            "discounts": 0,
+            "invoiceNo": "",
+            "price": 450,
+            "productCode": "2162",
+            "qty": 50,
+            "rowDate": "10/9/2026",
+            "unit": "لفة"
+          },
+          {
+            "description": "خرطوم 23مم",
+            "discounts": 0,
+            "invoiceNo": "",
+            "price": 550,
+            "productCode": "223",
+            "qty": 30,
+            "rowDate": "10/9/2026",
+            "unit": "لفة"
+          },
+          {
+            "description": "خرطوم 20مم مقاوم ",
+            "discounts": 0,
+            "invoiceNo": "",
+            "price": 1100,
+            "productCode": "320",
+            "qty": 12,
+            "rowDate": "10/9/2026",
+            "unit": "لفة"
+          },
+          {
+            "description": "مواسير 40مم 3م*10",
+            "discounts": 0,
+            "invoiceNo": "",
+            "price": 650,
+            "productCode": "540",
+            "qty": 5,
+            "rowDate": "10/9/2026",
+            "unit": "لفة"
+          },
+          {
+            "description": "علبه 4 مخرج",
+            "discounts": 0,
+            "invoiceNo": "",
+            "price": 550,
+            "productCode": "4444",
+            "qty": 2,
+            "rowDate": "10/9/2026",
+            "unit": "شكارة"
+          },
+          {
+            "description": "خرطوم 16مم 45متر (احمر)",
+            "discounts": 0,
+            "invoiceNo": "",
+            "price": 450,
+            "productCode": "2161",
+            "qty": 35,
+            "rowDate": "8/10/2026",
+            "unit": "لفة"
+          },
+          {
+            "description": "خرطوم 16مم 45متر (ازرق)",
+            "discounts": 0,
+            "invoiceNo": "",
+            "price": 450,
+            "productCode": "2162",
+            "qty": 40,
+            "rowDate": "8/10/2026",
+            "unit": "لفة"
+          },
+          {
+            "description": "خرطوم 23مم",
+            "discounts": 0,
+            "invoiceNo": "",
+            "price": 550,
+            "productCode": "223",
+            "qty": 20,
+            "rowDate": "8/10/2026",
+            "unit": "لفة"
+          },
+          {
+            "description": "خرطوم 20مم مقاوم ",
+            "discounts": 0,
+            "invoiceNo": "",
+            "price": 1100,
+            "productCode": "320",
+            "qty": 15,
+            "rowDate": "8/10/2026",
+            "unit": "لفة"
+          },
+          {
+            "description": "علبه 4 مخرج",
+            "discounts": 0,
+            "invoiceNo": "",
+            "price": 550,
+            "productCode": "4444",
+            "qty": 5,
+            "rowDate": "8/10/2026",
+            "unit": "شكارة"
+          },
+          {
+            "description": "مواسير 40مم 3م*10",
+            "discounts": 0,
+            "invoiceNo": "",
+            "price": 650,
+            "productCode": "540",
+            "qty": 3,
+            "rowDate": "8/10/2026",
+            "unit": "عدد"
+          },
+          {
+            "description": "خرطوم 16مم 45متر (احمر)",
+            "discounts": 0,
+            "invoiceNo": "",
+            "price": 450,
+            "productCode": "2161",
+            "qty": 45,
+            "rowDate": "10/10/2026",
+            "unit": "لفة"
+          },
+          {
+            "description": "خرطوم 16مم 45متر (ازرق)",
+            "discounts": 0,
+            "invoiceNo": "",
+            "price": 450,
+            "productCode": "2162",
+            "qty": 40,
+            "rowDate": "10/10/2026",
+            "unit": "لفة"
+          },
+          {
+            "description": "خرطوم 23مم",
+            "discounts": 0,
+            "invoiceNo": "",
+            "price": 550,
+            "productCode": "223",
+            "qty": 30,
+            "rowDate": "10/10/2026",
+            "unit": "لفة"
           }
         ],
         "supplier": "المتحده"
+      },
+      {
+        "date": "2026/09/23",
+        "id": 1790137281331.4724,
+        "item": "توريد طوب اسمنتى",
+        "notes": "",
+        "number": 1,
+        "rows": [
+          {
+            "description": "48ب*704ط",
+            "discounts": 0,
+            "invoiceNo": "3592",
+            "price": 2600,
+            "qty": 33.792,
+            "rowDate": "24/9/2026",
+            "unit": "عدد"
+          },
+          {
+            "description": "96ب*704ط",
+            "discounts": 0,
+            "invoiceNo": "3591",
+            "price": 2600,
+            "productCode": "",
+            "qty": 67.584,
+            "rowDate": "1/10/2026",
+            "unit": "عدد"
+          },
+          {
+            "description": "120ب*704ط",
+            "discounts": 0,
+            "invoiceNo": "",
+            "price": 2600,
+            "productCode": "",
+            "qty": 84.48,
+            "rowDate": "7/10/2026",
+            "unit": "عدد"
+          },
+          {
+            "description": "120ب*704ط",
+            "discounts": 0,
+            "invoiceNo": "",
+            "price": 2600,
+            "productCode": "",
+            "qty": 84.48,
+            "rowDate": "14/10/2026",
+            "unit": "عدد"
+          },
+          {
+            "description": "خصم نظير اهمال السائق لصالح محطة بناء",
+            "discounts": 0,
+            "invoiceNo": "",
+            "price": -25000,
+            "productCode": "",
+            "qty": 1,
+            "rowDate": "14/10/2026",
+            "unit": "عدد"
+          }
+        ],
+        "supplier": "محمود زيتون"
+      },
+      {
+        "date": "2026/09/24",
+        "id": 1790200236339.304,
+        "item": "توريد طوب طفلى",
+        "notes": "",
+        "number": 1,
+        "rows": [
+          {
+            "description": "توريد طوب طفلى",
+            "discounts": 0,
+            "invoiceNo": "",
+            "price": 5100,
+            "qty": 27,
+            "rowDate": "24/9/2026",
+            "unit": "عدد"
+          },
+          {
+            "description": "توريد طوب طفلى",
+            "discounts": 0,
+            "invoiceNo": "",
+            "price": 5100,
+            "productCode": "",
+            "qty": 26,
+            "rowDate": "1/10/2026",
+            "unit": "عدد"
+          },
+          {
+            "description": "توريد طوب طفلى",
+            "discounts": 0,
+            "invoiceNo": "",
+            "price": 5100,
+            "productCode": "",
+            "qty": 13,
+            "rowDate": "7/10/2026",
+            "unit": "عدد"
+          },
+          {
+            "description": "توريد طوب طفلى",
+            "discounts": 0,
+            "invoiceNo": "",
+            "price": 5100,
+            "productCode": "",
+            "qty": 38,
+            "rowDate": "14/10/2026",
+            "unit": "عدد"
+          }
+        ],
+        "supplier": "احمد داوود"
+      },
+      {
+        "date": "2026/10/01",
+        "id": 1791021505977.322,
+        "item": "توريد اسمنت",
+        "notes": "",
+        "number": 1,
+        "rows": [
+          {
+            "description": "اسمنت",
+            "discounts": 0,
+            "invoiceNo": "10000005988",
+            "price": 3600,
+            "productCode": "500013",
+            "qty": 60,
+            "rowDate": "1/10/2026",
+            "unit": "طن"
+          },
+          {
+            "description": "اسمنت 32.5",
+            "discounts": 0,
+            "invoiceNo": "253",
+            "price": 3600,
+            "productCode": "",
+            "qty": 60,
+            "rowDate": "7/10/2026",
+            "unit": "طن"
+          }
+        ],
+        "supplier": "محمد يوسف"
       }
     ],
     "supplyItemsList": [
