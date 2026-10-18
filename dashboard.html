@@ -3287,7 +3287,11 @@ function printExtract(){
             </table>
         </div>
     </div>`;
-    printHTMLContent(html, `مستخلص رقم ${ex.number} - ${ex.contractor}`, 'portrait');
+    /* Ask user for orientation */
+    var orientChoice = prompt('اختر اتجاه الصفحة:\n1 = Portrait (عمودي)\n2 = Landscape (أفقي)', '1');
+    var orient = (orientChoice === '2') ? 'landscape' : 'portrait';
+    var pdfTitle = `مستخلص رقم ${ex.number} - ${ex.contractor} - ${ex.item}`;
+    printHTMLContent(html, pdfTitle, orient);
 }
 
 // ========================================
